@@ -1,0 +1,40 @@
+name: Audit
+
+# Known-vulnerability scan of the locked Python profile and the web production
+# dependencies. Runs on a schedule as well as on pull requests, because new
+# advisories appear without any change to the repository.
+on:
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+jobs:
+  pip-audit:
+    name: pip-audit (locked profile)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install pip-audit
+      # The lock pins every transitive dependency, so no resolution is needed.
+      - run: pip-audit -r requirements-linux-py312.lock --no-deps --disable-pip
+
+  pnpm-audit:
+    name: pnpm audit (web, production)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: corepack enable && corepack prepare pnpm@12.11.2 --activate
+      - run: pnpm audit --prod

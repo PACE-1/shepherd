@@ -14,4 +14,4 @@ packaging>=23,<27
 # Numerical fitting and week optimization.
 scipy>=1.13,<2
 # PNG report endpoints also run without a desktop GUI.
-Pillow>=10.0.0
+Pillow>=10.0.0,<13
