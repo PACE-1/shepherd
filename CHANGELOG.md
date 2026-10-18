@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Breaking: the Docker image now runs as UID 10001 instead of root (#153).** A volume or bind mount written by an earlier image is root-owned and must be fixed once before upgrading: stop the container, then `docker run --rm --user 0 -v shepherd-data:/data ghcr.io/pace-1/shepherd:latest chown -R 10001:10001 /data` (bind mount: `sudo chown -R 10001:10001 <folder>`). See `docs/SERVER.md`, "Upgrading to 4.0 from a root-owned volume".
 - **Added: run, swim and strength sessions in the plan, next to the cycling plan.** For riders who save a sport split (hours per sport), the plan gains companion sessions: run, swim, strength and mobility, with a transition-time target and a "how the run felt" note for brick runs. Cycling-only riders' plans are unchanged. All session structures are design templates after published sources (Daniels, ACSM 2009, CSS convention), not validated against recorded runs or swims. (#120 #122 #123 #124 #127)
 - **Added: run workout library (#120).** Eight run sessions with Friel pace-zone or effort targets, an estimated rTSS, filters and `.fit`/`.txt` downloads in the Library. Not tried on a Garmin.
 - **Added: swim sessions (CSS based) and strength/mobility sessions** with exercise lists, sets, reps and session-RPE load; browse and print under Settings.
