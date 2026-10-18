@@ -55,7 +55,7 @@ A vertical slice that works end to end and is tested, with the remaining scope w
 
 ## Status (2026-10-18) and known gaps
 
-Everything below is on branch `claude/peaceful-bell-wcwgkb`, not yet on `clean-main`. No issue is closed: each closes only when its own checklist is met. "Verified" means unit/contract/browser tests passed in a container with no real riders' data and no live external services.
+Everything below is on branch `claude/peaceful-bell-wcwgkb`, not yet on `main`. No issue is closed: each closes only when its own checklist is met. "Verified" means unit/contract/browser tests passed in a container with no real riders' data and no live external services.
 
 | Issue | State | Remaining scope (known gaps) |
 |---|---|---|
