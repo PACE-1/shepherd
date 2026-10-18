@@ -17894,23 +17894,9 @@ def _sync_icu_activities_locked(force: bool = False) -> dict:
             # before the guard existed. Cheap, idempotent, and it is what lets
             # the rider's own FIT import finally win the dedupe.
             _rs.purge_stub_icu_records()
-            # Deletions made ON intervals.icu propagate here too: sync only
-            # ever upserted, so a ride deleted upstream (the double-upload
-            # case: Karoo + Garmin, one copy removed) stayed on the calendar
-            # forever. Ids come from the raw fetched list — not the persisted
-            # subset — and the fetch provably succeeded to reach this line;
-            # the aborted pass skips this block entirely.
-            if not aborted:
-                _pruned = _rs.prune_deleted_icu_records(
-                    {str(a.get("id") or a.get("activity_id"))
-                     for a in _activities
-                     if a.get("id") or a.get("activity_id")},
-                    _sync_days)
-                if _pruned:
-                    # Not counted as "updated" — the toast would report ghost
-                    # rides as new activity. The cache drop is what matters:
-                    # every reader must stop seeing the pruned records now.
-                    clear_cache()
+            # #31: a ride intervals.icu stops listing is never removed here;
+            # upstream deletions do not propagate, so a data-source block
+            # cannot cost the rider their history.
     except db.SyncAborted:
         pass
     except Exception as e:  # noqa: BLE001 — best-effort heal, never break sync
