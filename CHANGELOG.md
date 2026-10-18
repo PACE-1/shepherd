@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Fixed: two Shepherd processes can no longer share one data folder (#154).** The app takes an exclusive lock on `.lock` in the data folder at startup and exits with a clear message if another process (a second container on the same volume, `--workers 2`, an overlapping restart) already holds it.
 - **Security (breaking): server login is throttled and sessions expire (#152).** Five wrong tokens from one address within a minute earn a 429 until the minute is up; server mode refuses to start with a token under 24 characters; the session cookie now carries a signed issue time, is rejected server-side after 30 days, and `POST /api/logout-everywhere` revokes every cookie issued so far. Cookies from earlier versions stop working, so everyone signs in once again after upgrading; a short token must be replaced (`openssl rand -hex 32`).
 - **Added: run, swim and strength sessions in the plan, next to the cycling plan.** For riders who save a sport split (hours per sport), the plan gains companion sessions: run, swim, strength and mobility, with a transition-time target and a "how the run felt" note for brick runs. Cycling-only riders' plans are unchanged. All session structures are design templates after published sources (Daniels, ACSM 2009, CSS convention), not validated against recorded runs or swims. (#120 #122 #123 #124 #127)
 - **Added: run workout library (#120).** Eight run sessions with Friel pace-zone or effort targets, an estimated rTSS, filters and `.fit`/`.txt` downloads in the Library. Not tried on a Garmin.
