@@ -1117,3 +1117,86 @@ class LlmConnection(_Model):
 class Insight(_Model):
     text: str
     model: str = ""
+
+
+# ── running zones, critical speed, GAP, per-run load (#118, #119; routes_run.py) ──
+class RunPaceZone(_Model):
+    zone: str
+    name: str
+    slow_pct: Optional[float] = None
+    fast_pct: Optional[float] = None
+    slow_s_per_km: Optional[float] = None
+    fast_s_per_km: Optional[float] = None
+
+
+class RunHrZone(_Model):
+    zone: str
+    name: str
+    low_pct: Optional[float] = None
+    high_pct: Optional[float] = None
+    low_bpm: Optional[int] = None
+    high_bpm: Optional[int] = None
+
+
+class RunZones(_Model):
+    threshold_pace_s_per_km: Optional[float] = None
+    threshold_hr: Optional[float] = None
+    pace_zones: list[RunPaceZone] = []
+    hr_zones: list[RunHrZone] = []
+    pace_history: list[SportThresholdEntry] = []
+    method: str
+    confidence: str
+
+
+class CriticalSpeed(_Model):
+    cs_m_per_s: float
+    cs_pace_s_per_km: float
+    d_prime_m: float
+    r2: Optional[float] = None
+    n_trials: int
+    warnings: list[str] = []
+    method: str
+    confidence: str
+    saved: bool = False
+
+
+class RunGap(_Model):
+    pace_s_per_km: float
+    grade_pct: float
+    gap_s_per_km: float
+    cost_j_per_kg_m: float
+    flat_cost_j_per_kg_m: float
+    method: str
+    confidence: str
+
+
+class RunActivity(_Model):
+    id: str
+    date: Optional[str] = None
+    name: str = ""
+    type: str = ""
+    duration_s: float = 0
+    distance_km: Optional[float] = None
+    pace_s_per_km: Optional[float] = None
+    avg_hr: Optional[float] = None
+    icu_load: Optional[float] = None
+    intensity: Optional[float] = None
+    rtss: Optional[float] = None
+    hrtss: Optional[float] = None
+    cadence_spm: Optional[float] = None
+    cadence_doubled: bool = False
+    step_length_m: Optional[float] = None
+    stride_length_m: Optional[float] = None
+
+
+class RunActivities(_Model):
+    threshold_pace_s_per_km: Optional[float] = None
+    threshold_hr: Optional[float] = None
+    rest_hr: Optional[float] = None
+    max_hr: Optional[float] = None
+    max_hr_source: Optional[str] = None
+    sex: Optional[str] = None
+    runs: list[RunActivity] = []
+    missing: list[str] = []
+    method: str
+    confidence: str

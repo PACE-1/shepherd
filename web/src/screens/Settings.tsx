@@ -15,6 +15,7 @@ import { AiCoachSettings } from "@/screens/Coach"
 import { FtpHistory } from "@/screens/FtpHistory"
 import { Appearance } from "@/screens/Appearance"
 import { SportsCard } from "@/screens/SportsCard"
+import { RunZones } from "@/screens/RunZones"
 import { YourData } from "@/screens/YourData"
 import { Panel, Row, useLoad } from "@/screens/panel"
 import { ZonesEditor } from "@/screens/ZonesEditor"
@@ -274,6 +275,7 @@ export function Settings() {
       <div className="lg:col-span-2">
         <SportsCard />
       </div>
+      <div className="lg:col-span-2"><RunZones /></div>
       <div className="lg:col-span-2">
         <Diagnostics />
       </div>

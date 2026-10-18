@@ -1140,6 +1140,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/run/activities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["run_activities_api_run_activities_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/run/critical-speed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["run_critical_speed_api_run_critical_speed_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/run/gap": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["run_gap_api_run_gap_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/run/zones": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["run_zones_api_run_zones_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/settings": {
         parameters: {
             query?: never;
@@ -1886,6 +1950,35 @@ export interface components {
              * @default true
              */
             reverted: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /** CriticalSpeed */
+        CriticalSpeed: {
+            /** Confidence */
+            confidence: string;
+            /** Cs M Per S */
+            cs_m_per_s: number;
+            /** Cs Pace S Per Km */
+            cs_pace_s_per_km: number;
+            /** D Prime M */
+            d_prime_m: number;
+            /** Method */
+            method: string;
+            /** N Trials */
+            n_trials: number;
+            /** R2 */
+            r2?: number | null;
+            /**
+             * Saved
+             * @default false
+             */
+            saved: boolean;
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: string[];
         } & {
             [key: string]: unknown;
         };
@@ -3747,6 +3840,167 @@ export interface components {
              * @default 0
              */
             total: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RunActivities */
+        RunActivities: {
+            /** Confidence */
+            confidence: string;
+            /** Max Hr */
+            max_hr?: number | null;
+            /** Max Hr Source */
+            max_hr_source?: string | null;
+            /** Method */
+            method: string;
+            /**
+             * Missing
+             * @default []
+             */
+            missing: string[];
+            /** Rest Hr */
+            rest_hr?: number | null;
+            /**
+             * Runs
+             * @default []
+             */
+            runs: components["schemas"]["RunActivity"][];
+            /** Sex */
+            sex?: string | null;
+            /** Threshold Hr */
+            threshold_hr?: number | null;
+            /** Threshold Pace S Per Km */
+            threshold_pace_s_per_km?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RunActivity */
+        RunActivity: {
+            /** Avg Hr */
+            avg_hr?: number | null;
+            /**
+             * Cadence Doubled
+             * @default false
+             */
+            cadence_doubled: boolean;
+            /** Cadence Spm */
+            cadence_spm?: number | null;
+            /** Date */
+            date?: string | null;
+            /** Distance Km */
+            distance_km?: number | null;
+            /**
+             * Duration S
+             * @default 0
+             */
+            duration_s: number;
+            /** Hrtss */
+            hrtss?: number | null;
+            /** Icu Load */
+            icu_load?: number | null;
+            /** Id */
+            id: string;
+            /** Intensity */
+            intensity?: number | null;
+            /**
+             * Name
+             * @default
+             */
+            name: string;
+            /** Pace S Per Km */
+            pace_s_per_km?: number | null;
+            /** Rtss */
+            rtss?: number | null;
+            /** Step Length M */
+            step_length_m?: number | null;
+            /** Stride Length M */
+            stride_length_m?: number | null;
+            /**
+             * Type
+             * @default
+             */
+            type: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RunGap */
+        RunGap: {
+            /** Confidence */
+            confidence: string;
+            /** Cost J Per Kg M */
+            cost_j_per_kg_m: number;
+            /** Flat Cost J Per Kg M */
+            flat_cost_j_per_kg_m: number;
+            /** Gap S Per Km */
+            gap_s_per_km: number;
+            /** Grade Pct */
+            grade_pct: number;
+            /** Method */
+            method: string;
+            /** Pace S Per Km */
+            pace_s_per_km: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RunHrZone */
+        RunHrZone: {
+            /** High Bpm */
+            high_bpm?: number | null;
+            /** High Pct */
+            high_pct?: number | null;
+            /** Low Bpm */
+            low_bpm?: number | null;
+            /** Low Pct */
+            low_pct?: number | null;
+            /** Name */
+            name: string;
+            /** Zone */
+            zone: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RunPaceZone */
+        RunPaceZone: {
+            /** Fast Pct */
+            fast_pct?: number | null;
+            /** Fast S Per Km */
+            fast_s_per_km?: number | null;
+            /** Name */
+            name: string;
+            /** Slow Pct */
+            slow_pct?: number | null;
+            /** Slow S Per Km */
+            slow_s_per_km?: number | null;
+            /** Zone */
+            zone: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RunZones */
+        RunZones: {
+            /** Confidence */
+            confidence: string;
+            /**
+             * Hr Zones
+             * @default []
+             */
+            hr_zones: components["schemas"]["RunHrZone"][];
+            /** Method */
+            method: string;
+            /**
+             * Pace History
+             * @default []
+             */
+            pace_history: components["schemas"]["SportThresholdEntry"][];
+            /**
+             * Pace Zones
+             * @default []
+             */
+            pace_zones: components["schemas"]["RunPaceZone"][];
+            /** Threshold Hr */
+            threshold_hr?: number | null;
+            /** Threshold Pace S Per Km */
+            threshold_pace_s_per_km?: number | null;
         } & {
             [key: string]: unknown;
         };
@@ -6048,6 +6302,86 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RidesSynced"];
+                };
+            };
+        };
+    };
+    run_activities_api_run_activities_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunActivities"];
+                };
+            };
+        };
+    };
+    run_critical_speed_api_run_critical_speed_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CriticalSpeed"];
+                };
+            };
+        };
+    };
+    run_gap_api_run_gap_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunGap"];
+                };
+            };
+        };
+    };
+    run_zones_api_run_zones_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunZones"];
                 };
             };
         };

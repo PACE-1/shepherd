@@ -31,6 +31,8 @@ function mock(over: Record<string, (body: unknown) => Response> = {}) {
     if (url === "/api/settings/workout-folders") return json({ builtin: { count: 4300 }, extra: null })
     if (url === "/api/sports/load") return json({ as_of: "2026-10-18", days_of_history: 0, settled: false, combined: { ctl: 0, atl: 0, tsb: 0, week_load: 0 }, sports: {}, method: "", confidence: "" })
     if (url === "/api/sports/thresholds") return json({ thresholds: {} })
+    if (url === "/api/run/zones") return json({ pace_zones: [], hr_zones: [], method: "", confidence: "" })
+    if (url === "/api/run/activities") return json({ runs: [], missing: [], method: "", confidence: "" })
     if (url === "/api/profile/ftp-history") return json({ ftp_current: 250, ftp_source: "manual", history: [] })
     return json({}, 404)
   }))
