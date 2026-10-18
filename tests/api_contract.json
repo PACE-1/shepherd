@@ -8115,6 +8115,18 @@
             ],
             "title": "Hr Max"
           },
+          "hr_time_in_zone": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hr Time In Zone"
+          },
           "if_pct": {
             "anyOf": [
               {

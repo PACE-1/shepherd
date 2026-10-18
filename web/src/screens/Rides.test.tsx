@@ -90,6 +90,33 @@ describe("RideDetail", () => {
     expect(screen.queryByText("FTP test")).toBeNull()
   })
 
+  it("shows pace and heart-rate zones for a run, with no power rows", async () => {
+    mock(routes({
+      "/api/ride/icu_9/detail": () => json({ ride_id: "icu_9", name: "Tempo run", sport: "Run", started_at: "2026-10-11T08:00:00", duration_s: 3000, moving_s: 3000, distance_km: 10, elevation_m: 80, avg_hr: 160, hr_max: 175, tss: 70, avg_power_w: null,
+        time_in_zone: { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0, z6: 0, z7: 0 }, hr_time_in_zone: { z1: 300, z2: 1200, z3: 1500, z4: 0, z5: 0, z6: 0, z7: 0 },
+        samples: { t_s: [0, 60, 120], power_w: [0, 0, 0], hr_bpm: [140, 160, 165], elevation_m: [0, 0, 0] } }),
+    }))
+    render(<RideDetail id="icu_9" />)
+    expect(await screen.findByText("5:00 /km")).toBeTruthy()
+    expect(screen.getByText("Time in heart-rate zones")).toBeTruthy()
+    expect(screen.getByText("Zone 3")).toBeTruthy()
+    expect(screen.getByRole("img", { name: "Heart rate over the run" })).toBeTruthy()
+    expect(screen.queryByText("Average power")).toBeNull()
+    expect(screen.queryByText("Time in power zones")).toBeNull()
+    expect(screen.queryByRole("img", { name: /Power/ })).toBeNull()
+    expect(screen.getByRole("button", { name: "Review this run" })).toBeTruthy()
+  })
+
+  it("shows distance in metres and pace per 100 m for a swim", async () => {
+    mock(routes({
+      "/api/ride/icu_9/detail": () => json({ ride_id: "icu_9", name: "Pool", sport: "Swim", started_at: "2026-10-11T08:00:00", duration_s: 2000, distance_km: 2, avg_hr: 130, tss: 40 }),
+    }))
+    render(<RideDetail id="icu_9" />)
+    expect(await screen.findByText("2000 m")).toBeTruthy()
+    expect(screen.getByText("1:40 /100 m")).toBeTruthy()
+    expect(screen.queryByText("Climbing")).toBeNull()
+  })
+
   it("marks a ride as a race and reports a failure", async () => {
     let status = 204
     const calls = mock(routes({
