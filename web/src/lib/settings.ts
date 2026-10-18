@@ -1,11 +1,11 @@
-import type { BackfillHistoryStarted, BackfillHistoryStatus, DiagErrors, DiagHealth, GarminStatus, GarminSynced, IcuPushResult, IcuPushStatus, LogTail, SettingsRead, SettingsSaved, SyncStatus, UpdateCheck, VersionInfo, WorkoutFolders, ZonesSaved } from "@/api/types"
+import type { BackfillHistoryStarted, BackfillHistoryStatus, DiagErrors, DiagHealth, GarminStatus, GarminSynced, IcuPushResult, IcuPushStatus, LogTail, SettingsRead, SettingsSaved, SyncResult, SyncStatus, UpdateCheck, VersionInfo, WorkoutFolders, ZonesSaved } from "@/api/types"
 import { api } from "@/lib/api"
 
 export const getSettings = () => api<SettingsRead>("/api/settings")
 export const getSyncStatus = () => api<SyncStatus>("/api/sync/status")
 export const getVersion = () => api<VersionInfo>("/api/version")
 export const checkUpdate = (force: boolean) => api<UpdateCheck>(`/api/update/check?force=${force ? 1 : 0}`)
-export const syncNow = () => api<Record<string, unknown>>("/api/sync", { method: "POST" })
+export const syncNow = () => api<SyncResult>("/api/sync", { method: "POST" })
 
 /** Saves only what changed. The server rejects values outside its limits with a message. */
 export const saveSettings = (changes: Record<string, number | string>) =>

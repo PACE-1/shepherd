@@ -58,7 +58,7 @@ describe("Home", () => {
   it("shows today's session, the week's planned load, fitness and the programme", async () => {
     mockApi()
     render(<Home />)
-    expect(await screen.findByText("Endurance Steady")).toBeTruthy()
+    expect((await screen.findAllByText("Endurance Steady")).length).toBeGreaterThan(0)
     expect(screen.getByText(/118 of 300 TSS planned/)).toBeTruthy()
     expect(screen.getByText("265 W")).toBeTruthy()
     expect(screen.getAllByText("—").length).toBe(2) // CTL and TSB have no reading
@@ -87,7 +87,7 @@ describe("Home", () => {
     render(<Home />)
     const alert = await screen.findByRole("alert")
     expect(alert.textContent).toContain("boom")
-    expect(await screen.findByText("Endurance Steady")).toBeTruthy() // other cards still work
+    expect((await screen.findAllByText("Endurance Steady")).length).toBeGreaterThan(0) // other cards still work
     fail = false
     const before = calls.filter((u) => u === "/api/plan").length
     await userEvent.click(screen.getByRole("button", { name: "Retry" }))

@@ -1,5 +1,8 @@
 # Contributing to Shepherd
 
+By taking part you agree to follow the [Code of Conduct](../CODE_OF_CONDUCT.md).
+Issue and pull-request templates guide what to include; please fill them in.
+
 Thanks for your interest in contributing. This document explains how to submit
 changes that we can accept without creating legal or maintenance problems.
 

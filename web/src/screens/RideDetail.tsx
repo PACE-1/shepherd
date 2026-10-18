@@ -5,6 +5,7 @@ import { Button, buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import { compareRoute } from "@/lib/analytics"
 import { rideInsight } from "@/lib/coach"
 import { fmtMinutes } from "@/lib/home"
 import { deleteRide, fitUrl, getFtpAnalysis, getRide, isFitRide, reviewFtp, setRace, setRpe, updateFtp, ZONE_NAMES } from "@/lib/rides"
@@ -274,6 +275,7 @@ function Body({ r }: { r: Ride }) {
       <Rpe id={r.ride_id} initial={typeof r.rpe === "number" ? r.rpe : null} />
       {r.activity_id && <RaceFlag activityId={r.activity_id} initial={r.is_race === true} />}
       <div className="flex flex-wrap items-center gap-2">
+        <a href={compareRoute(r.ride_id)} className={buttonVariants({ size: "sm", variant: "outline" })}>Compare</a>
         <a href={fitUrl(r.ride_id)} download className={buttonVariants({ size: "sm", variant: "outline" })}>
           Download .fit
         </a>

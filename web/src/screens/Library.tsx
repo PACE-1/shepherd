@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { getTags, listWorkouts, PAGE, SORTS, suitsGravel, TYPES, type Outdoor, type WorkoutQuery } from "@/lib/library"
 import { WorkoutCard } from "@/screens/WorkoutCard"
+import { RunWorkouts } from "@/screens/RunWorkouts"
 
 type Load = { state: "loading" } | { state: "ok"; rows: WorkoutRow[]; total: number | null } | { state: "error"; message: string }
 
@@ -32,6 +33,7 @@ export function Library() {
 
   useEffect(() => {
     let live = true
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- the loading flash on a new query or retry is intended
     setLoad({ state: "loading" })
     listWorkouts(applied).then(
       (r) => live && setLoad({ state: "ok", ...r }),
@@ -51,9 +53,13 @@ export function Library() {
 
   return (
     <div className="space-y-4">
+      <RunWorkouts />
       <Card>
         <CardContent className="space-y-3 p-4">
-          <h2 className="text-sm font-semibold">Workout library</h2>
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="text-sm font-semibold">Workout library</h2>
+            <Button size="sm" className="max-md:min-h-11" render={<a href="#/builder" />}>New workout</Button>
+          </div>
           <div className="flex flex-wrap items-end gap-2 text-sm">
             <Label className="flex-col items-start gap-1">
               Search

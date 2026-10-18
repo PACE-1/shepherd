@@ -3,15 +3,23 @@ import { useSyncExternalStore } from "react"
 import { AppShell, isTab } from "@/components/AppShell"
 import { Analysis } from "@/screens/Analysis"
 import { Dfa } from "@/screens/Dfa"
+import { Fueling } from "@/screens/Fueling"
+import { Gear } from "@/screens/Gear"
 import { Home } from "@/screens/Home"
+import { Injury } from "@/screens/Injury"
 import { Library } from "@/screens/Library"
+import { Onboarding } from "@/screens/Onboarding"
 import { Plan } from "@/screens/Plan"
+import { Races } from "@/screens/Races"
 import { ProfilePicker } from "@/screens/ProfilePicker"
 import { ProfileSetup } from "@/screens/ProfileSetup"
+import { RideCompare } from "@/screens/RideCompare"
 import { RideDetail } from "@/screens/RideDetail"
 import { Setup } from "@/screens/Setup"
 import { Settings } from "@/screens/Settings"
 import { Shuffle } from "@/screens/Shuffle"
+import { StrengthSessions } from "@/screens/StrengthSessions"
+import { WorkoutBuilder } from "@/screens/WorkoutBuilder"
 
 // ponytail: hash routing, no router dependency. Swap for react-router when nested routes or loaders are needed.
 const subscribe = (cb: () => void) => {
@@ -35,6 +43,19 @@ export function App() {
         <RideDetail id={decodeURIComponent(rest.join("/"))} />
       </AppShell>
     )
+  if (route === "onboarding") return <AppShell tab="home"><Onboarding /></AppShell>
+  if (head === "builder")
+    return (
+      <AppShell tab="library">
+        <WorkoutBuilder file={rest.length ? decodeURIComponent(rest.join("/")) : undefined} />
+      </AppShell>
+    )
+  if (head === "injury") return <AppShell tab="plan"><Injury /></AppShell>
+  if (head === "fueling") return <AppShell tab="analysis"><Fueling /></AppShell>
+  if (head === "gear") return <AppShell tab="plan"><Gear /></AppShell>
+  if (head === "races") return <AppShell tab="plan"><Races /></AppShell>
+  if (head === "strength") return <AppShell tab="plan"><StrengthSessions /></AppShell>
+  if (head === "compare" && rest.length) return <AppShell tab="analysis"><RideCompare key={route} a={decodeURIComponent(rest[0])} b={rest[1] ? decodeURIComponent(rest[1]) : undefined} /></AppShell>
   const tab = isTab(route) ? route : "home"
   return (
     <AppShell tab={tab}>

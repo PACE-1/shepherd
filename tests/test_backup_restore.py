@@ -233,3 +233,22 @@ def test_cli_create_verify_restore(tmp_path):
     assert out.returncode == 0 and "restore: ok" in out.stdout
     again = run("restore", arch, "--home", str(tmp_path / "new"))
     assert again.returncode == 1 and "not empty" in again.stderr
+
+
+def test_a_backup_without_secrets_leaves_out_credentials_but_keeps_the_rest(tmp_path):
+    import tarfile
+    import backup
+    home = tmp_path / "home"
+    prof = home / "profiles" / "default"
+    prof.mkdir(parents=True)
+    (prof / ".env").write_text("ICU_API_KEY=secret")
+    (prof / "llm.json").write_text('{"api_key": "sk-secret"}')
+    (prof / "garmin").mkdir()
+    (prof / "garmin" / "garmin_tokens.json").write_text('{"di_token": "secret"}')
+    (prof / "athlete.json").write_text("{}")
+    m = backup.create_backup(home, tmp_path / "b.tar.gz", exclude_secrets=True)
+    assert m["secrets_excluded"] is True
+    assert [f["path"] for f in m["files"]] == ["profiles/default/athlete.json"]
+    with tarfile.open(tmp_path / "b.tar.gz") as t:
+        assert not any(n.endswith((".env", "llm.json", "garmin_tokens.json")) for n in t.getnames())
+    assert {f["path"] for f in backup.create_backup(home, tmp_path / "c.tar.gz")["files"]} >= {"profiles/default/.env", "profiles/default/llm.json"}

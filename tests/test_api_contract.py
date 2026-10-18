@@ -27,8 +27,9 @@ def test_every_documented_route_still_exists_with_its_method():
     import os, tempfile
     os.environ.setdefault("SHEPHERD_HOME", tempfile.mkdtemp(prefix="domestique-contract-"))
     import app as app_module
-    live = {(r.path, m.lower()) for r in app_module.app.routes
-            for m in getattr(r, "methods", set()) or ()}
+    # openapi(), not app.routes: routers added by include_router (src/routes_*.py) are lazy
+    # _IncludedRouter entries in FastAPI >= 0.139 and carry no path/methods of their own.
+    live = {(p, m) for p, ops in app_module.app.openapi()["paths"].items() for m in ops}
     for path, ops in snap["paths"].items():
         for method in ops:
             assert (path, method) in live, f"{method.upper()} {path} is documented but not served"

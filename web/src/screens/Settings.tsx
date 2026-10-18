@@ -10,12 +10,23 @@ import { getIcuConnection, getLimits, type Limits } from "@/lib/setup"
 import { CalendarPush } from "@/screens/CalendarPush"
 import { Diagnostics } from "@/screens/Diagnostics"
 import { Folders } from "@/screens/Folders"
+import { FolderImport } from "@/screens/FolderImport"
 import { ApiKeyConnect } from "@/screens/ApiKeyConnect"
 import { AiCoachSettings } from "@/screens/Coach"
 import { FtpHistory } from "@/screens/FtpHistory"
 import { Garmin } from "@/screens/Garmin"
+import { Appearance } from "@/screens/Appearance"
+import { NotificationsSettings } from "@/screens/Notifications"
+import { NutritionSettings } from "@/screens/NutritionSettings"
+import { SportsCard } from "@/screens/SportsCard"
+import { RunZones } from "@/screens/RunZones"
+import { RacePredictor } from "@/screens/RacePredictor"
+import { SwimSessions } from "@/screens/SwimSessions"
+import { SwimZones } from "@/screens/SwimZones"
+import { YourData } from "@/screens/YourData"
 import { Panel, Row, useLoad } from "@/screens/panel"
 import { ZonesEditor } from "@/screens/ZonesEditor"
+import { LocationCard } from "@/screens/WeatherLocation"
 
 const Zones = ({ title, zones, unit }: { title: string; zones: ZoneBand[]; unit: string }) => (
   <div>
@@ -255,19 +266,35 @@ function About() {
 
 export function Settings() {
   return (
-    <div className="grid gap-4 lg:grid-cols-2" aria-label="Settings">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2" aria-label="Settings">
+      <p className="text-sm lg:col-span-2">New here, or want to check your setup? <a className="underline" href="#/onboarding">Run the guided setup</a>.</p>
       <div className="lg:col-span-2">
         <Rider />
       </div>
+      <Appearance />
       <Sync />
       <Garmin />
       <AiCoachSettings />
+      <NutritionSettings />
+      <NotificationsSettings />
       <CalendarPush />
       <Folders />
+      <FolderImport />
+      <LocationCard />
       <About />
+      <YourData />
       <div className="lg:col-span-2">
         <FtpHistory />
       </div>
+      <div className="lg:col-span-2">
+        <SportsCard />
+      </div>
+      <p className="text-sm lg:col-span-2">Bikes, shoes and components: <a className="underline" href="#/gear">Gear and service reminders</a>.</p>
+      <p className="text-sm lg:col-span-2">Strength and mobility sessions for your plan: <a className="underline" href="#/strength">Browse and print</a>.</p>
+      <div className="lg:col-span-2"><RunZones /></div>
+      <div className="lg:col-span-2"><RacePredictor /></div>
+      <div className="lg:col-span-2"><SwimZones /></div>
+      <div className="lg:col-span-2"><SwimSessions /></div>
       <div className="lg:col-span-2">
         <Diagnostics />
       </div>

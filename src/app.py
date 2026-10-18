@@ -743,6 +743,10 @@ async def lifespan(app):
     tp.post_write_callback = _icu_push_schedule_debounced
     db.post_sync_callback = _after_background_sync
 
+    # The first library read parses every workout file (8-10 s with ~4,300 files).
+    # Do it once in the background so the rider's first visit to the Library is fast.
+    threading.Thread(target=_warm_library_rows, name="library-warmup", daemon=True).start()
+
     try:
         # P8: the plan self-heal runs here, not on a GET.
         _heal_plan_on_disk()
@@ -1068,7 +1072,7 @@ SETUP_LIMITS: dict[str, list[float]] = {
 }
 
 
-@app.get("/api/setup/limits")
+@app.get("/api/setup/limits", responses={200: {"model": api_models.SetupLimits}})
 def setup_limits():
     return SETUP_LIMITS
 
@@ -1090,7 +1094,7 @@ def setup_defaults():
     }
 
 
-@app.post("/api/setup/test-icu")
+@app.post("/api/setup/test-icu", responses={200: {"model": api_models.IcuKeyCheck}})
 def setup_test_icu(body: dict):
     """Test Intervals.icu credentials and return athlete info.
 
@@ -1156,7 +1160,7 @@ def setup_test_icu(body: dict):
         return {"ok": False, "error": str(e)}
 
 
-@app.post("/api/setup/check-activities")
+@app.post("/api/setup/check-activities", responses={200: {"model": api_models.ActivitiesCheck}})
 def setup_check_activities(body: dict):
     """v1.8.25 — verify, during onboarding, that activities are actually flowing
     into Intervals.icu (i.e. the Garmin Connect sync the user just enabled is
@@ -1262,7 +1266,7 @@ def _pick_folder_webview():
         return None
 
 
-@app.get("/api/setup/pick-folder")
+@app.get("/api/setup/pick-folder", responses={200: {"model": api_models.PickedFolder}})
 def setup_pick_folder():
     """Open a native OS folder picker dialog and return the selected path.
 
@@ -1450,7 +1454,7 @@ def setup_ensure_profile():
     return {"ok": True, "id": pid}
 
 
-@app.post("/api/setup/save")
+@app.post("/api/setup/save", responses={200: {"model": api_models.SetupSaved}})
 def setup_save(body: dict):
     """Save all wizard settings — writes to active profile's athlete.json + .env.
 
@@ -2022,6 +2026,63 @@ def api_profile_ftp_history():
         "ftp_source": pm._athlete.get("ftp_source", "manual"),
         "history": history,
     }
+
+
+@app.get("/api/export/backup")
+def api_export_backup():
+    """A backup archive of all profiles without credentials (intervals.icu key, AI key); restore is `python -m backup restore` (#129)."""
+    import backup as _backup
+    import shutil, tempfile
+    from starlette.background import BackgroundTask
+    tmp = tempfile.mkdtemp(prefix="shepherd-export-")
+    archive = Path(tmp) / "backup.tar.gz"
+    try:
+        _backup.create_backup(shepherd_home(), archive, exclude_secrets=True)
+    except _backup.BackupError as e:
+        shutil.rmtree(tmp, ignore_errors=True)
+        raise HTTPException(status_code=500, detail=str(e))
+    return FileResponse(archive, media_type="application/gzip", filename=f"shepherd-backup-{clock.today().isoformat()}.tar.gz",
+                        background=BackgroundTask(shutil.rmtree, tmp, ignore_errors=True))
+
+
+@app.get("/api/export/{table}.csv")
+def api_export_csv(table: str):
+    """One table of the active profile as CSV: activities, wellness or checkins."""
+    import data_export
+    rows = {"activities": db.query_activities, "wellness": db.query_wellness, "checkins": db.query_daily_log}.get(table)
+    if rows is None:
+        raise HTTPException(status_code=404, detail="unknown table")
+    return Response(data_export.to_csv(table, rows(days=36500)), media_type="text/csv",
+                    headers={"Content-Disposition": f'attachment; filename="shepherd-{table}.csv"'})
+
+
+@app.get("/api/sports/load", responses={200: {"model": api_models.SportsLoad}})
+def api_sports_load():
+    """Training load per sport (cycling, running, swimming, other) and combined (#109)."""
+    import multisport
+    return multisport.load_by_sport(db.query_activities(days=180), clock.today())
+
+
+def _sport_thresholds_path():
+    from profile_manager import ProfileManager
+    return ProfileManager.get().active_dir / "sport_thresholds.json"
+
+
+@app.get("/api/sports/thresholds", responses={200: {"model": api_models.SportThresholds}})
+def api_sports_thresholds():
+    """Run threshold pace and HR and swim CSS, each with its dated history (cycling FTP stays under /api/profile/ftp-history)."""
+    import multisport
+    return {"thresholds": multisport.read_thresholds(_sport_thresholds_path())}
+
+
+@app.post("/api/sports/thresholds", responses={200: {"model": api_models.SportThresholds}})
+def api_sports_set_threshold(body: dict):
+    import multisport
+    try:
+        multisport.set_threshold(_sport_thresholds_path(), str(body.get("kind", "")), body.get("value"), clock.today())
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return {"thresholds": multisport.read_thresholds(_sport_thresholds_path())}
 
 
 @app.post("/api/profile/update-ftp", responses={200: {"model": api_models.FtpUpdated}})
@@ -2686,7 +2747,7 @@ def api_profile_dfa_backfill_status(task_id: str = Query(...)):
     return entry
 
 
-@app.post("/api/profile/dfa-backfill/cancel")
+@app.post("/api/profile/dfa-backfill/cancel", responses={200: {"model": api_models.DfaBackfillCancelRequested}})
 def api_profile_dfa_backfill_cancel(task_id: str = Query(...)):
     """v1.8.10 — request cancellation of a running DFA backfill.
 
@@ -5852,6 +5913,13 @@ def _build_library_rows() -> list[dict]:
     return rows
 
 
+def _warm_library_rows() -> None:
+    try:
+        _get_library_rows_cached()
+    except Exception as e:  # a failed warm-up only means the first request pays as before
+        _log.debug(f"library warm-up failed: {e}")
+
+
 def _get_library_rows_cached() -> list[dict]:
     """Return the parsed library rows, re-scanning only when the dir drifts.
 
@@ -7591,6 +7659,8 @@ def _after_background_sync() -> None:
     the plausibility guard), which /api/weekly-plan used to run on a read."""
     _icu_push_daily_from_sync()
     _auto_recalc_from_sync()
+    import folder_import
+    folder_import.scan_in_background()      # #31: no-op without a folder; never raises
     try:
         from profile_manager import ProfileManager
         if not ProfileManager.get().prefs.get("eftp_auto_apply", False):
@@ -7964,7 +8034,7 @@ def api_icu_races():
         return {"error": f"internal:{type(e).__name__}"}
 
 
-@app.get("/api/icu/athlete-numbers")
+@app.get("/api/icu/athlete-numbers", responses={200: {"model": api_models.AthleteNumbers}})
 def api_icu_athlete_numbers():
     """Pull FTP / weight / LTHR / max-HR from the linked intervals.icu athlete so
     the setup wizard can prefill 'Athlete Numbers'. Best-effort: any field ICU
@@ -8575,7 +8645,7 @@ def update_custom_zones(body: dict):
 # SYNC APIs
 # ═══════════════════════════════════════════════════════════════════════════════
 
-@app.post("/api/sync")
+@app.post("/api/sync", responses={200: {"model": api_models.SyncResult}})
 def api_sync():
     """Manually trigger a sync from Intervals.icu.
 
@@ -13109,6 +13179,12 @@ def _collect_week_activities(current_week, today: date, include_today: bool = Fa
             "id": a.get("id") or a.get("icu_id"),
             "sport": a.get("sport", ""),
         }
+        # #31: listed with a sport and a length but nothing computed from the
+        # recording (no load, intensity, power or HR): intervals.icu withheld it.
+        if not real_load and if_ is None and not any(
+                a.get(k) or raw.get(k) for k in ("avg_hr", "avg_power", "average_heartrate",
+                                                 "average_watts", "icu_average_watts")):
+            entry["withheld"] = True
         for seen in seen_keys:
             if start is not None and seen["start"] is not None:
                 same = (abs((start - seen["start"]).total_seconds()) <= 120
@@ -13137,6 +13213,30 @@ def _collect_week_activities(current_week, today: date, include_today: bool = Fa
     except Exception as e:
         _log.debug(f"Local rides fetch failed: {e}")
     return actual
+
+
+def _rematch_week(week, actual: list, today: date) -> dict:
+    """tp.rematch_week, then #31: withheld rides that cover the planned length
+    mark the session done. Without load or intensity the matcher can only call
+    such a day partly done (or still pending today), and the ride is the only
+    evidence there is."""
+    preview = tp.rematch_week(week, actual, today)
+    by_day: dict[str, list[dict]] = {}
+    for a in actual:
+        if a.get("withheld"):
+            by_day.setdefault(a["date"], []).append(a)
+    summary = preview.get("summary") or {}
+    for m in preview.get("matches", []):
+        rides = by_day.get(m.get("session_date"))
+        planned = float((m.get("details") or {}).get("planned_duration") or 0)
+        if (not rides or planned <= 0 or m.get("new_status") not in ("done_partial", "missed", "pending")
+                or sum(r["duration_min"] for r in rides) < planned * (1 - tp.REMATCH_TOL_DURATION_PCT)):
+            continue
+        summary[m["new_status"]] = max(0, summary.get(m["new_status"], 0) - 1)
+        summary["done"] = summary.get("done", 0) + 1
+        m["new_status"] = "done"
+        m["activity_id"] = max(rides, key=lambda r: r["duration_min"])["id"]
+    return preview
 
 
 @app.get("/api/plan/daily-adapt", responses={200: {"model": api_models.DailyAdapt}})
@@ -15733,8 +15833,10 @@ def _reconcile_current_week(plan: dict, today: date) -> "tuple[int, dict | None]
         seen.add(week_idx)
         try:
             actual = _collect_week_activities(week, today, include_today=True)
-            preview = tp.rematch_week(week, actual, today)
+            preview = _rematch_week(week, actual, today)
             n += _apply_rematch_preview_to_plan(plan, week_idx, preview)
+            from routes_multisport_plan import reconcile_plan_week  # companions, apart from the rides; never raises
+            n += reconcile_plan_week(plan["weeks"][week_idx], today)
         except Exception:  # noqa: BLE001 - one week failing must not block the other
             if anchor == today:
                 raise
@@ -15797,7 +15899,7 @@ async def api_plan_rematch(request: Request, apply: int = Query(0)):
             return {"action": "no_current_week"}
 
         actual = _collect_week_activities(current_week, today, include_today=True)
-        preview = tp.rematch_week(current_week, actual, today)
+        preview = _rematch_week(current_week, actual, today)
 
         return {"ok": True, "apply": False, **preview}
 
@@ -19430,7 +19532,7 @@ async def api_ride_ftp_test_review(ride_id: str, request: Request):
     return {"ok": True, "persisted": True}
 
 
-@app.delete("/api/rides/{ride_id}")
+@app.delete("/api/rides/{ride_id}", responses={200: {"model": api_models.Ok}})
 def api_ride_delete(ride_id: str):
     """Delete a saved ride (FIT import or legacy JSON)."""
     safe_id = re.sub(r'[^\w.\-]', '_', ride_id)
@@ -19639,7 +19741,7 @@ def api_diag_recent_errors(
     return {"count": len(items), "items": items}
 
 
-@app.post("/api/diag/frontend-error")
+@app.post("/api/diag/frontend-error", responses={200: {"model": api_models.FrontendErrorLogged}})
 async def api_diag_frontend_error(request: Request):
     """v1.6.0 — accept structured error reports from the dashboard JS.
 
@@ -19849,6 +19951,17 @@ def dashboard():
     except Exception:
         pass
     return RedirectResponse(url="/v2/#/home")
+
+
+# Feature routes live in their own modules: any src/routes_*.py that defines `router`
+# (a fastapi.APIRouter) is included here, so a new feature never edits this file.
+def _include_route_modules() -> None:
+    import importlib
+    for path in sorted(Path(__file__).resolve().parent.glob("routes_*.py")):
+        app.include_router(importlib.import_module(path.stem).router)
+
+
+_include_route_modules()
 
 
 if __name__ == "__main__":
