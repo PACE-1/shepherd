@@ -759,6 +759,40 @@ class FtpHistory(_Model):
     history: list[FtpHistoryEntry] = []
 
 
+class SportLoadLine(_Model):
+    ctl: float
+    atl: float
+    tsb: float
+    week_load: float
+
+
+class SportsLoad(_Model):
+    as_of: str
+    days_of_history: int
+    settled: bool
+    combined: SportLoadLine
+    sports: dict[str, SportLoadLine] = {}
+    method: str
+    confidence: str
+
+
+class SportThresholdEntry(_Model):
+    value: float
+    date: str
+    source: str = "manual"
+
+
+class SportThreshold(_Model):
+    sport: str
+    unit: str
+    current: Optional[float] = None
+    history: list[SportThresholdEntry] = []
+
+
+class SportThresholds(_Model):
+    thresholds: dict[str, SportThreshold]
+
+
 class EventProjection(_Model):
     available: bool
     reason: Optional[str] = None        # why not available

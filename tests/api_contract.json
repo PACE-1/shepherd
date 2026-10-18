@@ -5373,6 +5373,160 @@
         "title": "SetupDefaults",
         "type": "object"
       },
+      "SportLoadLine": {
+        "additionalProperties": true,
+        "properties": {
+          "atl": {
+            "title": "Atl",
+            "type": "number"
+          },
+          "ctl": {
+            "title": "Ctl",
+            "type": "number"
+          },
+          "tsb": {
+            "title": "Tsb",
+            "type": "number"
+          },
+          "week_load": {
+            "title": "Week Load",
+            "type": "number"
+          }
+        },
+        "required": [
+          "ctl",
+          "atl",
+          "tsb",
+          "week_load"
+        ],
+        "title": "SportLoadLine",
+        "type": "object"
+      },
+      "SportThreshold": {
+        "additionalProperties": true,
+        "properties": {
+          "current": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current"
+          },
+          "history": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SportThresholdEntry"
+            },
+            "title": "History",
+            "type": "array"
+          },
+          "sport": {
+            "title": "Sport",
+            "type": "string"
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sport",
+          "unit"
+        ],
+        "title": "SportThreshold",
+        "type": "object"
+      },
+      "SportThresholdEntry": {
+        "additionalProperties": true,
+        "properties": {
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "source": {
+            "default": "manual",
+            "title": "Source",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "number"
+          }
+        },
+        "required": [
+          "value",
+          "date"
+        ],
+        "title": "SportThresholdEntry",
+        "type": "object"
+      },
+      "SportThresholds": {
+        "additionalProperties": true,
+        "properties": {
+          "thresholds": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/SportThreshold"
+            },
+            "title": "Thresholds",
+            "type": "object"
+          }
+        },
+        "required": [
+          "thresholds"
+        ],
+        "title": "SportThresholds",
+        "type": "object"
+      },
+      "SportsLoad": {
+        "additionalProperties": true,
+        "properties": {
+          "as_of": {
+            "title": "As Of",
+            "type": "string"
+          },
+          "combined": {
+            "$ref": "#/components/schemas/SportLoadLine"
+          },
+          "confidence": {
+            "title": "Confidence",
+            "type": "string"
+          },
+          "days_of_history": {
+            "title": "Days Of History",
+            "type": "integer"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "settled": {
+            "title": "Settled",
+            "type": "boolean"
+          },
+          "sports": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/SportLoadLine"
+            },
+            "default": {},
+            "title": "Sports",
+            "type": "object"
+          }
+        },
+        "required": [
+          "as_of",
+          "days_of_history",
+          "settled",
+          "combined",
+          "method",
+          "confidence"
+        ],
+        "title": "SportsLoad",
+        "type": "object"
+      },
       "SyncProgress": {
         "additionalProperties": true,
         "properties": {
@@ -8041,6 +8195,55 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EnsureProfile"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/sports/load": {
+      "get": {
+        "operationId": "api_sports_load_api_sports_load_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SportsLoad"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/sports/thresholds": {
+      "get": {
+        "operationId": "api_sports_thresholds_api_sports_thresholds_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SportThresholds"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "operationId": "api_sports_set_threshold_api_sports_thresholds_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SportThresholds"
                 }
               }
             },

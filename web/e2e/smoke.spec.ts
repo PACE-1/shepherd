@@ -430,3 +430,13 @@ test("AI coach: Settings offers a connection, and asking without one points to S
   await expect(page.getByRole("alert").filter({ hasText: "No AI provider is connected" })).toBeVisible()
   await expect(page.getByRole("link", { name: "Open Settings" })).toBeVisible()
 })
+
+test("Settings keeps run and swim thresholds per sport", async ({ page, request }) => {
+  await page.goto("#/settings")
+  await expect(page.getByRole("heading", { name: "Training load by sport" })).toBeVisible()
+  await page.getByLabel(/Swim critical speed/).fill("1:35")
+  await page.getByLabel(/Swim critical speed/).locator("..").getByRole("button", { name: "Set", exact: true }).click()
+  await expect(page.getByText("Now 1:35 /100 m")).toBeVisible()
+  const saved = await (await api(request, "/api/sports/thresholds")).json()
+  expect(saved.thresholds.swim_css.current).toBe(95)
+})

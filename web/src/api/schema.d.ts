@@ -1220,6 +1220,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/sports/load": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_sports_load_api_sports_load_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sports/thresholds": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_sports_thresholds_api_sports_thresholds_get"];
+        put?: never;
+        post: operations["api_sports_set_threshold_api_sports_thresholds_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/sync/progress": {
         parameters: {
             query?: never;
@@ -3869,6 +3901,81 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** SportLoadLine */
+        SportLoadLine: {
+            /** Atl */
+            atl: number;
+            /** Ctl */
+            ctl: number;
+            /** Tsb */
+            tsb: number;
+            /** Week Load */
+            week_load: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** SportThreshold */
+        SportThreshold: {
+            /** Current */
+            current?: number | null;
+            /**
+             * History
+             * @default []
+             */
+            history: components["schemas"]["SportThresholdEntry"][];
+            /** Sport */
+            sport: string;
+            /** Unit */
+            unit: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** SportThresholdEntry */
+        SportThresholdEntry: {
+            /** Date */
+            date: string;
+            /**
+             * Source
+             * @default manual
+             */
+            source: string;
+            /** Value */
+            value: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** SportThresholds */
+        SportThresholds: {
+            /** Thresholds */
+            thresholds: {
+                [key: string]: components["schemas"]["SportThreshold"];
+            };
+        } & {
+            [key: string]: unknown;
+        };
+        /** SportsLoad */
+        SportsLoad: {
+            /** As Of */
+            as_of: string;
+            combined: components["schemas"]["SportLoadLine"];
+            /** Confidence */
+            confidence: string;
+            /** Days Of History */
+            days_of_history: number;
+            /** Method */
+            method: string;
+            /** Settled */
+            settled: boolean;
+            /**
+             * Sports
+             * @default {}
+             */
+            sports: {
+                [key: string]: components["schemas"]["SportLoadLine"];
+            };
+        } & {
+            [key: string]: unknown;
+        };
         /** SyncProgress */
         SyncProgress: {
             /** Added */
@@ -6081,6 +6188,66 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EnsureProfile"];
+                };
+            };
+        };
+    };
+    api_sports_load_api_sports_load_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SportsLoad"];
+                };
+            };
+        };
+    };
+    api_sports_thresholds_api_sports_thresholds_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SportThresholds"];
+                };
+            };
+        };
+    };
+    api_sports_set_threshold_api_sports_thresholds_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SportThresholds"];
                 };
             };
         };

@@ -28,6 +28,8 @@ function mock(over: Record<string, (body: unknown) => Response> = {}) {
     if (url === "/api/version") return json({ app: "shepherd", version: "1.0.0", data_dir: "/data" })
     if (url === "/api/icu/push") return json({ connected: true, write_ok: true, sync_enabled: false, horizon_days: 14 })
     if (url === "/api/settings/workout-folders") return json({ builtin: { count: 4300 }, extra: null })
+    if (url === "/api/sports/load") return json({ as_of: "2026-10-18", days_of_history: 0, settled: false, combined: { ctl: 0, atl: 0, tsb: 0, week_load: 0 }, sports: {}, method: "", confidence: "" })
+    if (url === "/api/sports/thresholds") return json({ thresholds: {} })
     if (url === "/api/profile/ftp-history") return json({ ftp_current: 250, ftp_source: "manual", history: [] })
     return json({}, 404)
   }))

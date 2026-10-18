@@ -2021,6 +2021,35 @@ def api_profile_ftp_history():
     }
 
 
+@app.get("/api/sports/load", responses={200: {"model": api_models.SportsLoad}})
+def api_sports_load():
+    """Training load per sport (cycling, running, swimming, other) and combined (#109)."""
+    import multisport
+    return multisport.load_by_sport(db.query_activities(days=180), clock.today())
+
+
+def _sport_thresholds_path():
+    from profile_manager import ProfileManager
+    return ProfileManager.get().active_dir / "sport_thresholds.json"
+
+
+@app.get("/api/sports/thresholds", responses={200: {"model": api_models.SportThresholds}})
+def api_sports_thresholds():
+    """Run threshold pace and HR and swim CSS, each with its dated history (cycling FTP stays under /api/profile/ftp-history)."""
+    import multisport
+    return {"thresholds": multisport.read_thresholds(_sport_thresholds_path())}
+
+
+@app.post("/api/sports/thresholds", responses={200: {"model": api_models.SportThresholds}})
+def api_sports_set_threshold(body: dict):
+    import multisport
+    try:
+        multisport.set_threshold(_sport_thresholds_path(), str(body.get("kind", "")), body.get("value"), clock.today())
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return {"thresholds": multisport.read_thresholds(_sport_thresholds_path())}
+
+
 @app.post("/api/profile/update-ftp", responses={200: {"model": api_models.FtpUpdated}})
 def api_profile_update_ftp(body: dict):
     from profile_manager import ProfileManager

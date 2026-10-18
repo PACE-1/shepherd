@@ -198,6 +198,8 @@ describe("Settings connection", () => {
       "/api/sync/status": () => json({ wellness_records: 0, activity_records: 0 }),
       "/api/version": () => json({ app: "shepherd", version: "1.0.0", data_dir: "/d" }),
       "/api/profile/ftp-history": () => json({ ftp_current: 250, history: [] }),
+      "/api/sports/load": () => json({ as_of: "2026-10-18", days_of_history: 0, settled: false, combined: { ctl: 0, atl: 0, tsb: 0, week_load: 0 }, sports: {}, method: "", confidence: "" }),
+      "/api/sports/thresholds": () => json({ thresholds: {} }),
       "/api/icu/push": () => json({ connected: true, write_ok: true, sync_enabled: false, horizon_days: 14 }),
       "/api/settings/workout-folders": () => json({ builtin: { count: 1 }, extra: null }),
     })
@@ -219,6 +221,8 @@ describe("Connect with an API key", () => {
     "/api/llm": () => json({ configured: false, provider: "", base_url: "", model: "", has_key: false }),
     "/api/version": () => json({ app: "shepherd", version: "1.0.1", data_dir: "/d" }),
     "/api/profile/ftp-history": () => json({ ftp_current: 250, history: [] }),
+    "/api/sports/load": () => json({ as_of: "2026-10-18", days_of_history: 0, settled: false, combined: { ctl: 0, atl: 0, tsb: 0, week_load: 0 }, sports: {}, method: "", confidence: "" }),
+    "/api/sports/thresholds": () => json({ thresholds: {} }),
     "/api/icu/push": () => json({ connected: false, write_ok: false, sync_enabled: false, horizon_days: 14 }),
     "/api/settings/workout-folders": () => json({ builtin: { count: 1 }, extra: null }),
     ...extra,
