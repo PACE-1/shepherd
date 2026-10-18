@@ -4,6 +4,74 @@ Shepherd is a single-rider application. A server deployment exposes that one
 rider's data to the network, so it needs an access boundary. This page is the
 policy; `src/access.py` is the enforcement.
 
+## Docker image
+
+Every release tag (`vX.Y.Z`) publishes a server image to GitHub Container
+Registry: `ghcr.io/pace-1/shepherd`. It is `linux/amd64` only (the dependency
+lock is for one platform and no arm64 build has been run).
+
+```sh
+docker pull ghcr.io/pace-1/shepherd:latest
+docker run -d --name shepherd --restart unless-stopped \
+  -p 127.0.0.1:22400:22400 \
+  -v shepherd-data:/data \
+  -e SHEPHERD_ACCESS_TOKEN="$(openssl rand -hex 32)" \
+  ghcr.io/pace-1/shepherd:latest
+```
+
+Keep the token (it is the sign-in secret, see Access policy). `/data` is the
+volume; the image sets `SHEPHERD_HOME=/data`, so profiles, credentials and the
+database live there and survive upgrades. Open `http://127.0.0.1:22400/v2/` and
+put TLS in front for remote access.
+
+**Tags.**
+
+| Tag | Moves? | Use it for |
+|---|---|---|
+| `vX.Y.Z` (for example `v4.0.1`) | never | pinning an exact release, rollback |
+| `X.Y` (for example `4.0`) | to the newest stable `vX.Y.*` | staying on a minor line, taking patch fixes |
+| `latest` | to the newest stable release | following releases |
+
+A prerelease tag (one with a `-`, such as `v4.1.0-rc1`) publishes only its exact
+tag, never `X.Y` or `latest`. "Newest" is by version number, not push time:
+tagging an old patch later does not move `latest` backwards.
+
+**Upgrade:** `docker pull` the tag, then `docker rm -f shepherd` and run again
+with the same `-v shepherd-data:/data`.
+
+**Roll back:** run the older exact tag against the same volume:
+
+```sh
+docker rm -f shepherd
+docker run -d --name shepherd --restart unless-stopped \
+  -p 127.0.0.1:22400:22400 -v shepherd-data:/data \
+  -e SHEPHERD_ACCESS_TOKEN=<your token> \
+  ghcr.io/pace-1/shepherd:v4.0.0
+```
+
+A release that changed the stored data format cannot always be read by the
+release before it; back up the volume first
+(`docker run --rm -v shepherd-data:/d -v "$PWD":/b busybox tar czf /b/shepherd-backup.tgz -C /d .`).
+The Releases page and `CHANGELOG.md` say when a release migrates data.
+
+**How it is published** (`.github/workflows/docker.yml`): the workflow builds the
+repo `Dockerfile`, starts the image with a throwaway data volume, checks
+`/healthz`, that the access gate answers 401 without the token, that
+`/api/version` equals the tag and that `/v2/` serves the app, and only then
+pushes. A failing image is never published. It runs on tag pushes only, never on
+pull requests; a manual run is a dry run (build and smoke test, no push) unless
+started on a tag ref with `push` ticked. The login uses the run's `GITHUB_TOKEN`
+with `packages: write` on that job only; there are no other secrets. Images carry
+OCI labels (`source`, `version`, `revision`, `licenses`).
+
+**Status:** this workflow was written without access to GitHub Actions and has
+never run. Its tag logic was exercised locally against a scratch repository and
+the file passes `actionlint`; the first real tag, or a dry-run dispatch, is its
+first execution. Third-party actions are pinned to major tags (`@v4`, `@v3`) like
+the other workflows, not to commit SHAs. The first push creates the package as
+private; make it public in the package settings on GitHub so `docker pull` works
+without a login.
+
 ## Access policy
 
 - **Desktop / loopback use:** no token, no gate. Behaviour is unchanged.
