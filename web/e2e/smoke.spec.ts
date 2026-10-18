@@ -220,7 +220,8 @@ test("an FTP-test session gets a test type", async ({ page, request }) => {
 
 test("the Library lists workouts, filters them, and opens one", async ({ page }) => {
   await page.goto("#/library")
-  await expect(page.getByText(/^Showing \d+ of \d+/)).toBeVisible()
+  // The first read parses the whole workout library; the server warms it at startup, but a slow runner can still be mid-parse.
+  await expect(page.getByText(/^Showing \d+ of \d+/)).toBeVisible({ timeout: 30_000 })
   await page.getByLabel("Search").fill("recovery")
   await expect(page.getByText(/^Showing \d+ of \d+/)).toBeVisible()
   const first = page.getByRole("listitem").first().getByRole("button")
@@ -232,7 +233,7 @@ test("the Library lists workouts, filters them, and opens one", async ({ page })
 test("Workout shuffle suggests workouts", async ({ page }) => {
   await page.goto("#/picker")
   await page.getByRole("button", { name: "Suggest workouts" }).click()
-  await expect(page.getByRole("listitem").first()).toBeVisible()
+  await expect(page.getByRole("listitem").first()).toBeVisible({ timeout: 30_000 })
   await expect(page.getByRole("alert")).toHaveCount(0)
   await expect(page.getByRole("button", { name: "Shuffle again" })).toBeVisible()
 })
@@ -587,6 +588,7 @@ test("Analysis shows the critical power model, or why there is none", async ({ p
 })
 
 test("Compare opens from a ride, compares two efforts of it, and says when a ride is missing", async ({ page }) => {
+  test.setTimeout(90_000) // each ride's detail re-parses its FIT file (about 1 s even for this 5-minute fixture)
   await page.goto("#/analysis")
   await page.locator('input[type="file"]').setInputFiles("e2e/fixtures/ride.fit")
   await page.getByRole("button", { name: "Import ride" }).click()
@@ -601,7 +603,7 @@ test("Compare opens from a ride, compares two efforts of it, and says when a rid
   await inputs.nth(2).fill("3")
   await inputs.nth(3).fill("5")
   await page.getByRole("button", { name: "Compare", exact: true }).click()
-  await expect(page.getByText(/\(0:00–2:00\).*\(3:00–5:00\)/)).toBeVisible()
+  await expect(page.getByText(/\(0:00–2:00\).*\(3:00–5:00\)/)).toBeVisible({ timeout: 30_000 })
   await expect(page.getByRole("row", { name: /Normalised power 210 W 210 W ±0 W/ })).toBeVisible()
   await expect(page.getByRole("row", { name: /^1 min 210 W 210 W ±0 W/ })).toBeVisible()
   await expect(page.getByRole("img", { name: /Power of A and B/ })).toBeVisible()

@@ -61,7 +61,7 @@ def _bootstrap_home(tmp: Path):
 def _install_fake_strain_score():
     fake = types.ModuleType("strain_score")
 
-    def compute_xss_components(power_series, cp, wprime_j, pmax):
+    def compute_xss_components(power_series, cp, w_prime, pmax):
         if not power_series:
             return {}
         total = 0.0; cp_part = 0.0; wp_part = 0.0; pm_part = 0.0

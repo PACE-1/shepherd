@@ -1411,7 +1411,7 @@ def compute_ride_xss(
     try:
         import strain_score
         components = strain_score.compute_xss_components(
-            power_series, cp=cp, wprime_j=wprime_j, pmax=pmax,
+            power_series, cp=cp, w_prime=wprime_j, pmax=pmax,
         )
     except ImportError:
         # IMPL-3D-MODEL hasn't landed in this run — graceful no-op.

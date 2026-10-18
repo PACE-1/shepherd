@@ -741,6 +741,10 @@ async def lifespan(app):
     tp.post_write_callback = _icu_push_schedule_debounced
     db.post_sync_callback = _after_background_sync
 
+    # The first library read parses every workout file (8-10 s with ~4,300 files).
+    # Do it once in the background so the rider's first visit to the Library is fast.
+    threading.Thread(target=_warm_library_rows, name="library-warmup", daemon=True).start()
+
     try:
         # P8: the plan self-heal runs here, not on a GET.
         _heal_plan_on_disk()
@@ -5904,6 +5908,13 @@ def _build_library_rows() -> list[dict]:
             "display_name": content_entry.get("display_name") or "",
         })
     return rows
+
+
+def _warm_library_rows() -> None:
+    try:
+        _get_library_rows_cached()
+    except Exception as e:  # a failed warm-up only means the first request pays as before
+        _log.debug(f"library warm-up failed: {e}")
 
 
 def _get_library_rows_cached() -> list[dict]:
