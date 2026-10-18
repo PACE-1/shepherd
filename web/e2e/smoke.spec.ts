@@ -82,9 +82,12 @@ test("the DFA tab shows its empty state, and a failed load says so", async ({ pa
 })
 
 test("Home shows the plan, this week and fitness from the typed reads", async ({ page, request }) => {
+  // Generating the first plan matches every session against the library, which can take over a minute on a slow runner.
+  test.setTimeout(240_000)
   const base = "http://127.0.0.1:" + (process.env.E2E_PORT ?? 22488)
   const gen = await request.post(base + "/api/plan/generate", {
     data: { goal_type: "ftp", hours_per_week: 8, plan_weeks: 8, available_days: [0, 1, 2, 3, 4, 5, 6], rest_days: [] },
+    timeout: 200_000,
   })
   expect(gen.ok()).toBeTruthy()
   await page.goto("#/home")
@@ -289,7 +292,7 @@ test("syncing rides without intervals.icu says it is not connected", async ({ pa
   await expect(page.getByRole("status").filter({ hasText: /not connected/ })).toBeVisible()
 })
 
-test("Home takes a manual HRV reading and shows body and performance", async ({ page, request }) => {
+test("Home takes a manual HRV reading and shows body and performance", async ({ page }) => {
   await page.goto("#/home")
   await expect(page.getByRole("heading", { name: "Heart-rate variability" })).toBeVisible()
   await page.getByLabel(/Today’s rMSSD/).fill("64")

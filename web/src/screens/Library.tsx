@@ -21,8 +21,10 @@ export function Library() {
   const [tags, setTags] = useState<string[]>([])
   const [outdoor, setOutdoor] = useState<Outdoor>({ on: false, transitMin: 10, spinMin: 20 })
   const [applied, setApplied] = useState(q)
-  const [load, setLoad] = useState<Load>({ state: "loading" })
+  const [result, setResult] = useState<{ applied: WorkoutQuery; attempt: number; load: Load } | null>(null)
   const [attempt, setAttempt] = useState(0)
+  // A result for an older query or attempt reads as loading until the new one arrives.
+  const load: Load = result && result.applied === applied && result.attempt === attempt ? result.load : { state: "loading" }
 
   // Typing waits for a short pause before it asks the server.
   useEffect(() => {
@@ -32,10 +34,9 @@ export function Library() {
 
   useEffect(() => {
     let live = true
-    setLoad({ state: "loading" })
     listWorkouts(applied).then(
-      (r) => live && setLoad({ state: "ok", ...r }),
-      (e: unknown) => live && setLoad({ state: "error", message: e instanceof Error ? e.message : String(e) }),
+      (r) => live && setResult({ applied, attempt, load: { state: "ok", ...r } }),
+      (e: unknown) => live && setResult({ applied, attempt, load: { state: "error", message: e instanceof Error ? e.message : String(e) } }),
     )
     return () => { live = false }
   }, [applied, attempt])
