@@ -5197,34 +5197,10 @@ def api_3d_fitness_status():
 
 
 def _v136_extract_fit_power_series(fit_path: Path) -> list:
-    """Lightweight FIT → power_series helper for the backfill loop.
-
-    Mirrors the RecordMessage scan in `_parse_fit_stats` but returns ONLY
-    the watts list — used so the backfill doesn't redo FTP-test detection
-    or eFTP estimation on every old ride.
-    """
-    try:
-        from fit_tool.fit_file import FitFile
-    except Exception:
-        return []
-    try:
-        ff = FitFile.from_file(str(fit_path))
-    except Exception:
-        return []
-    out: list = []
-    try:
-        for rec in ff.records:
-            msg = rec.message
-            if type(msg).__name__ != "RecordMessage":
-                continue
-            try:
-                pw = _fit_val(msg, "power")
-                out.append(int(pw) if pw is not None else 0)
-            except Exception:
-                out.append(0)
-    except Exception:
-        return out
-    return out
+    """Per-record watts for the backfill loop; [] when the FIT will not parse."""
+    from fit_activity import parse_record_streams
+    streams = parse_record_streams(fit_path)
+    return streams["power"] if streams else []
 
 
 @app.post("/api/wellness/backfill-3d-fitness", responses={200: {"model": api_models.Backfill3d}})
