@@ -63,7 +63,9 @@ def test_edit_and_delete(tmp_path):
 
 @pytest.mark.parametrize("body, msg", [
     ({"date": "2026-12-06", "priority": "D"}, "A, B or C"),
-    ({"date": "2026-12-06", "discipline": "running"}, "only cycling"),
+    ({"date": "2026-12-06", "discipline": "rowing"}, "discipline must be"),
+    ({"date": "2026-12-06", "discipline": "triathlon"}, "needs a distance"),
+    ({"date": "2026-12-06", "discipline": "triathlon", "distance": "half"}, "needs a distance"),
     ({"date": "06/12/2026"}, "date"),
     ({"date": "2026-09-01"}, "past"),
     ({"date": "2026-12-06", "event_type": "triathlon"}, "event_type"),

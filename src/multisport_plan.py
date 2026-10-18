@@ -34,11 +34,14 @@ Rules ``overlay`` keeps, each one a test in tests/test_multisport_plan.py:
     ``bike_session_id``). The brick never takes a hard slot of its own; a hard brick template goes only on
     a hard bike day, so it adds no hard day. When no brick template is registered, ``PLACEHOLDER_BRICK``
     is used. The rider's note on how the run felt (``workout["brick_note"]``) keeps the brick as it is.
-  * Strength (#127): only on a day with no hard bike session, no hard companion and no race, never the
-    day before a hard or key session (hard bike day, long ride, hard companion, brick) or a race; easy
-    days first; at most ``STRENGTH_MAX_PER_WEEK`` a week; a hard companion is never placed the day after
-    one. A HEURISTIC after Wilson et al. 2012 (interference mostly with running and with frequent, long
-    endurance work), not a measured optimum.
+  * Strength (#127): a resistance session (kinds "strength" = A/B, and "maintenance") goes only on a day
+    with no hard bike session, no hard companion and no race, never the day before a hard or key session
+    (hard bike day, long ride, hard companion, brick) or a race; easy days first; at most
+    ``STRENGTH_MAX_PER_WEEK`` a week together; maintenance first in a build or peak phase, A/B otherwise;
+    a hard companion is never placed the day after one. Mobility (kind "mobility", session_type
+    "mobility") takes what is left of the strength hours on any day that is not hard. A HEURISTIC after
+    Wilson et al. 2012 (interference mostly with running and with frequent, long endurance work), not a
+    measured optimum.
   * Taper (#125): in the plan's A-race taper weeks (phase "taper") each sport's companion minutes are its
     share x the planner's own ``TAPER_FRACS`` by position (the race week the last), imported, not copied.
     Other weeks follow the cycling week's volume (a B-race taper shrinks companions in step).
@@ -79,6 +82,10 @@ BRICK_MAX_PER_WEEK = 1
 STRENGTH_MAX_PER_WEEK = 2
 BRICK_NOTE_MAX = 500
 LONG_RIDE = "long_z2"   # the planner's long-ride session type: a key bike day
+# Strength kinds (src/sessions_strength.py): "strength" (A/B) and "maintenance" are resistance sessions,
+# at most STRENGTH_MAX_PER_WEEK together; "mobility" is easy stretching, any easy day, not counted in it.
+BUILD_PHASES = ("build1", "build2", "peak")   # maintenance strength is preferred in these
+MOBILITY = "mobility"
 # The one-line tags a limiter-sport companion carries (#124): why it got its slot.
 LIMITER_HARD = "Your limiter: first pick of the week's hard-session slots."
 LIMITER_LONG = "Your limiter: first pick of the longest free day for its longest session."
@@ -100,7 +107,9 @@ class SessionTemplate:
     hard          counts against the week's hard-day budget and the spacing rule
     builder       builder(thresholds, minutes) -> workout dict in the workout_builder shape
                   ({"name", "description", "steps": [...]}, targets of kind pace_pct_threshold, css or
-                  effort). ``thresholds`` is multisport.read_thresholds()'s dict.
+                  effort). ``thresholds`` is multisport.read_thresholds()'s dict. A builder that also
+                  takes a ``phase`` keyword (or ``**kwargs``) is given the plan week's phase (base, build1,
+                  build2, peak, taper, ...); others are called with the two arguments only.
     source        the published method the structure follows (empty for a placeholder)
     """
     id: str
@@ -240,6 +249,23 @@ def _kept(c, today: date) -> bool:
             or (isinstance(c.workout, dict) and bool(c.workout.get("brick_note"))))
 
 
+def _build(t: SessionTemplate, thresholds: dict, minutes: int, phase: str) -> dict:
+    """Calls the template's builder, with ``phase=`` only when it takes that keyword (backward compatible)."""
+    import inspect
+    try:
+        params = inspect.signature(t.builder).parameters.values()
+    except (TypeError, ValueError):
+        params = ()
+    if any(p.name == "phase" or p.kind is p.VAR_KEYWORD for p in params):
+        return t.builder(thresholds, minutes, phase=phase)
+    return t.builder(thresholds, minutes)
+
+
+def _is_resistance(c) -> bool:
+    """A strength-sport companion that is a resistance session (not mobility)."""
+    return c.sport == "strength" and c.session_type != MOBILITY
+
+
 def _floor_step(m: float) -> int:
     return int(m // STEP_MIN) * STEP_MIN
 
@@ -282,7 +308,7 @@ def overlay(weeks: list, *, targets: dict | None, limiter: str | None, threshold
         w.companions = [c for c in (w.companions or []) if _kept(c, today)]
         live = [c for c in w.companions if c.status != "dismissed"]
         hard_comp |= {c.day for c in live if c.hard}
-        strength_days |= {c.day for c in live if c.sport == "strength"}
+        strength_days |= {c.day for c in live if _is_resistance(c)}
         long_days |= {c.day for c in live if is_brick(c)}
     hard_days |= hard_comp
     # Key days: no strength session the day before one.
@@ -341,7 +367,7 @@ def overlay(weeks: list, *, targets: dict | None, limiter: str | None, threshold
                         and (not t.hard or t.kind == "brick"
                              or not ({d - timedelta(days=1), d, d + timedelta(days=1)} & hard_days))
                         and (not t.hard or (d - timedelta(days=1)) not in strength_days)
-                        and (sport != "strength" or strength_ok(d))):
+                        and (sport != "strength" or (d not in hard_days if t.kind == MOBILITY else strength_ok(d)))):
                     out.append(d)
                 d += timedelta(days=1)
             n_on = lambda d: sum(1 for c in w.companions if c.day == d)  # noqa: E731
@@ -356,11 +382,12 @@ def overlay(weeks: list, *, targets: dict | None, limiter: str | None, threshold
                 dur = _floor_step(min(minutes, t.minutes[1], free(d)))
                 if dur < t.minutes[0]:
                     continue
-                workout = t.builder(thresholds or {}, dur)
+                workout = _build(t, thresholds or {}, dur, w.phase)
                 if extra:
                     workout = {**(workout or {}), **(extra(d) if callable(extra) else extra)}
                 c = CompanionSession(
-                    day=d, day_name=d.strftime("%a"), session_type=t.session_type, duration_min=dur,
+                    day=d, day_name=d.strftime("%a"), duration_min=dur,
+                    session_type=MOBILITY if sport == "strength" and t.kind == MOBILITY else t.session_type,
                     tss_estimate=0.0, description=t.intent, id=f"{sport}-{d.isoformat()}", sport=sport,
                     template_id=t.id, hard=t.hard, workout=workout)
                 w.companions.append(c)
@@ -372,7 +399,7 @@ def overlay(weeks: list, *, targets: dict | None, limiter: str | None, threshold
                     key_days.add(d)
                 if t.kind == "brick":
                     key_days.add(d)
-                if sport == "strength":
+                if sport == "strength" and t.kind != MOBILITY:
                     strength_days.add(d)
                 return c
             return None
@@ -414,18 +441,18 @@ def overlay(weeks: list, *, targets: dict | None, limiter: str | None, threshold
                 if budget[lim] >= t.minutes[0]:
                     place(lim, t, budget[lim], days=candidates(lim, t, longest=True), extra={"limiter": LIMITER_LONG})
 
-        # Easy sessions fill what is left of each sport's hours.
-        for s in sports:
-            easy = [t for t in templates_for(s, library=lib) if not t.hard and t.kind != "brick"]
+        def fill_easy(s: str, easy: list, cap: int | None = None) -> None:
             if not easy:
-                continue
+                return
             lo, hi = min(t.minutes[0] for t in easy), max(t.minutes[1] for t in easy)
             if budget[s] < lo:
-                continue
+                return
             n = max(1, math.ceil(budget[s] / hi))
-            if s == "strength":
-                n = min(n, STRENGTH_MAX_PER_WEEK - sum(1 for c in w.companions if c.sport == "strength"))
-            per = max(lo, min(hi, _floor_step(budget[s] / n))) if n > 0 else 0
+            if cap is not None:
+                n = min(n, cap)
+            if n <= 0:
+                return
+            per = max(lo, min(hi, _floor_step(budget[s] / n)))
             for i in range(n):
                 if budget[s] < lo:
                     break
@@ -434,6 +461,20 @@ def overlay(weeks: list, *, targets: dict | None, limiter: str | None, threshold
                 t = fits[(w.week_num + i) % len(fits)]
                 if not place(s, t, m):
                     break
+
+        # Easy sessions fill what is left of each sport's hours.
+        for s in sports:
+            easy = [t for t in templates_for(s, library=lib) if not t.hard and t.kind != "brick"]
+            if s != "strength":
+                fill_easy(s, easy)
+                continue
+            # Strength: up to STRENGTH_MAX_PER_WEEK resistance sessions (maintenance first in a build or
+            # peak phase, A/B otherwise), then mobility with what is left.
+            resist = [t for t in easy if t.kind != MOBILITY]
+            pref = "maintenance" if w.phase in BUILD_PHASES else "strength"
+            fill_easy(s, [t for t in resist if t.kind == pref] or resist,
+                      STRENGTH_MAX_PER_WEEK - sum(1 for c in w.companions if _is_resistance(c)))
+            fill_easy(s, [t for t in easy if t.kind == MOBILITY])
         w.companions.sort(key=lambda c: (c.day, COMPANION_SPORTS.index(c.sport) if c.sport in COMPANION_SPORTS else 9))
 
     for i, w in enumerate(weeks):

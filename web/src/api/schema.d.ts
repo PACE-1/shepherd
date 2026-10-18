@@ -868,6 +868,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/plan/bricks/transition": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["plan_brick_transition_api_plan_bricks_transition_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/plan/companions": {
         parameters: {
             query?: never;
@@ -878,6 +894,22 @@ export interface paths {
         get: operations["plan_companions_api_plan_companions_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plan/companions/{companion_id}/brick-note": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["plan_brick_note_api_plan_companions__companion_id__brick_note_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2807,6 +2839,18 @@ export interface components {
             delta_w: number;
             /** Duration S */
             duration_s: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** BrickTransition */
+        BrickTransition: {
+            /**
+             * Ok
+             * @default true
+             */
+            ok: boolean;
+            /** Transition Target S */
+            transition_target_s?: number | null;
         } & {
             [key: string]: unknown;
         };
@@ -4810,6 +4854,10 @@ export interface components {
         };
         /** PlanCompanion */
         PlanCompanion: {
+            /** Brick Note */
+            brick_note?: string | null;
+            /** Brick Of */
+            brick_of?: string | null;
             /** Completion Matches */
             completion_matches?: unknown[] | null;
             /** Day */
@@ -4841,6 +4889,8 @@ export interface components {
             hard: boolean;
             /** Id */
             id: string;
+            /** Limiter */
+            limiter?: string | null;
             /** Session Type */
             session_type: string;
             /** Sport */
@@ -4900,6 +4950,8 @@ export interface components {
              * @default []
              */
             today: components["schemas"]["PlanCompanion"][];
+            /** Transition Target S */
+            transition_target_s?: number | null;
             /**
              * Weeks
              * @default []
@@ -5535,6 +5587,8 @@ export interface components {
              * @default cycling
              */
             discipline: string;
+            /** Distance */
+            distance?: string | null;
             /**
              * Event Climb M
              * @default 0
@@ -8960,6 +9014,26 @@ export interface operations {
             };
         };
     };
+    plan_brick_transition_api_plan_bricks_transition_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BrickTransition"];
+                };
+            };
+        };
+    };
     plan_companions_api_plan_companions_get: {
         parameters: {
             query?: never;
@@ -8976,6 +9050,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PlanCompanions"];
+                };
+            };
+        };
+    };
+    plan_brick_note_api_plan_companions__companion_id__brick_note_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompanionDismissed"];
                 };
             };
         };

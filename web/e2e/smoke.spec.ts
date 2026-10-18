@@ -726,7 +726,7 @@ test("Sport balance: a rider with no history sets a target split and a limiter, 
   await card.getByLabel("Your limiter (optional)").selectOption("swimming")
   await card.getByRole("button", { name: "Save targets" }).click()
   await expect(card.getByRole("status")).toHaveText("Saved.")
-  await expect(card.getByText(/not built yet/)).toBeVisible()
+  await expect(card.getByText(/first pick of the hard-session slots/)).toBeVisible()
   const saved = await (await api(request, "/api/balance?weeks=12")).json()
   expect(saved.targets).toEqual({ cycling: 60, running: 30, swimming: 10, other: 0 })
   expect(saved.limiter).toBe("swimming")
@@ -825,4 +825,44 @@ test("Strength and mobility: browse the exercise lists and switch the stage", as
   await expect(page.getByRole("article", { name: /Strength A/ }).getByText(/3-4 sets of 4-6 repetitions/).first()).toBeVisible()
   await page.getByRole("button", { name: /^Mobility/ }).click()
   await expect(page.getByRole("article", { name: /Mobility/ }).getByText(/2 holds of 30 s each side/).first()).toBeVisible()
+})
+
+test("Bricks and triathlon races: a run limiter's brick follows a key ride, the rider sets a transition target, a 70.3 is a labelled race", async ({ page, request }) => {
+  const base = "http://127.0.0.1:" + (process.env.E2E_PORT ?? 22488)
+  expect((await request.put(base + "/api/balance/targets", {
+    data: { targets: { cycling: 70, running: 30, swimming: 0, other: 0 }, limiter: "running" },
+  })).ok()).toBeTruthy()
+  expect((await request.post(base + "/api/plan/generate", {
+    data: { goal_type: "ftp", hours_per_week: 10, plan_weeks: 4, available_days: [0, 1, 2, 3, 4, 5, 6], rest_days: [] },
+  })).ok()).toBeTruthy()
+  const comps = await (await api(request, "/api/plan/companions")).json()
+  expect(comps.transition_target_s).toBeNull()
+  const idx = comps.weeks.findIndex((w: { companions: { brick_of?: string }[] }) => w.companions.some((c) => c.brick_of))
+  expect(idx).toBeGreaterThanOrEqual(0)
+  await page.goto("#/plan")
+  if (idx === 1) await page.getByRole("button", { name: "Next week" }).click()
+  const section = page.getByRole("region", { name: "Other sports this week" })
+  await expect(section.getByText("Brick run", { exact: true })).toBeVisible()
+  await expect(section.getByText(/No transition target set/)).toBeVisible()
+  await expect(section.getByText(/^Your limiter: /).first()).toBeVisible()
+  await section.getByLabel("Transition target (m:ss)").fill("2:30")
+  await section.getByRole("button", { name: "Save target" }).click()
+  await expect(section.getByText(/Your transition target: 2:30/)).toBeVisible()
+
+  await page.goto("#/races")
+  await page.getByLabel("Discipline").last().selectOption("triathlon")
+  await expect(page.getByText(/No distance-specific triathlon plan is built/)).toBeVisible()
+  await page.getByLabel("Triathlon distance").selectOption("70.3")
+  await page.getByLabel("Name").last().fill("Half")
+  const d = new Date(Date.now() + 120 * 864e5).toISOString().slice(0, 10)
+  await page.getByLabel("Date").last().fill(d)
+  await page.getByRole("button", { name: "Add race and rebuild plan" }).click()
+  await expect(page.getByText(/Triathlon \(70\.3\)/)).toBeVisible({ timeout: 30_000 })
+  await page.getByRole("button", { name: "Race day plan for B race: Half" }).click()
+  await expect(page.getByText(/^The race-day plan is cycling-only/)).toBeVisible()
+
+  const list = await (await api(request, "/api/races")).json()
+  for (const r of list.races.filter((x: { name: string }) => x.name === "Half")) await request.delete(base + "/api/races/" + r.id)
+  await request.put(base + "/api/plan/bricks/transition", { data: { transition_target_s: null } })
+  await request.put(base + "/api/balance/targets", { data: { targets: null, limiter: null } })
 })
