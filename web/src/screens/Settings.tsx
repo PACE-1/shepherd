@@ -15,6 +15,7 @@ import { AiCoachSettings } from "@/screens/Coach"
 import { FtpHistory } from "@/screens/FtpHistory"
 import { Appearance } from "@/screens/Appearance"
 import { NotificationsSettings } from "@/screens/Notifications"
+import { NutritionSettings } from "@/screens/NutritionSettings"
 import { SportsCard } from "@/screens/SportsCard"
 import { RunZones } from "@/screens/RunZones"
 import { RacePredictor } from "@/screens/RacePredictor"
@@ -268,6 +269,7 @@ export function Settings() {
       <Appearance />
       <Sync />
       <AiCoachSettings />
+      <NutritionSettings />
       <NotificationsSettings />
       <CalendarPush />
       <Folders />

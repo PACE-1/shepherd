@@ -212,6 +212,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/fueling": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["fueling_today_api_fueling_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/icu/connection": {
         parameters: {
             query?: never;
@@ -542,6 +558,54 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["api_notifications_test_api_notifications_test_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/nutrition/connection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["nutrition_connection_api_nutrition_connection_get"];
+        put?: never;
+        post: operations["nutrition_connection_save_api_nutrition_connection_post"];
+        delete: operations["nutrition_connection_delete_api_nutrition_connection_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/nutrition/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["nutrition_sync_api_nutrition_sync_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/nutrition/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["nutrition_test_api_nutrition_test_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3075,6 +3139,75 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** Fueling */
+        Fueling: {
+            /**
+             * Connected
+             * @default false
+             */
+            connected: boolean;
+            /** Daily Method */
+            daily_method: string;
+            /** Date */
+            date: string;
+            day?: components["schemas"]["FuelingDay"] | null;
+            during?: components["schemas"]["FuelingDuring"] | null;
+            /** Energy Method */
+            energy_method: string;
+            /** Hourly Method */
+            hourly_method: string;
+            logged?: components["schemas"]["NutritionDay"] | null;
+            /** Note */
+            note: string;
+            /** Ride Kcal Approx */
+            ride_kcal_approx?: number | null;
+            session?: components["schemas"]["FuelingSession"] | null;
+            /** Weight Kg */
+            weight_kg?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** FuelingDay */
+        FuelingDay: {
+            /** High G */
+            high_g: number;
+            /** High G Per Kg */
+            high_g_per_kg: number;
+            /** Load */
+            load: string;
+            /** Low G */
+            low_g: number;
+            /** Low G Per Kg */
+            low_g_per_kg: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** FuelingDuring */
+        FuelingDuring: {
+            /** Band */
+            band: string;
+            /** High G */
+            high_g: number;
+            /** High G Per H */
+            high_g_per_h: number;
+            /** Low G */
+            low_g: number;
+            /** Low G Per H */
+            low_g_per_h: number;
+            /** Note */
+            note: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** FuelingSession */
+        FuelingSession: {
+            /** Duration Min */
+            duration_min: number;
+            /** Session Type */
+            session_type: string;
+        } & {
+            [key: string]: unknown;
+        };
         /** HrvImported */
         HrvImported: {
             /**
@@ -3541,6 +3674,71 @@ export interface components {
              * @default
              */
             error: string;
+            /** Ok */
+            ok: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /** NutritionConnection */
+        NutritionConnection: {
+            /**
+             * Base Url
+             * @default
+             */
+            base_url: string;
+            /**
+             * Configured
+             * @default false
+             */
+            configured: boolean;
+            /**
+             * Has Key
+             * @default false
+             */
+            has_key: boolean;
+            /** Last Synced At */
+            last_synced_at?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** NutritionDay */
+        NutritionDay: {
+            /** Carbs G */
+            carbs_g?: number | null;
+            /** Date */
+            date: string;
+            /** Fat G */
+            fat_g?: number | null;
+            /** Kcal */
+            kcal?: number | null;
+            /** Protein G */
+            protein_g?: number | null;
+            /** Source */
+            source: string;
+            /** Synced At */
+            synced_at?: string | null;
+            /** Water Ml */
+            water_ml?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** NutritionSync */
+        NutritionSync: {
+            /** Days With Data */
+            days_with_data: number;
+            /** End */
+            end: string;
+            /** Start */
+            start: string;
+            /** Synced At */
+            synced_at: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** NutritionTest */
+        NutritionTest: {
+            /** Message */
+            message: string;
             /** Ok */
             ok: boolean;
         } & {
@@ -6007,6 +6205,26 @@ export interface operations {
             };
         };
     };
+    fueling_today_api_fueling_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Fueling"];
+                };
+            };
+        };
+    };
     api_icu_connection_api_icu_connection_get: {
         parameters: {
             query?: never;
@@ -6503,6 +6721,106 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["NotificationTest"];
+                };
+            };
+        };
+    };
+    nutrition_connection_api_nutrition_connection_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NutritionConnection"];
+                };
+            };
+        };
+    };
+    nutrition_connection_save_api_nutrition_connection_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NutritionConnection"];
+                };
+            };
+        };
+    };
+    nutrition_connection_delete_api_nutrition_connection_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NutritionConnection"];
+                };
+            };
+        };
+    };
+    nutrition_sync_api_nutrition_sync_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NutritionSync"];
+                };
+            };
+        };
+    };
+    nutrition_test_api_nutrition_test_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NutritionTest"];
                 };
             };
         };

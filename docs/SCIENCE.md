@@ -250,6 +250,27 @@ No FTP haircut for gaps ≤10 days (VO2max intact — Cullinane); expect submaxi
 
 **Scope, honestly.** HRR drives the **zone table and displays**. Workout prescription (bpm targets in HR mode, the FIT export, hrTSS) stays LTHR-anchored: the prescription pipeline maps %FTP→%LTHR through validated Coggan pairs, **no equivalently validated %FTP→%HRR mapping exists**, and supra-threshold work keeps RPE targets in both models (HR cannot express Z5+; the standing contract stands). Ride-analysis time-in-zone remains bucketed by intervals.icu's zone boundaries, not re-bucketed to HRR. **Honest negatives:** no head-to-head trial of %HRR vs %LTHR zones in trained cyclists exists (Wolpern used sedentary adults and ventilatory thresholds); the %HRR–%VO2R relationship has never been tested during prolonged submaximal exercise; and no study validates any resting-HR averaging window for zone anchoring.
 
+### 1d. Fueling: carbohydrate during a session and across the day (#112)
+
+The Fueling screen (`#/fueling`, `src/fueling.py`) turns today's planned session and the rider's weight into two ranges, and sets the food logged in SparkyFitness against them (docs/NUTRITION.md).
+
+**During the session**, by planned duration (Jeukendrup 2014, "A step towards personalized sports nutrition: carbohydrate intake during exercise", Sports Med 44 Suppl 1:S25-33; Thomas, Erdman & Burke 2016, ACSM/AND/DC joint position statement "Nutrition and athletic performance", Med Sci Sports Exerc 48(3):543-568):
+
+| Duration | Guidance |
+|---|---|
+| under 45 min | not needed |
+| 45 to under 75 min | small amounts or a carbohydrate mouth rinse; no hourly target |
+| 75 to 150 min | 30 to 60 g/h |
+| over 150 min (2.5 h) | up to 90 g/h, from multiple transportable carbohydrates (glucose plus fructose) |
+
+Shepherd's choices: the 60 to 75 min overlap between the statement's "45 to 75 min" and "1 to 2.5 h" bands goes to the shorter band; the over-2.5 h band is shown as 60 to 90 g/h, starting where the 1 to 2.5 h band ends (Jeukendrup: 2 to 3 h, up to 60 g/h).
+
+**Across the day**, g per kg body mass by the day's training (ACSM/AND/DC 2016, daily needs for fuel and recovery): light 3 to 5, moderate (about 1 h a day) 5 to 7, high (1 to 3 h a day) 6 to 10, very high (4 to 5 h a day or more) 8 to 12. Shepherd maps the planned session to a category with the same cut points as above: a rest day, a recovery session or under 45 min is light, 45 to under 75 min moderate, 75 min to under 4 h high (the statement's 3 to 4 h gap is counted as high), 4 h or more very high. The grams use the profile weight.
+
+**Energy.** No calorie target is computed: that needs a resting-energy equation and activity factors, and Shepherd does not invent them. The one energy figure is today's ride energy, kcal ≈ kJ of mechanical work / (0.24 × 4.184), about 1 kcal per kJ, assuming roughly 24% gross efficiency (trained cyclists are about 20 to 25%, Ettema & Lorås 2009, "Efficiency in cycling: a review", Eur J Appl Physiol 106(1):1-14). It is labelled approximate.
+
+**Confidence.** These are general, population-level guidelines. Gut tolerance (trainable), intensity, heat and the rider's own practice move the right number; they are not medical advice, and the screen says so. Logged intake is only as current as the last sync, which is on demand. The planner's per-session `nutrition_note` (phase-based, Impey 2018 / Stellingwerff 2019) is older and separate; it is not changed here, and on some days its g/kg figure sits outside this screen's range.
+
 ### 2. FTP detection from a regular FIT
 
 Ride a Coggan 20-min test, a Ramp test, a 60-min test or a Critical Power test in any app, import the FIT (or let the intervals.icu sync bring it in):
@@ -398,7 +419,7 @@ consolidated source list. Textbook / coaching references
 | RPE sign inversion in free-intensity training | better wellness → more work done → higher RPE | [Sansone et al. 2023](https://pubmed.ncbi.nlm.nih.gov/37259497/) |
 | Overreaching cannot be diagnosed from a composite | ceiling on the language is *flag*, not diagnose | [Meeusen et al. 2013](https://pubmed.ncbi.nlm.nih.gov/23247672/) |
 | HRV does **not** track overreaching | why HRV is not presented as an overreaching test | [Roete et al. 2021](https://pubmed.ncbi.nlm.nih.gov/34108275/) |
-| Nutrition | Duration-gated carb targets | Jeukendrup 2014, ACSM 2016 (position stand) |
+| Nutrition | Duration-gated carb targets (§1d) | Jeukendrup 2014, ACSM 2016 (position stand) |
 
 ---
 

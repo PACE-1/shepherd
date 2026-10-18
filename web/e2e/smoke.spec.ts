@@ -615,3 +615,23 @@ test("Readiness shows the last 7 days of training load by sport", async ({ page 
   await expect(page.getByText("Training load, last 7 days")).toBeVisible()
   await expect(page.getByText("No training load recorded in the last 7 days.")).toBeVisible()
 })
+
+test("Nutrition: Settings keeps the SparkyFitness key write-only, and Fueling shows the day's guidance", async ({ page, request }) => {
+  await page.goto("#/settings")
+  // The innermost element holding the card's heading is the card itself.
+  const card = page.locator("div").filter({ has: page.getByRole("heading", { name: "Nutrition (SparkyFitness)" }) }).last()
+  await expect(card).toBeVisible()
+  await card.getByLabel("SparkyFitness address").fill("http://127.0.0.1:9")
+  await card.getByLabel("SparkyFitness API key").fill("e2e-secret-key")
+  await card.getByRole("button", { name: "Save", exact: true }).click()
+  await expect(card.getByText("Connected to http://127.0.0.1:9.")).toBeVisible()
+  const saved = await (await api(request, "/api/nutrition/connection")).json()
+  expect(saved.has_key).toBe(true)
+  expect(JSON.stringify(saved)).not.toContain("e2e-secret-key")
+  await card.getByRole("button", { name: "Test connection" }).click()
+  await expect(card.getByRole("alert")).toContainText("Network access is turned off")
+  await card.getByRole("link", { name: "Open Fueling" }).click()
+  await expect(page.getByRole("heading", { name: "Fueling" })).toBeVisible()
+  await expect(page.getByRole("heading", { name: "Carbohydrate for the day" })).toBeVisible()
+  await expect(page.getByText(/Not medical advice/)).toBeVisible()
+})
