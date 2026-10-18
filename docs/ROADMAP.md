@@ -52,3 +52,30 @@ Order: #118 zones, #119 load, #128 readiness across sports, #120 run workouts, #
 
 ## What "done" means for the large items
 A vertical slice that works end to end and is tested, with the remaining scope written on the issue, beats a wide unfinished layer. Each issue is closed only when its own checklist is met.
+
+## Status (2026-10-18) and known gaps
+
+Everything below is on branch `claude/peaceful-bell-wcwgkb`, not yet on `clean-main`. No issue is closed: each closes only when its own checklist is met. "Verified" means unit/contract/browser tests passed in a container with no real riders' data and no live external services.
+
+| Issue | State | Remaining scope (known gaps) |
+|---|---|---|
+| #107 CI | done locally | Not yet seen green on GitHub Actions. |
+| #109 multi-sport model | slice | Per-sport detail pages and zone-aware charts; plan data is still cycling-only (`PlannedSession` has no sport field). |
+| #110 workout builder | cycling only | Run and swim targets; `.fit` export; duplicate/delete; Edit link on Library rows. |
+| #111 race planner | slice | Run/swim races; segment pacing; fueling in the race-day plan (comes from #112); nav link to `#/races`. B races now taper (7 days at 60%): changes plans of riders who already have B races, needs review. |
+| #112 fueling | slice | SparkyFitness endpoints verified from its source, never run against a live server. On-demand sync only (no background sync); no targets pushed back; https with self-signed certificates fails. |
+| #113 injury/illness | slice | Needs review: any episode gets at least 3 weeks of easy-only return, which conflicts with `SCIENCE.md` 1b for short illnesses. Nothing rebuilds the plan when an episode's end date passes; only the cycling plan pauses; no nav link to `#/injury`. |
+| #114/#116 analytics | slice | W/kg for 5- and 20-minute power over time; cadence/speed/elevation/zone comparison; runs. |
+| #117 weather | slice | Every non-rest session counts as outdoor (plans have no indoor flag); the whole riding day is rated (sessions have no time of day); thresholds are heuristic defaults; extra-rider wizard has no location step. |
+| #118/#119 run | slice | Run pace/gradient streams are not stored, so rTSS uses average pace (low on hilly or interval runs); grade adjustment only in the converter; nothing checked against real recorded runs; cadence only, no ground-contact time. |
+| #121 race predictor | slice | "What fitness change reaches a target time"; checking predictions against real race results; the card does not refresh after a critical-speed save until Settings reloads. |
+| #122/#126 swim | slice | No swim pace zones (no citable exact percentages); sTSS uses average speed (low to moderate confidence); no stroke count or SWOLF in intervals.icu data; open-water notes are not surfaced in race-week planning (needs the planner). |
+| #128 readiness | slice | Sleep trends and illness warning signs; runs/swims without an intervals.icu load count as zero. |
+| #129 export | slice | Restore is a stop-the-app command (`python -m backup restore`), not in the UI. |
+| #131 notifications | slice | No web-push or email; no per-event channel choice; failed ntfy posts are not retried. |
+
+Known defects found, not fixed:
+- One ride-detail load parses the same FIT file four times (stats, device info, RR intervals, sport), about 1 s each even for a 5-minute file; Compare loads two rides. Eight parse sites, and existing tests patch the parser, so a shared cache needs care.
+- `web/src/lib/planForm.ts` sends the A event inside `events` when an event goal has B/C races; `generate_plan` refuses an A there with a 400.
+- Test-order pollution: running `test_api_contract.py` before the account tests in one process fails about 17 of them (they pass alone). The full parallel gate is unaffected.
+- Not started (need a design decision): #123 bricks, #125 race-distance plans, #127 strength sessions, run/swim sessions in the plan. They depend on how a plan holds non-cycling sessions.
