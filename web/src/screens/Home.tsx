@@ -15,6 +15,7 @@ import {
 import { BodyPerf } from "@/screens/BodyPerf"
 import { DfaSnapshotCard } from "@/screens/DfaSnapshot"
 import { DailyCheckIn } from "@/screens/DailyCheckIn"
+import { Glance } from "@/screens/Glance"
 import { Hrv } from "@/screens/Hrv"
 import { Panel, Row, useLoad } from "@/screens/panel"
 import { AskCoach } from "@/screens/Coach"
@@ -30,6 +31,8 @@ export function Home() {
 
   return (
     <div className="grid gap-4 md:grid-cols-2" aria-label="Home">
+      <Glance plan={plan} stats={stats} />
+
       <Panel title="Today" load={plan} retry={retryPlan}>
         {(p) => {
           const week = currentWeek(p.plan_json, today)
