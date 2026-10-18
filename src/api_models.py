@@ -1436,3 +1436,45 @@ class RideCompare(_Model):
     b: CompareSide
     delta: CompareSummary                    # b - a per summary field
     best_efforts: list[BestEffortDelta] = []
+
+
+# ── #121 race predictor (routes_predict.py, race_predictor.py) ───────────────
+class RaceInputRun(_Model):
+    id: str
+    date: Optional[str] = None
+    name: str = ""
+    distance_m: float
+    time_s: float
+    pace_s_per_km: float
+
+
+class RaceInputCs(_Model):
+    cs_m_per_s: float
+    d_prime_m: float
+    date: Optional[str] = None
+
+
+class RacePrediction(_Model):
+    race: str                                # 5k | 10k | half | marathon
+    label: str
+    distance_m: float
+    model: str                               # riegel | critical_speed
+    status: str                              # ok | not_enough_long_run | out_of_range | not_supported
+    time_s: Optional[float] = None
+    pace_s_per_km: Optional[float] = None
+    range_text: Optional[str] = None         # only where a published error can be cited
+    notes: list[str] = []
+
+
+class RacePredictor(_Model):
+    window_days: int
+    best_run: Optional[RaceInputRun] = None
+    longest_run_m: Optional[float] = None
+    critical_speed: Optional[RaceInputCs] = None
+    predictions: list[RacePrediction] = []
+    missing: list[str] = []
+    riegel_method: str
+    riegel_confidence: str
+    cs_method: str
+    cs_confidence: str
+    long_run_rule: str

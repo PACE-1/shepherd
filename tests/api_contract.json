@@ -5200,6 +5200,242 @@
         "title": "RaceAdded",
         "type": "object"
       },
+      "RaceInputCs": {
+        "additionalProperties": true,
+        "properties": {
+          "cs_m_per_s": {
+            "title": "Cs M Per S",
+            "type": "number"
+          },
+          "d_prime_m": {
+            "title": "D Prime M",
+            "type": "number"
+          },
+          "date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date"
+          }
+        },
+        "required": [
+          "cs_m_per_s",
+          "d_prime_m"
+        ],
+        "title": "RaceInputCs",
+        "type": "object"
+      },
+      "RaceInputRun": {
+        "additionalProperties": true,
+        "properties": {
+          "date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date"
+          },
+          "distance_m": {
+            "title": "Distance M",
+            "type": "number"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "pace_s_per_km": {
+            "title": "Pace S Per Km",
+            "type": "number"
+          },
+          "time_s": {
+            "title": "Time S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "distance_m",
+          "time_s",
+          "pace_s_per_km"
+        ],
+        "title": "RaceInputRun",
+        "type": "object"
+      },
+      "RacePrediction": {
+        "additionalProperties": true,
+        "properties": {
+          "distance_m": {
+            "title": "Distance M",
+            "type": "number"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "notes": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Notes",
+            "type": "array"
+          },
+          "pace_s_per_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pace S Per Km"
+          },
+          "race": {
+            "title": "Race",
+            "type": "string"
+          },
+          "range_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Range Text"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "time_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time S"
+          }
+        },
+        "required": [
+          "race",
+          "label",
+          "distance_m",
+          "model",
+          "status"
+        ],
+        "title": "RacePrediction",
+        "type": "object"
+      },
+      "RacePredictor": {
+        "additionalProperties": true,
+        "properties": {
+          "best_run": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RaceInputRun"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "critical_speed": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RaceInputCs"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "cs_confidence": {
+            "title": "Cs Confidence",
+            "type": "string"
+          },
+          "cs_method": {
+            "title": "Cs Method",
+            "type": "string"
+          },
+          "long_run_rule": {
+            "title": "Long Run Rule",
+            "type": "string"
+          },
+          "longest_run_m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Longest Run M"
+          },
+          "missing": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          },
+          "predictions": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/RacePrediction"
+            },
+            "title": "Predictions",
+            "type": "array"
+          },
+          "riegel_confidence": {
+            "title": "Riegel Confidence",
+            "type": "string"
+          },
+          "riegel_method": {
+            "title": "Riegel Method",
+            "type": "string"
+          },
+          "window_days": {
+            "title": "Window Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "window_days",
+          "riegel_method",
+          "riegel_confidence",
+          "cs_method",
+          "cs_confidence",
+          "long_run_rule"
+        ],
+        "title": "RacePredictor",
+        "type": "object"
+      },
       "RampRate": {
         "additionalProperties": true,
         "properties": {
@@ -10289,6 +10525,23 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/RunGap"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/run/predict": {
+      "get": {
+        "operationId": "run_predict_api_run_predict_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RacePredictor"
                 }
               }
             },

@@ -536,6 +536,17 @@ test("a critical-speed test sets the run threshold pace and the run zones follow
   expect(zones.threshold_pace_s_per_km).toBe(250)
 })
 
+test("the race predictor uses the saved critical-speed test for the 5K and says what it cannot predict", async ({ page, request }) => {
+  await page.goto("#/settings")
+  await expect(page.getByRole("heading", { name: "Race predictor" })).toBeVisible()
+  const cs = page.getByRole("table", { name: "Critical-speed predictions" })
+  await expect(cs).toContainText("19:50 (3:58 /km)")  // (5000 - 240 m) / 4.0 m/s
+  await expect(cs).toContainText("Outside the model's range")
+  await expect(cs).toContainText("Not supported by this model")
+  const r = await (await api(request, "/api/run/predict")).json()
+  expect(r.critical_speed).toMatchObject({ cs_m_per_s: 4, d_prime_m: 240 })
+})
+
 test("Injury & illness: an ongoing illness pauses the plan and 'I'm back' starts the return ramp", async ({ page, request }) => {
   await page.goto("#/injury")
   await expect(page.getByRole("note")).toContainText("Not medical advice")

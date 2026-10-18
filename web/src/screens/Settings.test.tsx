@@ -34,6 +34,7 @@ function mock(over: Record<string, (body: unknown) => Response> = {}) {
     if (url === "/api/notifications/settings") return json({ has_url: false, events: { readiness: true, missed: true, sync_failure: true }, readiness_time: "" })
     if (url === "/api/run/zones") return json({ pace_zones: [], hr_zones: [], method: "", confidence: "" })
     if (url === "/api/run/activities") return json({ runs: [], missing: [], method: "", confidence: "" })
+    if (url === "/api/run/predict") return json({ window_days: 56, predictions: [], missing: [], riegel_method: "", riegel_confidence: "", cs_method: "", cs_confidence: "", long_run_rule: "" })
     if (url === "/api/profile/ftp-history") return json({ ftp_current: 250, ftp_source: "manual", history: [] })
     return json({}, 404)
   }))
