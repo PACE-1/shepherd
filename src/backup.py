@@ -50,6 +50,7 @@ MARKER = ".data_format"
 MANIFEST = "manifest.json"
 _EXCLUDED_DIRS = {"logs", "cache", "__pycache__"}
 _EXCLUDED_NAMES = {"update_check_cache.json"}
+_SECRET_NAMES = {".env", "llm.json"}  # intervals.icu credentials and the AI provider key
 _EXCLUDED_SUFFIXES = (".tmp", ".part", "-wal", "-shm", ".lock")
 _SQLITE_SUFFIXES = (".db", ".sqlite", ".sqlite3")
 
@@ -123,7 +124,7 @@ def check_data_format(home: Path) -> None:
         write_text_atomic(home / MARKER, f"{DATA_FORMAT}\n")
 
 
-def create_backup(home: Path, archive: Path) -> dict:
+def create_backup(home: Path, archive: Path, *, exclude_secrets: bool = False) -> dict:
     home, archive = Path(home), Path(archive)
     if not home.is_dir():
         raise BackupError(f"data home not found: {home}")
@@ -134,7 +135,7 @@ def create_backup(home: Path, archive: Path) -> dict:
             if not path.is_file() or path.is_symlink():
                 continue
             rel = path.relative_to(home)
-            if _excluded(rel) or rel.name == MARKER:
+            if _excluded(rel) or rel.name == MARKER or (exclude_secrets and rel.name in _SECRET_NAMES):
                 continue
             dest = staging / rel
             dest.parent.mkdir(parents=True, exist_ok=True)
@@ -148,6 +149,7 @@ def create_backup(home: Path, archive: Path) -> dict:
             "data_format": read_data_format(home) or DATA_FORMAT,
             "app_version": _app_version(),
             "created_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "secrets_excluded": exclude_secrets,
             "files": files,
             "excluded": sorted(_EXCLUDED_DIRS) + sorted(_EXCLUDED_NAMES) + list(_EXCLUDED_SUFFIXES),
         }

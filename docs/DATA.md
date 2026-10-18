@@ -66,6 +66,15 @@ python -m backup restore backup.tar.gz [--home DIR] [--force]
 - For a snapshot that is consistent across files, stop the app first. A running
   app gives per-file and per-database consistency, not a global one.
 
+### From Settings
+
+Settings > Your data downloads the activities, wellness and check-in tables as CSV
+and a full backup (`/api/export/backup`). The download omits each profile's `.env`
+and `llm.json` (intervals.icu and AI keys) because the server may be reachable by
+others; the manifest records `secrets_excluded`. Restoring stays a stop-the-app
+command (`python -m backup restore`), since replacing files under a running
+database is not safe.
+
 ### Docker
 
 ```sh

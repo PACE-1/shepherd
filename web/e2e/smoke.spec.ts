@@ -440,3 +440,12 @@ test("Settings keeps run and swim thresholds per sport", async ({ page, request 
   const saved = await (await api(request, "/api/sports/thresholds")).json()
   expect(saved.thresholds.swim_css.current).toBe(95)
 })
+
+test("Settings offers the data downloads, and they return files", async ({ page, request }) => {
+  await page.goto("#/settings")
+  await expect(page.getByRole("heading", { name: "Your data" })).toBeVisible()
+  const csv = await api(request, "/api/export/wellness.csv")
+  expect(csv.headers()["content-type"]).toContain("text/csv")
+  expect(await csv.text()).toContain("date,ctl,atl")
+  expect((await api(request, "/api/export/backup")).headers()["content-type"]).toBe("application/gzip")
+})

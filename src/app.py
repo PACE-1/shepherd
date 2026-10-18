@@ -2021,6 +2021,34 @@ def api_profile_ftp_history():
     }
 
 
+@app.get("/api/export/backup")
+def api_export_backup():
+    """A backup archive of all profiles without credentials (intervals.icu key, AI key); restore is `python -m backup restore` (#129)."""
+    import backup as _backup
+    import shutil, tempfile
+    from starlette.background import BackgroundTask
+    tmp = tempfile.mkdtemp(prefix="shepherd-export-")
+    archive = Path(tmp) / "backup.tar.gz"
+    try:
+        _backup.create_backup(shepherd_home(), archive, exclude_secrets=True)
+    except _backup.BackupError as e:
+        shutil.rmtree(tmp, ignore_errors=True)
+        raise HTTPException(status_code=500, detail=str(e))
+    return FileResponse(archive, media_type="application/gzip", filename=f"shepherd-backup-{clock.today().isoformat()}.tar.gz",
+                        background=BackgroundTask(shutil.rmtree, tmp, ignore_errors=True))
+
+
+@app.get("/api/export/{table}.csv")
+def api_export_csv(table: str):
+    """One table of the active profile as CSV: activities, wellness or checkins."""
+    import data_export
+    rows = {"activities": db.query_activities, "wellness": db.query_wellness, "checkins": db.query_daily_log}.get(table)
+    if rows is None:
+        raise HTTPException(status_code=404, detail="unknown table")
+    return Response(data_export.to_csv(table, rows(days=36500)), media_type="text/csv",
+                    headers={"Content-Disposition": f'attachment; filename="shepherd-{table}.csv"'})
+
+
 @app.get("/api/sports/load", responses={200: {"model": api_models.SportsLoad}})
 def api_sports_load():
     """Training load per sport (cycling, running, swimming, other) and combined (#109)."""

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Added: download your data (#129).** Settings has CSV exports of activities, wellness and check-ins, and a full backup that leaves out your intervals.icu and AI keys.
 - **Added: training load by sport (#109).** Settings shows fitness, fatigue and form for cycling, running and swimming and for all sports together, and keeps run threshold pace and heart rate and swim critical speed with their history.
 - **Fixed: changing the AI provider could send the old API key to the new server.** A saved key is now reused only for the same provider and address; otherwise you must enter one.
 - **Fixed: AI coach requests no longer freeze the rest of the app** while the model is answering.

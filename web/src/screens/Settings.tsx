@@ -14,6 +14,7 @@ import { ApiKeyConnect } from "@/screens/ApiKeyConnect"
 import { AiCoachSettings } from "@/screens/Coach"
 import { FtpHistory } from "@/screens/FtpHistory"
 import { SportsCard } from "@/screens/SportsCard"
+import { YourData } from "@/screens/YourData"
 import { Panel, Row, useLoad } from "@/screens/panel"
 import { ZonesEditor } from "@/screens/ZonesEditor"
 
@@ -264,6 +265,7 @@ export function Settings() {
       <CalendarPush />
       <Folders />
       <About />
+      <YourData />
       <div className="lg:col-span-2">
         <FtpHistory />
       </div>
