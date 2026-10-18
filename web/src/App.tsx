@@ -9,6 +9,7 @@ import { Injury } from "@/screens/Injury"
 import { Library } from "@/screens/Library"
 import { Onboarding } from "@/screens/Onboarding"
 import { Plan } from "@/screens/Plan"
+import { Races } from "@/screens/Races"
 import { ProfilePicker } from "@/screens/ProfilePicker"
 import { ProfileSetup } from "@/screens/ProfileSetup"
 import { RideCompare } from "@/screens/RideCompare"
@@ -49,6 +50,7 @@ export function App() {
     )
   if (head === "injury") return <AppShell tab="plan"><Injury /></AppShell>
   if (head === "fueling") return <AppShell tab="analysis"><Fueling /></AppShell>
+  if (head === "races") return <AppShell tab="plan"><Races /></AppShell>
   if (head === "compare" && rest.length) return <AppShell tab="analysis"><RideCompare key={route} a={decodeURIComponent(rest[0])} b={rest[1] ? decodeURIComponent(rest[1]) : undefined} /></AppShell>
   const tab = isTab(route) ? route : "home"
   return (

@@ -1252,6 +1252,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/races": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["races_status_api_races_get"];
+        put?: never;
+        post: operations["races_add_api_races_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/races/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["races_sync_api_races_sync_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/races/{race_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["races_update_api_races__race_id__put"];
+        post?: never;
+        delete: operations["races_delete_api_races__race_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/races/{race_id}/race-day": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["race_day_api_races__race_id__race_day_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/readiness": {
         parameters: {
             query?: never;
@@ -4579,6 +4643,59 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** Race */
+        Race: {
+            /** Arrive Time */
+            arrive_time?: string | null;
+            /** Date */
+            date: string;
+            /**
+             * Days To Go
+             * @default 0
+             */
+            days_to_go: number;
+            /**
+             * Discipline
+             * @default cycling
+             */
+            discipline: string;
+            /**
+             * Event Climb M
+             * @default 0
+             */
+            event_climb_m: number;
+            /**
+             * Event Km
+             * @default 0
+             */
+            event_km: number;
+            /**
+             * Event Type
+             * @default granfondo
+             */
+            event_type: string;
+            /** Expected Duration H */
+            expected_duration_h?: number | null;
+            /** Id */
+            id: string;
+            /**
+             * In Plan
+             * @default false
+             */
+            in_plan: boolean;
+            /**
+             * Name
+             * @default
+             */
+            name: string;
+            /** Priority */
+            priority: string;
+            /** Start Time */
+            start_time?: string | null;
+            taper: components["schemas"]["RaceTaper"];
+        } & {
+            [key: string]: unknown;
+        };
         /** RaceAdded */
         RaceAdded: {
             /** Added */
@@ -4595,6 +4712,24 @@ export interface components {
             regen_info?: {
                 [key: string]: unknown;
             } | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RaceDayPlan */
+        RaceDayPlan: {
+            /** Expected Duration H */
+            expected_duration_h?: number | null;
+            /** Fueling */
+            fueling: string;
+            power: components["schemas"]["RacePower"];
+            race: components["schemas"]["Race"];
+            /**
+             * Timeline
+             * @default []
+             */
+            timeline: components["schemas"]["RaceTimelineRow"][];
+            /** Warmup Min */
+            warmup_min: number;
         } & {
             [key: string]: unknown;
         };
@@ -4626,6 +4761,37 @@ export interface components {
             pace_s_per_km: number;
             /** Time S */
             time_s: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RacePower */
+        RacePower: {
+            /** Available */
+            available: boolean;
+            /** Confidence */
+            confidence?: string | null;
+            /** Ftp */
+            ftp?: number | null;
+            /** If High */
+            if_high?: number | null;
+            /** If Low */
+            if_low?: number | null;
+            /** Method */
+            method?: string | null;
+            /** Np High */
+            np_high?: number | null;
+            /** Np Low */
+            np_low?: number | null;
+            /** Predicted If */
+            predicted_if?: number | null;
+            /** Predicted Np */
+            predicted_np?: number | null;
+            /** Predicted Tss */
+            predicted_tss?: number | null;
+            /** Projected Duration H */
+            projected_duration_h?: number | null;
+            /** Reason */
+            reason?: string | null;
         } & {
             [key: string]: unknown;
         };
@@ -4683,6 +4849,96 @@ export interface components {
             riegel_method: string;
             /** Window Days */
             window_days: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RaceTaper */
+        RaceTaper: {
+            /** Before Tss */
+            before_tss?: number | null;
+            /** End */
+            end?: string | null;
+            /** Kind */
+            kind: string;
+            /** Planned Tss */
+            planned_tss?: number | null;
+            /** Start */
+            start?: string | null;
+            /**
+             * Text
+             * @default
+             */
+            text: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RaceTaperWeek */
+        RaceTaperWeek: {
+            /** End */
+            end: string;
+            /**
+             * Planned Tss
+             * @default 0
+             */
+            planned_tss: number;
+            /** Start */
+            start: string;
+            /**
+             * Tss Target
+             * @default 0
+             */
+            tss_target: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RaceTimelineRow */
+        RaceTimelineRow: {
+            /** Label */
+            label: string;
+            /** Time */
+            time: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RacesStatus */
+        RacesStatus: {
+            /**
+             * Confidence
+             * @default
+             */
+            confidence: string;
+            /**
+             * Has Plan
+             * @default false
+             */
+            has_plan: boolean;
+            /**
+             * Method
+             * @default
+             */
+            method: string;
+            /** Plan A Date */
+            plan_a_date?: string | null;
+            /**
+             * Plan Synced
+             * @default false
+             */
+            plan_synced: boolean;
+            /**
+             * Races
+             * @default []
+             */
+            races: components["schemas"]["Race"][];
+            /**
+             * Stored
+             * @default false
+             */
+            stored: boolean;
+            /**
+             * Taper Weeks
+             * @default []
+             */
+            taper_weeks: components["schemas"]["RaceTaperWeek"][];
         } & {
             [key: string]: unknown;
         };
@@ -8047,6 +8303,126 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProgrammeSummary"];
+                };
+            };
+        };
+    };
+    races_status_api_races_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RacesStatus"];
+                };
+            };
+        };
+    };
+    races_add_api_races_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RacesStatus"];
+                };
+            };
+        };
+    };
+    races_sync_api_races_sync_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RacesStatus"];
+                };
+            };
+        };
+    };
+    races_update_api_races__race_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RacesStatus"];
+                };
+            };
+        };
+    };
+    races_delete_api_races__race_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RacesStatus"];
+                };
+            };
+        };
+    };
+    race_day_api_races__race_id__race_day_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RaceDayPlan"];
                 };
             };
         };

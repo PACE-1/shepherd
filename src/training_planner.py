@@ -11231,7 +11231,8 @@ def _apply_secondary_event_tapers(weeks: list, goal, library=None) -> None:
         if taper_start and ed >= taper_start:
             continue  # inside the A macro-taper span — already deloading
         wk = next((w for w in weeks if w.start <= ed <= w.end), None)
-        if wk is not None and getattr(wk, "is_stepback", False):
+        _on_stepback = wk is not None and getattr(wk, "is_stepback", False)
+        if _on_stepback:
             _demote_hit_window(weeks, ed, 1, lib,
                                desc=f"Opener before your {prio} race (easy spin).")
         else:
@@ -11244,6 +11245,66 @@ def _apply_secondary_event_tapers(weeks: list, goal, library=None) -> None:
             _place_opener(weeks, ed - timedelta(days=1), lib)
             _demote_hit_window(weeks, ed + timedelta(days=2), 1, lib,
                                desc="Easy — recover after your B race.")
+            # #111: and a smaller volume taper than the A race's (see B_TAPER_DAYS).
+            # Not on an unload week: it is already lighter (no double deload).
+            if not _on_stepback:
+                _taper_volume_before(weeks, ed, B_TAPER_DAYS, TAPER_FRACS[0])
+
+
+# #111 B-race taper: one step of the A taper's ladder, TAPER_FRACS[0] (0.60, a 40 %
+# cut, the low end of the 41-60 % Bosquet 2007 found best), over the race's last
+# 7 days, against the 7 days before them. The A race keeps the full taper
+# (TAPER_DAYS = 12 days, TAPER_FRACS 0.60 then 0.40: Bosquet L, Montpetit J, Arvisais D,
+# Mujika I. Effects of tapering on performance: a meta-analysis. Med Sci Sports
+# Exerc 2007;39(8):1358-1368 -- 8-14 days, volume cut 41-60 % progressively,
+# intensity and frequency kept; Mujika I, Padilla S. Scientific bases for
+# precompetition tapering strategies. Med Sci Sports Exerc 2003;35(7):1182-1187 --
+# progressive non-linear volume cut, intensity kept, frequency cut by no more than
+# ~20 %; their larger 60-90 % cuts are for highly trained athletes, so the planner
+# stays in Bosquet's range).
+# Neither paper studies secondary races: the 7 days and the single step are the
+# planner's heuristic for "a smaller taper", not a published number. Confidence:
+# moderate for the A taper (meta-analysis of mostly swimmers/runners, group
+# means; individual response varies), low for the B taper.
+B_TAPER_DAYS = 7
+
+
+def _taper_volume_before(weeks: list, race_day, days: int, frac: float) -> None:
+    """#111 — cut the planned volume of the ``days`` before ``race_day`` to ``frac``
+    of the ``days`` before them, keeping intensity and frequency: only easy
+    (non-HIT) pending sessions shrink, proportionally to what each can shed above
+    the ``_VOLUME_MIN_SESSION_MIN`` floor, and no day becomes rest. The same
+    TSS currency and floor as the A taper (``_enforce_weekly_volume_ceiling``).
+    Idempotent: a window already at or under its ceiling is left alone, so the
+    reforecast that runs on every sync does not cut it again. No-op when the
+    days before carry no planned load (race early in the plan: nothing to
+    measure against)."""
+    start, ref_start = race_day - timedelta(days=days), race_day - timedelta(days=2 * days)
+
+    def _load(lo, hi):
+        return [s for w in weeks for s in w.sessions
+                if s is not None and getattr(s, "day", None) is not None and lo <= s.day < hi
+                and s.session_type != "rest" and not getattr(s, "is_race", False)]
+    window = _load(start, race_day)
+    ref = sum(s.tss_estimate or 0 for s in _load(ref_start, start))
+    if ref <= 0:
+        return
+    ceiling = ref * frac
+    total = sum(s.tss_estimate or 0 for s in window)
+    if total <= ceiling * _VOLUME_CEILING_TOLERANCE:
+        return
+    easy = [s for s in window
+            if (s.duration_min or 0) > _VOLUME_MIN_SESSION_MIN and not _session_is_hit(s)
+            and not getattr(s, "is_opener", False) and not _race_shape_frozen(s)]
+    spare = sum((s.tss_estimate or 0) / s.duration_min * (s.duration_min - _VOLUME_MIN_SESSION_MIN)
+                for s in easy)
+    if spare <= 0:
+        return
+    share = min(1.0, (total - ceiling) / spare)
+    for s in easy:
+        per_min = (s.tss_estimate or 0) / s.duration_min
+        s.duration_min -= int(round((s.duration_min - _VOLUME_MIN_SESSION_MIN) * share))
+        s.tss_estimate = round(per_min * s.duration_min)
 
 
 def _estimate_race_load(km: float, climb_m: float, event_type: str) -> tuple[int, int]:

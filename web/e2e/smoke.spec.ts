@@ -567,6 +567,24 @@ test("Injury & illness: an ongoing illness pauses the plan and 'I'm back' starts
   expect(status.episodes[0].end).not.toBeNull()
 })
 
+test("Races: a B race goes into the plan with its taper and has a race-day plan", async ({ page, request }) => {
+  await page.goto("#/races")
+  await expect(page.getByRole("heading", { name: "Tapers in your plan" })).toBeVisible()
+  const add = page.locator("div", { has: page.getByRole("heading", { name: "Add a race" }) }).last()
+  await add.getByLabel("Name").fill("Hill climb")
+  await add.getByLabel("Date").fill(dayOffset(40))
+  await add.getByRole("button", { name: "Add race and rebuild plan" }).click()
+  await expect(page.getByText(/B race: Hill climb/).first()).toBeVisible()
+  await expect(page.getByText(/Smaller taper over the last 7 days|easy days and openers|Inside your A race taper/).first()).toBeVisible()
+  await expect(page.getByRole("alert")).toHaveCount(0)
+  const plan = await (await api(request, "/api/plan")).json()
+  expect(plan.plan_json.goal.events.some((e: { name: string; priority: string }) => e.name === "Hill climb" && e.priority === "B")).toBe(true)
+  await page.getByRole("button", { name: "Race day plan for B race: Hill climb" }).click()
+  await expect(page.getByRole("heading", { name: "Race day plan" })).toBeVisible()
+  await expect(page.getByText("Add the race distance to get a duration and power estimate.")).toBeVisible()
+  await expect(page.getByText("Fueling plan comes from the Nutrition settings.")).toBeVisible()
+})
+
 test("Analysis shows the weight trend and W/kg from a logged weight", async ({ page, request }) => {
   const day = (n: number) => new Date(Date.now() - n * 86_400_000).toISOString().slice(0, 10)
   for (const [n, kg] of [[14, 73], [7, 72], [0, 71]] as const)

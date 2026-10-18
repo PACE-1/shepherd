@@ -5600,6 +5600,102 @@
         "title": "ProgrammeSummary",
         "type": "object"
       },
+      "Race": {
+        "additionalProperties": true,
+        "properties": {
+          "arrive_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Arrive Time"
+          },
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "days_to_go": {
+            "default": 0,
+            "title": "Days To Go",
+            "type": "integer"
+          },
+          "discipline": {
+            "default": "cycling",
+            "title": "Discipline",
+            "type": "string"
+          },
+          "event_climb_m": {
+            "default": 0,
+            "title": "Event Climb M",
+            "type": "number"
+          },
+          "event_km": {
+            "default": 0,
+            "title": "Event Km",
+            "type": "number"
+          },
+          "event_type": {
+            "default": "granfondo",
+            "title": "Event Type",
+            "type": "string"
+          },
+          "expected_duration_h": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Duration H"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "in_plan": {
+            "default": false,
+            "title": "In Plan",
+            "type": "boolean"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "priority": {
+            "title": "Priority",
+            "type": "string"
+          },
+          "start_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Time"
+          },
+          "taper": {
+            "$ref": "#/components/schemas/RaceTaper"
+          }
+        },
+        "required": [
+          "id",
+          "date",
+          "priority",
+          "taper"
+        ],
+        "title": "Race",
+        "type": "object"
+      },
       "RaceAdded": {
         "additionalProperties": true,
         "properties": {
@@ -5644,6 +5740,52 @@
           }
         },
         "title": "RaceAdded",
+        "type": "object"
+      },
+      "RaceDayPlan": {
+        "additionalProperties": true,
+        "properties": {
+          "expected_duration_h": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Duration H"
+          },
+          "fueling": {
+            "title": "Fueling",
+            "type": "string"
+          },
+          "power": {
+            "$ref": "#/components/schemas/RacePower"
+          },
+          "race": {
+            "$ref": "#/components/schemas/Race"
+          },
+          "timeline": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/RaceTimelineRow"
+            },
+            "title": "Timeline",
+            "type": "array"
+          },
+          "warmup_min": {
+            "title": "Warmup Min",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "race",
+          "warmup_min",
+          "power",
+          "fueling"
+        ],
+        "title": "RaceDayPlan",
         "type": "object"
       },
       "RaceInputCs": {
@@ -5719,6 +5861,152 @@
           "pace_s_per_km"
         ],
         "title": "RaceInputRun",
+        "type": "object"
+      },
+      "RacePower": {
+        "additionalProperties": true,
+        "properties": {
+          "available": {
+            "title": "Available",
+            "type": "boolean"
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "ftp": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ftp"
+          },
+          "if_high": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "If High"
+          },
+          "if_low": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "If Low"
+          },
+          "method": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Method"
+          },
+          "np_high": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Np High"
+          },
+          "np_low": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Np Low"
+          },
+          "predicted_if": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Predicted If"
+          },
+          "predicted_np": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Predicted Np"
+          },
+          "predicted_tss": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Predicted Tss"
+          },
+          "projected_duration_h": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Projected Duration H"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "required": [
+          "available"
+        ],
+        "title": "RacePower",
         "type": "object"
       },
       "RacePrediction": {
@@ -5880,6 +6168,176 @@
           "long_run_rule"
         ],
         "title": "RacePredictor",
+        "type": "object"
+      },
+      "RaceTaper": {
+        "additionalProperties": true,
+        "properties": {
+          "before_tss": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Before Tss"
+          },
+          "end": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "planned_tss": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Planned Tss"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start"
+          },
+          "text": {
+            "default": "",
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind"
+        ],
+        "title": "RaceTaper",
+        "type": "object"
+      },
+      "RaceTaperWeek": {
+        "additionalProperties": true,
+        "properties": {
+          "end": {
+            "title": "End",
+            "type": "string"
+          },
+          "planned_tss": {
+            "default": 0,
+            "title": "Planned Tss",
+            "type": "number"
+          },
+          "start": {
+            "title": "Start",
+            "type": "string"
+          },
+          "tss_target": {
+            "default": 0,
+            "title": "Tss Target",
+            "type": "number"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ],
+        "title": "RaceTaperWeek",
+        "type": "object"
+      },
+      "RaceTimelineRow": {
+        "additionalProperties": true,
+        "properties": {
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "time": {
+            "title": "Time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "time",
+          "label"
+        ],
+        "title": "RaceTimelineRow",
+        "type": "object"
+      },
+      "RacesStatus": {
+        "additionalProperties": true,
+        "properties": {
+          "confidence": {
+            "default": "",
+            "title": "Confidence",
+            "type": "string"
+          },
+          "has_plan": {
+            "default": false,
+            "title": "Has Plan",
+            "type": "boolean"
+          },
+          "method": {
+            "default": "",
+            "title": "Method",
+            "type": "string"
+          },
+          "plan_a_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Plan A Date"
+          },
+          "plan_synced": {
+            "default": false,
+            "title": "Plan Synced",
+            "type": "boolean"
+          },
+          "races": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Race"
+            },
+            "title": "Races",
+            "type": "array"
+          },
+          "stored": {
+            "default": false,
+            "title": "Stored",
+            "type": "boolean"
+          },
+          "taper_weeks": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/RaceTaperWeek"
+            },
+            "title": "Taper Weeks",
+            "type": "array"
+          }
+        },
+        "title": "RacesStatus",
         "type": "object"
       },
       "RampRate": {
@@ -11345,6 +11803,104 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProgrammeSummary"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/races": {
+      "get": {
+        "operationId": "races_status_api_races_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RacesStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "operationId": "races_add_api_races_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RacesStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/races/sync": {
+      "post": {
+        "operationId": "races_sync_api_races_sync_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RacesStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/races/{race_id}": {
+      "delete": {
+        "operationId": "races_delete_api_races__race_id__delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RacesStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "operationId": "races_update_api_races__race_id__put",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RacesStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/races/{race_id}/race-day": {
+      "get": {
+        "operationId": "race_day_api_races__race_id__race_day_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RaceDayPlan"
                 }
               }
             },
