@@ -2,13 +2,13 @@
 
 ## TL;DR
 
-Drag-drop the new DMG onto `/Applications` (or run the new Windows installer). Everything in `~/.shepherd/` is left alone — rides, current and archived plans, FTP history, wellness logs, ICU credentials, and athlete profile all survive every install. The installer only touches the application bundle (code, ZWO library, virtual routes, templates).
+Replace the AppImage with the new one, or pull the new Docker image and recreate the container on the same data volume. Everything in your data folder (`~/.shepherd/`, or `/data` in Docker) is left alone — rides, current and archived plans, FTP history, wellness logs, ICU credentials, and athlete profile all survive every install. Only the application itself (code, ZWO library, virtual routes, templates) is replaced.
 
 ---
 
 ## What's preserved
 
-All user state lives under `~/.shepherd/`, outside the bundle. The installer cannot reach it.
+All user state lives under `~/.shepherd/` (`/data` in the Docker image), outside the application. Replacing the AppImage or the container does not touch it.
 
 | Category | Path | Contents |
 |---|---|---|
@@ -29,7 +29,7 @@ All user state lives under `~/.shepherd/`, outside the bundle. The installer can
 
 ## What gets replaced
 
-The application bundle — `/Applications/Shepherd.app` on macOS, the program directory on Windows. That holds the Python code, bundled ZWO library, virtual routes, and templates. Replaced wholesale.
+The AppImage file, or the Docker image. That holds the Python code, bundled ZWO library, virtual routes, and templates. Replaced wholesale. macOS and Windows builds are retired.
 
 ---
 
@@ -58,4 +58,4 @@ Take a backup before upgrading real data (`python -m backup create`, see `docs/D
 
 ## Rolling back
 
-Install the older DMG (or older Windows installer). Data still works because schema changes are additive: new columns are ignored by older code, unknown JSON fields are skipped.
+Run the older AppImage, or the older Docker image tag. Data still works because schema changes are additive: new columns are ignored by older code, unknown JSON fields are skipped.

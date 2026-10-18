@@ -1,0 +1,190 @@
+name: Publish Docker image
+
+# On every release tag (v*.*.*) builds the repo Dockerfile, smoke-tests the
+# image, and only then pushes it to GitHub Container Registry as
+#   ghcr.io/pace-1/shepherd:vX.Y.Z   always
+#   ghcr.io/pace-1/shepherd:X.Y      stable tags only, and only if this is the newest vX.Y.*
+#   ghcr.io/pace-1/shepherd:latest   stable tags only, and only if this is the newest stable tag
+# A tag with a '-' (v4.1.0-rc1) is a prerelease: it gets its exact tag and nothing else.
+#
+# linux/amd64 only. requirements-linux-py312.lock is a pip-compile for one
+# platform and nothing here has built or run the image on arm64, so arm64 is not
+# claimed.
+#
+# Never runs on pull_request, so a fork's PR cannot push or see the token.
+# A manual run (Actions -> Publish Docker image -> Run workflow) is a dry run
+# (build + smoke test, no push) unless it is started on a tag ref with
+# "push" set to true; that is how to re-publish a tag.
+#
+# Not run anywhere yet: this workflow was written without access to GitHub
+# Actions. The first real tag (or a dry-run dispatch) is its first execution.
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      push:
+        description: "Push to ghcr.io. Only honoured when run on a tag ref; otherwise the run is build + smoke test only."
+        type: boolean
+        required: false
+        default: false
+
+# No default token rights; the job below asks for exactly what it needs.
+permissions: {}
+
+concurrency:
+  group: docker-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  IMAGE: ghcr.io/pace-1/shepherd
+
+jobs:
+  docker:
+    name: Build, smoke test, publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # all tags: "latest" and "X.Y" must not move backwards
+
+      - name: Work out version, labels and tags
+        id: meta
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+          EVENT: ${{ github.event_name }}
+          PUSH_INPUT: ${{ inputs.push }}
+        run: |
+          set -euo pipefail
+          file_version="$(tr -d '[:space:]' < VERSION)"
+          push=false
+          tags=""
+          if [ "$REF_TYPE" = "tag" ]; then
+            # Strict semver (docker tags cannot hold '+', so no build metadata).
+            if ! printf '%s' "$REF_NAME" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'; then
+              echo "::error::tag '$REF_NAME' is not vX.Y.Z or vX.Y.Z-prerelease"
+              exit 1
+            fi
+            version="${REF_NAME#v}"
+            if [ "$version" != "$file_version" ]; then
+              echo "::error::tag $REF_NAME does not match VERSION ($file_version); the image would report the wrong version"
+              exit 1
+            fi
+            tags="${IMAGE}:${REF_NAME}"
+            case "$version" in
+              *-*) echo "Prerelease: only the exact tag is published" ;;
+              *)
+                major_minor="${version%.*}"
+                # sort -V orders by version number, not by push time, so
+                # re-tagging an old patch cannot move latest backwards.
+                stable="$(git tag -l 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V)"
+                [ "$(printf '%s\n' "$stable" | grep -E "^v${major_minor//./\\.}\.[0-9]+$" | tail -1)" = "$REF_NAME" ] \
+                  && tags="$tags ${IMAGE}:${major_minor}"
+                [ "$(printf '%s\n' "$stable" | tail -1)" = "$REF_NAME" ] \
+                  && tags="$tags ${IMAGE}:latest"
+                ;;
+            esac
+            if [ "$EVENT" = "push" ] || [ "$PUSH_INPUT" = "true" ]; then push=true; fi
+          else
+            version="$file_version"
+            echo "Not a tag ref: dry run (build + smoke test, no push)"
+          fi
+          # Licence from the LICENSE file, not a hand-typed guess.
+          if grep -q 'Apache License' LICENSE && grep -q 'Version 2.0' LICENSE; then
+            license="Apache-2.0"
+          else
+            echo "::error::LICENSE is not the Apache-2.0 text the image label assumes; update docker.yml"
+            exit 1
+          fi
+          {
+            echo "version=$version"
+            echo "license=$license"
+            echo "push=$push"
+            echo "tags=$tags"
+          } >> "$GITHUB_OUTPUT"
+          echo "version=$version license=$license push=$push"
+          echo "tags: ${tags:-<none>}"
+
+      - name: Build image (linux/amd64)
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+          LICENSE_ID: ${{ steps.meta.outputs.license }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          docker build --platform linux/amd64 -t shepherd:smoke \
+            --label "org.opencontainers.image.title=Shepherd" \
+            --label "org.opencontainers.image.source=https://github.com/PACE-1/shepherd" \
+            --label "org.opencontainers.image.version=${VERSION}" \
+            --label "org.opencontainers.image.revision=${SHA}" \
+            --label "org.opencontainers.image.licenses=${LICENSE_ID}" \
+            .
+
+      # The image is run exactly as a user would run it (server mode, token,
+      # fresh /data volume) BEFORE anything is pushed, so a broken image is
+      # never published.
+      - name: Smoke test the image
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          set -euo pipefail
+          TOKEN="$(openssl rand -hex 24)"
+          echo "::add-mask::$TOKEN"
+          VOL="smoke-data-$$"
+          NAME="shepherd-smoke-$$"
+          cleanup() {
+            docker rm -f "$NAME" > /dev/null 2>&1 || true
+            docker volume rm "$VOL" > /dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+          fail() { echo "::error::$*"; docker logs "$NAME" 2>&1 | tail -n 60 || true; exit 1; }
+
+          docker volume create "$VOL" > /dev/null
+          docker run -d --name "$NAME" -p 127.0.0.1:22400:22400 -v "$VOL":/data \
+            -e "SHEPHERD_ACCESS_TOKEN=$TOKEN" shepherd:smoke > /dev/null
+
+          up=""
+          for _ in $(seq 1 90); do
+            if curl -fsS --max-time 3 http://127.0.0.1:22400/healthz > /dev/null 2>&1; then up=1; break; fi
+            [ "$(docker inspect -f '{{.State.Running}}' "$NAME")" = "true" ] || fail "container exited before /healthz answered"
+            sleep 1
+          done
+          [ -n "$up" ] || fail "/healthz never answered within 90 s"
+
+          # The gate must be on (server mode) and the token must open it.
+          code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 http://127.0.0.1:22400/api/version)"
+          [ "$code" = "401" ] || fail "/api/version without a token returned $code, expected 401 (access gate is not enforcing)"
+          body="$(curl -fsS --max-time 5 -H "Authorization: Bearer $TOKEN" http://127.0.0.1:22400/api/version)" \
+            || fail "/api/version with the token did not answer"
+          served="$(printf '%s' "$body" | jq -r .version)"
+          [ "$served" = "$VERSION" ] || fail "image serves version '$served', expected '$VERSION'"
+          curl -fsS --max-time 5 -H "Authorization: Bearer $TOKEN" http://127.0.0.1:22400/v2/ | grep -q 'id="root"' \
+            || fail "/v2/ has no app root (web build missing from the image)"
+          [ "$(docker inspect -f '{{.Architecture}}' shepherd:smoke)" = "amd64" ] || fail "image is not amd64"
+          echo "OK: healthz, access gate, version $served, web UI"
+
+      - name: Log in to ghcr.io
+        if: steps.meta.outputs.push == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push tags
+        if: steps.meta.outputs.push == 'true'
+        env:
+          TAGS: ${{ steps.meta.outputs.tags }}
+        run: |
+          set -euo pipefail
+          for t in $TAGS; do
+            docker tag shepherd:smoke "$t"
+            docker push "$t"
+          done

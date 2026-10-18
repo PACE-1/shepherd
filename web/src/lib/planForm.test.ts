@@ -34,14 +34,11 @@ describe("applyAdvanced", () => {
     expect(applyAdvanced(base, adv({ backdate: false, startDate: "2026-09-01" }), null).start_date).toBeUndefined()
   })
 
-  it("adds the A race to the events when B and C races exist", () => {
+  it("keeps the A race in the goal fields and sends only B and C races in events", () => {
     const ev: GenerateRequest = { goal: "event", hours_per_week: 8, plan_weeks: 12, rest_days: [], event_name: "Fondo", event_date: "2027-06-01" }
     const r = applyAdvanced(ev, adv({ eventKm: "120", races: [{ date: "2027-04-01", name: "Crit", priority: "C" }] }), null)
-    expect(r.events).toEqual([
-      { date: "2027-06-01", priority: "A", name: "Fondo", event_km: 120, event_climb_m: 0, event_type: "granfondo" },
-      { date: "2027-04-01", priority: "C", name: "Crit" },
-    ])
-    expect(r.event_km).toBe(120)
+    expect(r.events).toEqual([{ date: "2027-04-01", priority: "C", name: "Crit" }])
+    expect(r).toMatchObject({ event_name: "Fondo", event_date: "2027-06-01", event_km: 120, event_type: "granfondo" })
   })
 
   it("sends B and C races alone for a goal without an event, and an end date as the event date", () => {

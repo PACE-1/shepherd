@@ -54,7 +54,7 @@ export interface GenerateRequest {
   event_km?: number
   event_climb?: number
   event_type?: string
-  events?: RaceEvent[] // B and C races (and the A race when there are any)
+  events?: RaceEvent[] // B and C races only; the A race goes in event_*
   focus?: "both" | "ftp" | "vo2"
   distribution?: "polarized" | "pyramidal" | "threshold"
   plan_mode?: "auto" | "fixed_core" | "template"

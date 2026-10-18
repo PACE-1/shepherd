@@ -1,6 +1,6 @@
 > **Historical document** (last changed 2026-09-10). It records what was found or planned then; the code has moved on. Check the current source before treating anything here as a live defect or instruction. Index: [docs/README.md](docs/README.md).
 
-> **Status (2026-10-15):** what is implemented versus unfinished, with fresh measurements, is in [docs/code-bloat/planner-audit.md](docs/code-bloat/planner-audit.md). Dormant switches (`_USE_WEEK_SOLVER`, `_REPAIR_MAX_MOVES`, `STRICT_SEAL`) are still off and the intensity-ceiling test is still an expected failure.
+> **Status (2026-10-15):** what is implemented versus unfinished, with fresh measurements, is in [docs/code-bloat/planner-audit.md](docs/code-bloat/planner-audit.md). Dormant switches (`_USE_WEEK_SOLVER`, `_REPAIR_MAX_MOVES`, `STRICT_SEAL`) are still off. The intensity-ceiling test passes since 2026-10-18 (#11: the z5+ rail may shed a phase-floor class; 0 of 864 property-test weeks breach, was 7). See [docs/PLANNER_AUDIT.md](docs/PLANNER_AUDIT.md).
 
 # Backend decomposition plan
 

@@ -2,7 +2,7 @@ name: Linux tests
 
 on:
   pull_request:
-    branches: [clean-main]
+    branches: [main, clean-main]
   workflow_dispatch:
 
 jobs:

@@ -114,7 +114,7 @@ Path(os.environ["SANDBOX_REPORT"] + "." + worker).write_text(json.dumps({"root":
 def test_startup_and_write():
     from fastapi.testclient import TestClient
     with TestClient(app.app) as client:
-        assert client.get("/").status_code == 200
+        assert client.get("/healthz").status_code == 200   # not "/": it redirects into the web UI, which the gate job has not built
     (app._plan_dir() / "probe.json").write_text("{}")
 ''')
     env = os.environ.copy()

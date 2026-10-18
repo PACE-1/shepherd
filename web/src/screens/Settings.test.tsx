@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
 import { diff, formFrom } from "@/lib/settings"
+import { ThemeProvider } from "@/components/theme-provider"
 import { Settings } from "@/screens/Settings"
 
 const SETTINGS = {
@@ -28,6 +29,19 @@ function mock(over: Record<string, (body: unknown) => Response> = {}) {
     if (url === "/api/version") return json({ app: "shepherd", version: "1.0.0", data_dir: "/data" })
     if (url === "/api/icu/push") return json({ connected: true, write_ok: true, sync_enabled: false, horizon_days: 14 })
     if (url === "/api/settings/workout-folders") return json({ builtin: { count: 4300 }, extra: null })
+    if (url === "/api/folder-import") return json({ folder: "", recursive: false, running: false, max_files: 200, last_scan: null })
+    if (url === "/api/sports/load") return json({ as_of: "2026-10-18", days_of_history: 0, settled: false, combined: { ctl: 0, atl: 0, tsb: 0, week_load: 0 }, sports: {}, method: "", confidence: "" })
+    if (url === "/api/sports/thresholds") return json({ thresholds: {} })
+    if (url === "/api/nutrition/connection") return json({ configured: false, base_url: "", has_key: false, last_synced_at: null })
+    if (url === "/api/notifications/settings") return json({ has_url: false, events: { readiness: true, missed: true, sync_failure: true, gear_due: true }, readiness_time: "" })
+    if (url === "/api/run/zones") return json({ pace_zones: [], hr_zones: [], method: "", confidence: "" })
+    if (url === "/api/run/activities") return json({ runs: [], missing: [], method: "", confidence: "" })
+    if (url === "/api/run/predict") return json({ window_days: 56, predictions: [], missing: [], riegel_method: "", riegel_confidence: "", cs_method: "", cs_confidence: "", long_run_rule: "" })
+    if (url === "/api/weather/location") return json({ has_location: false, place: null, network_enabled: true })
+    if (url === "/api/swim/css") return json({ css_s_per_100m: null, history: [], zones_note: "", method: "", confidence: "" })
+    if (url === "/api/swim/activities") return json({ swims: [], missing: [], method: "", confidence: "", stroke_note: "" })
+    if (url === "/api/swim/open-water") return json({ notes: [] })
+    if (url === "/api/swim/sessions") return json({ has_css: false, pool_m: 25, sessions: [] })
     if (url === "/api/profile/ftp-history") return json({ ftp_current: 250, ftp_source: "manual", history: [] })
     return json({}, 404)
   }))
@@ -52,7 +66,7 @@ describe("diff", () => {
 describe("Settings", () => {
   it("shows the rider values, zones, sync state and version", async () => {
     mock()
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     expect(await screen.findByDisplayValue("250")).toBeTruthy()
     expect(screen.getByText(/FTP source: tested_ramp \(2026-09-01\)/)).toBeTruthy()
     expect(screen.getByText(/intervals.icu estimates 258 W/)).toBeTruthy()
@@ -60,11 +74,12 @@ describe("Settings", () => {
     expect(await screen.findByText(/Connected as Isaac/)).toBeTruthy()
     expect(screen.getByText(/40 rides and 90 wellness days stored. Last sync: 2026-10-16T08:00:00/)).toBeTruthy()
     expect(await screen.findByText("1.0.0")).toBeTruthy()
+    expect(screen.getByRole("link", { name: "Gear and service reminders" }).getAttribute("href")).toBe("#/gear")
   })
 
   it("saves only the changed field, then shows it as saved", async () => {
     const calls = mock({ "/api/settings": (b) => (b ? json({ ok: true, updated: {}, settings: { ...SETTINGS, ftp: 260 } }) : json(SETTINGS)) })
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     const ftp = await screen.findByDisplayValue("250")
     const save = screen.getByRole("button", { name: "Save changes" }) as HTMLButtonElement
     expect(save.disabled).toBe(true)
@@ -78,7 +93,7 @@ describe("Settings", () => {
 
   it("blocks a bad value without calling the server", async () => {
     const calls = mock()
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     const ftp = await screen.findByDisplayValue("250")
     await userEvent.clear(ftp)
     await userEvent.type(ftp, "5000")
@@ -89,7 +104,7 @@ describe("Settings", () => {
 
   it("shows the server's refusal", async () => {
     mock({ "/api/settings": (b) => (b ? json({ detail: "hr mode needs your LTHR" }, 400) : json(SETTINGS)) })
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     await userEvent.selectOptions(await screen.findByLabelText("Targets"), "hr")
     await userEvent.click(screen.getByRole("button", { name: "Save changes" }))
     expect((await screen.findByRole("alert")).textContent).toContain("hr mode needs your LTHR")
@@ -97,7 +112,7 @@ describe("Settings", () => {
 
   it("syncs on demand and reports a failure", async () => {
     const calls = mock({ "/api/sync": () => json({ detail: "ICU unreachable" }, 502) })
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     await userEvent.click(await screen.findByRole("button", { name: "Sync now" }))
     expect((await screen.findByText(/Couldn’t do that: ICU unreachable/))).toBeTruthy()
     expect(calls.filter((c) => c.url === "/api/sync/status").length).toBeGreaterThan(1)
@@ -105,14 +120,14 @@ describe("Settings", () => {
 
   it("disables sync when not connected and explains where to connect", async () => {
     mock({ "/api/icu/connection": () => json({ connected: false }) })
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     expect(await screen.findByText(/Not connected/)).toBeTruthy()
     expect((screen.getByRole("button", { name: "Sync now" }) as HTMLButtonElement).disabled).toBe(true)
   })
 
   it("reports whether an update is available", async () => {
     mock({ "/api/update/check": () => json({ current: "1.0.0", latest: "1.1.0", update_available: true, release_url: "https://example.test/r" }) })
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     await userEvent.click(await screen.findByRole("button", { name: "Check for updates" }))
     expect((await screen.findByRole("status")).textContent).toContain("Version 1.1.0 is available")
   })

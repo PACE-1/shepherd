@@ -1,4 +1,4 @@
-import type { FtpReviewSaved, FtpTestAnalysis, FtpUpdated, PrToastQueue, RideDetail, RideImported, RideRpeSaved, RidesSynced } from "@/api/types"
+import type { FtpReviewSaved, FtpTestAnalysis, FtpUpdated, Ok, PrToastQueue, RideDetail, RideImported, RideRpeSaved, RidesSynced } from "@/api/types"
 import { api } from "@/lib/api"
 
 export const rideRoute = (id: string) => `#/ride/${encodeURIComponent(id)}`
@@ -20,7 +20,7 @@ export const setRpe = (id: string, rpe: number | null) =>
 
 /** Only imported FIT rides can be deleted; the server wants the file's name without the `fit_` prefix. */
 export const isFitRide = (id: string) => id.startsWith("fit_")
-export const deleteRide = (id: string) => api<{ ok: boolean }>(`/api/rides/${encodeURIComponent(id.replace(/^fit_/, ""))}`, { method: "DELETE" })
+export const deleteRide = (id: string) => api<Ok>(`/api/rides/${encodeURIComponent(id.replace(/^fit_/, ""))}`, { method: "DELETE" })
 export const fitUrl = (id: string) => `/api/rides/${encodeURIComponent(id.replace(/^fit_/, ""))}/fit`
 
 export const getFtpAnalysis = (id: string) => api<FtpTestAnalysis>(`/api/ride/${encodeURIComponent(id)}/ftp-test-analysis`)
