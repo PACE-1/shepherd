@@ -15777,6 +15777,8 @@ def _reconcile_current_week(plan: dict, today: date) -> "tuple[int, dict | None]
             actual = _collect_week_activities(week, today, include_today=True)
             preview = _rematch_week(week, actual, today)
             n += _apply_rematch_preview_to_plan(plan, week_idx, preview)
+            from routes_multisport_plan import reconcile_plan_week  # companions, apart from the rides; never raises
+            n += reconcile_plan_week(plan["weeks"][week_idx], today)
         except Exception:  # noqa: BLE001 - one week failing must not block the other
             if anchor == today:
                 raise

@@ -868,6 +868,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/plan/companions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["plan_companions_api_plan_companions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plan/companions/{companion_id}/dismiss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["plan_companion_dismiss_api_plan_companions__companion_id__dismiss_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/plan/continuous/deload-revert": {
         parameters: {
             query?: never;
@@ -3038,6 +3070,17 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** CompanionDismissed */
+        CompanionDismissed: {
+            companion: components["schemas"]["PlanCompanion"];
+            /**
+             * Ok
+             * @default true
+             */
+            ok: boolean;
+        } & {
+            [key: string]: unknown;
+        };
         /** CompareSide */
         CompareSide: {
             /**
@@ -4746,6 +4789,106 @@ export interface components {
             plan_json?: components["schemas"]["PlanJson"] | null;
             /** Weeks Regenerated */
             weeks_regenerated?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** PlanCompanion */
+        PlanCompanion: {
+            /** Completion Matches */
+            completion_matches?: unknown[] | null;
+            /** Day */
+            day: string;
+            /**
+             * Day Name
+             * @default
+             */
+            day_name: string;
+            /**
+             * Description
+             * @default
+             */
+            description: string;
+            /**
+             * Dismissed At
+             * @default
+             */
+            dismissed_at: string;
+            /**
+             * Duration Min
+             * @default 0
+             */
+            duration_min: number;
+            /**
+             * Hard
+             * @default false
+             */
+            hard: boolean;
+            /** Id */
+            id: string;
+            /** Session Type */
+            session_type: string;
+            /** Sport */
+            sport: string;
+            /**
+             * Status
+             * @default pending
+             */
+            status: string;
+            /**
+             * Template Id
+             * @default
+             */
+            template_id: string;
+            /** Workout */
+            workout?: {
+                [key: string]: unknown;
+            } | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** PlanCompanionWeek */
+        PlanCompanionWeek: {
+            /**
+             * Companions
+             * @default []
+             */
+            companions: components["schemas"]["PlanCompanion"][];
+            /** End */
+            end: string;
+            /** Start */
+            start: string;
+            /** Week Num */
+            week_num?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** PlanCompanions */
+        PlanCompanions: {
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Has Plan
+             * @default false
+             */
+            has_plan: boolean;
+            /**
+             * Note
+             * @default
+             */
+            note: string;
+            /**
+             * Today
+             * @default []
+             */
+            today: components["schemas"]["PlanCompanion"][];
+            /**
+             * Weeks
+             * @default []
+             */
+            weeks: components["schemas"]["PlanCompanionWeek"][];
         } & {
             [key: string]: unknown;
         };
@@ -8652,6 +8795,46 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PlanAutoRecalc"];
+                };
+            };
+        };
+    };
+    plan_companions_api_plan_companions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanCompanions"];
+                };
+            };
+        };
+    };
+    plan_companion_dismiss_api_plan_companions__companion_id__dismiss_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompanionDismissed"];
                 };
             };
         };

@@ -1924,3 +1924,38 @@ class FolderImportState(_Model):
 class FolderImportStarted(_Model):
     started: bool                        # False: a scan was already running
     running: bool
+# ── Companion sessions in the plan (ADDENDUM 5): routes_multisport_plan.py ───────────────────────────
+class PlanCompanion(_Model):
+    id: str
+    day: str
+    day_name: str = ""
+    sport: str                           # running | swimming | strength
+    session_type: str                    # run_easy | swim_endurance | strength | ...
+    duration_min: int = 0
+    description: str = ""
+    status: str = "pending"              # pending | done | missed | dismissed
+    hard: bool = False
+    template_id: str = ""
+    workout: Optional[dict] = None       # steps in the workout_builder shape
+    dismissed_at: str = ""
+    completion_matches: Optional[list] = None
+
+
+class PlanCompanionWeek(_Model):
+    week_num: Optional[int] = None
+    start: str
+    end: str
+    companions: list[PlanCompanion] = []
+
+
+class PlanCompanions(_Model):
+    enabled: bool = False                # the rider's sport targets turn companion planning on
+    has_plan: bool = False
+    note: str = ""                       # "not validated against real runs/swims yet"
+    today: list[PlanCompanion] = []
+    weeks: list[PlanCompanionWeek] = []
+
+
+class CompanionDismissed(_Model):
+    ok: bool = True
+    companion: PlanCompanion

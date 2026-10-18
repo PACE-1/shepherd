@@ -16,6 +16,7 @@ import { PlanRematch } from "@/screens/PlanRematch"
 import { PlanTimeOff } from "@/screens/PlanTimeOff"
 import { SessionExport } from "@/screens/SessionExport"
 import { SessionWeather } from "@/screens/WeatherSession"
+import { WeekCompanions } from "@/screens/WeekCompanions"
 import { currentWeek, dismissSession, FTP_TEST_TYPES, fmtMinutes, getPlan, isoDay, moveSession, plannedTss, revertDeload, setFtpTestType, SWAP_TYPES, swapSessionType, weekSessions, type Availability } from "@/lib/home"
 
 type Load = { state: "loading" } | { state: "ok"; plan: PlanRead } | { state: "error"; message: string }
@@ -377,6 +378,7 @@ export function Plan() {
                 })}
               </ul>
             )}
+            <WeekCompanions start={week.start} />
             {actionError && (
               <p role="alert" className="text-sm">
                 Couldn’t change that session: {actionError}

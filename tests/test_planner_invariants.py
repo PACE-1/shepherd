@@ -87,8 +87,8 @@ def _injury_regenerate(g):
     def drive(r, base):
         t = g._day(17)
         periods = [{"start": (t - dt.timedelta(days=12)).isoformat(),
-                    "end": (t - dt.timedelta(days=3)).isoformat(), "type": "illness",
-                    "episode_id": "audit", "reason": "illness"}]
+                    "end": (t - dt.timedelta(days=3)).isoformat(), "type": "injury",
+                    "episode_id": "audit", "reason": "injury"}]
         rides = [{"date": s.day.isoformat(), "tss": s.tss_estimate}
                  for w in base for s in w.sessions if s.day < t and s.tss_estimate]
         g.at(t)

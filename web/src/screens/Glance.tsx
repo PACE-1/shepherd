@@ -12,6 +12,7 @@ import {
 import { currentWeek, fmtMinutes, getReadiness, getWeekSummary, isoDay, reading } from "@/lib/home"
 import { getSettings } from "@/lib/settings"
 import { getIcuConnection } from "@/lib/setup"
+import { CompanionToday } from "@/screens/CompanionToday"
 import { useLoad, type Load } from "@/screens/panel"
 import { SessionWeather } from "@/screens/WeatherSession"
 
@@ -91,6 +92,7 @@ export function Glance({ plan, stats }: { plan: Load<PlanRead>; stats: Load<Ride
                 ))}
               </ul>
             )}
+            <CompanionToday />
           </section>
 
           <section aria-label="Your week">

@@ -1387,6 +1387,24 @@
         "title": "CapReverted",
         "type": "object"
       },
+      "CompanionDismissed": {
+        "additionalProperties": true,
+        "properties": {
+          "companion": {
+            "$ref": "#/components/schemas/PlanCompanion"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "companion"
+        ],
+        "title": "CompanionDismissed",
+        "type": "object"
+      },
       "CompareSide": {
         "additionalProperties": true,
         "properties": {
@@ -5187,6 +5205,170 @@
           "action"
         ],
         "title": "PlanAutoRecalc",
+        "type": "object"
+      },
+      "PlanCompanion": {
+        "additionalProperties": true,
+        "properties": {
+          "completion_matches": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completion Matches"
+          },
+          "day": {
+            "title": "Day",
+            "type": "string"
+          },
+          "day_name": {
+            "default": "",
+            "title": "Day Name",
+            "type": "string"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "dismissed_at": {
+            "default": "",
+            "title": "Dismissed At",
+            "type": "string"
+          },
+          "duration_min": {
+            "default": 0,
+            "title": "Duration Min",
+            "type": "integer"
+          },
+          "hard": {
+            "default": false,
+            "title": "Hard",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "session_type": {
+            "title": "Session Type",
+            "type": "string"
+          },
+          "sport": {
+            "title": "Sport",
+            "type": "string"
+          },
+          "status": {
+            "default": "pending",
+            "title": "Status",
+            "type": "string"
+          },
+          "template_id": {
+            "default": "",
+            "title": "Template Id",
+            "type": "string"
+          },
+          "workout": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workout"
+          }
+        },
+        "required": [
+          "id",
+          "day",
+          "sport",
+          "session_type"
+        ],
+        "title": "PlanCompanion",
+        "type": "object"
+      },
+      "PlanCompanionWeek": {
+        "additionalProperties": true,
+        "properties": {
+          "companions": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/PlanCompanion"
+            },
+            "title": "Companions",
+            "type": "array"
+          },
+          "end": {
+            "title": "End",
+            "type": "string"
+          },
+          "start": {
+            "title": "Start",
+            "type": "string"
+          },
+          "week_num": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Week Num"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ],
+        "title": "PlanCompanionWeek",
+        "type": "object"
+      },
+      "PlanCompanions": {
+        "additionalProperties": true,
+        "properties": {
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "has_plan": {
+            "default": false,
+            "title": "Has Plan",
+            "type": "boolean"
+          },
+          "note": {
+            "default": "",
+            "title": "Note",
+            "type": "string"
+          },
+          "today": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/PlanCompanion"
+            },
+            "title": "Today",
+            "type": "array"
+          },
+          "weeks": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/PlanCompanionWeek"
+            },
+            "title": "Weeks",
+            "type": "array"
+          }
+        },
+        "title": "PlanCompanions",
         "type": "object"
       },
       "PlanGoal": {
@@ -12577,6 +12759,40 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PlanAutoRecalc"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/plan/companions": {
+      "get": {
+        "operationId": "plan_companions_api_plan_companions_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanCompanions"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/plan/companions/{companion_id}/dismiss": {
+      "post": {
+        "operationId": "plan_companion_dismiss_api_plan_companions__companion_id__dismiss_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanionDismissed"
                 }
               }
             },

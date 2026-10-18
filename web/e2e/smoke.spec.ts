@@ -789,3 +789,25 @@ test("Folder import: set a FIT folder, scan it, and the files stay untouched", a
   expect(state.last_scan.imported + state.last_scan.duplicate).toBe(1)
   expect(readdirSync(folder).sort()).toEqual(["broken.fit", "ride.fit"])
 })
+
+test("Companion sessions: a run and swim split puts runs and swims in the Plan week, labelled as not validated", async ({ page, request }) => {
+  const base = "http://127.0.0.1:" + (process.env.E2E_PORT ?? 22488)
+  const put = await request.put(base + "/api/balance/targets", {
+    data: { targets: { cycling: 50, running: 25, swimming: 25, other: 0 }, limiter: "running" },
+  })
+  expect(put.ok()).toBeTruthy()
+  const gen = await request.post(base + "/api/plan/generate", {
+    data: { goal_type: "ftp", hours_per_week: 8, plan_weeks: 4, available_days: [0, 1, 2, 3, 4, 5, 6], rest_days: [] },
+  })
+  expect(gen.ok()).toBeTruthy()
+  expect((await (await api(request, "/api/plan/companions")).json()).enabled).toBe(true)
+  await page.goto("#/plan")
+  await page.getByRole("button", { name: "Next week" }).click()
+  const section = page.getByRole("region", { name: "Other sports this week" })
+  await expect(section.getByText("Not validated against real runs/swims yet.")).toBeVisible()
+  await expect(section.getByText("Run", { exact: true }).first()).toBeVisible()
+  await expect(section.getByText("Swim", { exact: true }).first()).toBeVisible()
+  await section.getByRole("button", { name: /^Dismiss Run/ }).first().click()
+  await expect(section.getByText(/· dismissed/).first()).toBeVisible()
+  await request.put(base + "/api/balance/targets", { data: { targets: null, limiter: null } })
+})
