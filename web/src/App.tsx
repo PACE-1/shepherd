@@ -5,6 +5,7 @@ import { Analysis } from "@/screens/Analysis"
 import { Dfa } from "@/screens/Dfa"
 import { Home } from "@/screens/Home"
 import { Library } from "@/screens/Library"
+import { Onboarding } from "@/screens/Onboarding"
 import { Plan } from "@/screens/Plan"
 import { ProfilePicker } from "@/screens/ProfilePicker"
 import { ProfileSetup } from "@/screens/ProfileSetup"
@@ -35,6 +36,7 @@ export function App() {
         <RideDetail id={decodeURIComponent(rest.join("/"))} />
       </AppShell>
     )
+  if (route === "onboarding") return <AppShell tab="home"><Onboarding /></AppShell>
   const tab = isTab(route) ? route : "home"
   return (
     <AppShell tab={tab}>

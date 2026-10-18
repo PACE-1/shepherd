@@ -477,3 +477,26 @@ test("Notifications: the bell is in the header, and Settings keeps the ntfy addr
   expect(saved.has_url).toBe(true)
   expect(JSON.stringify(saved)).not.toContain("secret-topic")
 })
+
+test("Home opens with an At a glance panel: status, today's session, the week", async ({ page }) => {
+  await page.goto("#/home")
+  const glance = page.getByLabel("At a glance")
+  await expect(glance.getByRole("heading", { name: "At a glance" })).toBeVisible()
+  await expect(glance.getByText(/Ready to train|Take it easy today|Rest today|Not enough data yet/)).toBeVisible()
+  await expect(glance.getByRole("heading", { name: "Your session" })).toBeVisible()
+  await expect(glance.getByRole("heading", { name: "Your week" })).toBeVisible()
+  await expect(glance.getByText("Loading…")).toHaveCount(0)
+})
+
+test("Guided setup checks a step before moving on, can skip it, and remembers where you were", async ({ page }) => {
+  await page.goto("#/settings")
+  await page.getByRole("link", { name: "Run the guided setup" }).click()
+  await expect(page.getByRole("heading", { name: "Connect intervals.icu" })).toBeVisible()
+  await page.getByRole("button", { name: "Continue" }).click()
+  await expect(page.getByRole("alert").filter({ hasText: "not connected yet" })).toBeVisible()
+  await page.getByRole("button", { name: "Skip for now" }).click()
+  await expect(page.getByRole("heading", { name: "Your rider numbers" })).toBeVisible()
+  await page.reload()
+  await expect(page.getByRole("heading", { name: "Your rider numbers" })).toBeVisible()
+  await expect(page.getByRole("button", { name: /Connect intervals\.icu\s*Skipped/ })).toBeVisible()
+})
