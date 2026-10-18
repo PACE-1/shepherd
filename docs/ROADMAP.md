@@ -51,10 +51,10 @@ The per-field precedence table belongs in `docs/DATA.md` (#161).
 | #153 | Non-root container (breaking: one-time volume ownership fix, command in the release notes) |
 | #152 | Login throttling and expiring sessions (everyone signs in again once) |
 | #154 | Lock on the data folder: one server process per data directory |
-| #107 / #149 | CI green on GitHub Actions; required before anything else merges |
+| #107 | CI green on GitHub Actions: lint fixed in #147, superseded runs cancelled (#149, merged); the bricks/triathlon browser test failed once and passed on re-run, so watch for a flake |
 | #155 | Dependabot, `pip-audit`, `SECURITY.md` |
 | #159 | Pre-release flag in release.yml, `:beta` image, breaking-change check, versioning docs |
-| #31 / #150 | Phase-0 data protections: #147 shipped part of it; #150 (stop pruning rides) completes it |
+| #31 | Phase-0 data protections: done (#147, and #150 merged: sync no longer prunes rides). The issue stays open for the Garmin route (#156, 4.1.0) |
 | #164 | Test-order pollution |
 | #26, #16 | Finish: the cleanup and lint pass, `NOTICE` still lists the trainer packages |
 | #139 | Zwift upload errors: an intervals.icu setting; Settings explains it; close once confirmed |
@@ -66,7 +66,7 @@ No new features beyond what #147 already merged. Pre-releases `4.0.0-beta.1`, th
 |---|---|---|
 | #156 | Garmin direct: health data and activities (branch `claude/practical-brown-9ydn5d`) | 4.0.0 |
 | #161 | Ingest contract: per-field precedence, one de-duplicated FIT path (Garmin, folder import, upload), cache clearing after sync, sync health panel | #156 |
-| #109 | Multi-sport model on `main` (#147's `multisport.py`), plus #166 per-sport detail pages | none |
+| #109 | Multi-sport model on `main` (#147's `multisport.py`) with per-sport detail pages (#166, merged); remaining: zone-aware charts, run/swim sessions in the plan data | none |
 | #163 | Parse each FIT once per request | #161 |
 
 Beta `4.1.0-beta.N` on the owner's real Garmin and intervals.icu accounts for about 2 weeks (#160).
@@ -84,7 +84,7 @@ Remaining scope on #110 (send to the watch through Garmin; run and swim targets)
 Remaining scope on #118–#127 (the gaps in the tables below), each through the science rule. Turning companion sessions into real per-sport plan sessions needs #24. If the plan file changes in a way older versions can't load, that release is **5.0.0**.
 
 ### Ongoing (one slice per release)
-#10 typed API (#157 error shape) · #23, #24 planner and calculation consolidation · #11 intensity ceiling (owner decision: floor or rail fix, moves golden cases) · #94 desktop parity · #9 browser tests · #13 server access (remote OAuth callback unverified) · #132 rebrand (naming search, fork detach: owner actions).
+#10 typed API (one error shape merged in #157; service extraction remains) · #23 (one FIT power reader merged in #167), #24 planner and calculation consolidation · #11 intensity ceiling (owner decision: floor or rail fix, moves golden cases) · #94 desktop parity · #9 browser tests · #13 server access (remote OAuth callback unverified) · #132 rebrand (naming search, fork detach: owner actions).
 
 ## Owner decisions (2026-10-18)
 - #147 stays merged; the roadmap is re-planned around `main`. #158 and #151 are closed, so `main`'s multi-sport model and palettes are the ones going forward.

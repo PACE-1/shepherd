@@ -334,21 +334,6 @@ def parse_record_streams(fit_path: Path) -> "dict | None":
         log.warning(f"parse_record_streams({fit_path}) FIT parse failed: {e}")
         return None
 
-    def _field(msg, name):
-        """Read a message field across fit_tool versions: attribute first,
-        ``get_value`` fallback (same split parse_rr_intervals handles —
-        some fit_tool versions only expose one of the two)."""
-        try:
-            v = getattr(msg, name)
-            if v is not None:
-                return v
-        except Exception:
-            pass
-        try:
-            return fit_field(msg, name)
-        except Exception:
-            return None
-
     power: list[int] = []
     hr: list[int] = []
     duration_s = 0
@@ -359,30 +344,30 @@ def parse_record_streams(fit_path: Path) -> "dict | None":
             msg = rec.message
             mtype = type(msg).__name__
             if mtype == "RecordMessage":
-                p = _field(msg, "power")
+                p = fit_field(msg, "power")
                 try:
                     power.append(int(p) if p is not None else 0)
                 except (TypeError, ValueError):
                     power.append(0)
-                h = _field(msg, "heart_rate")
+                h = fit_field(msg, "heart_rate")
                 try:
                     hr.append(int(h) if h is not None else 0)
                 except (TypeError, ValueError):
                     hr.append(0)
             elif mtype == "SessionMessage":
-                v = _field(msg, "total_timer_time")
+                v = fit_field(msg, "total_timer_time")
                 if v is not None:
                     try:
                         duration_s = int(round(float(v)))
                     except (TypeError, ValueError):
                         pass
-                v = _field(msg, "start_time")
+                v = fit_field(msg, "start_time")
                 if v is not None:
                     try:
                         start_time_ms = int(v)
                     except (TypeError, ValueError):
                         pass
-                v = _field(msg, "training_stress_score")
+                v = fit_field(msg, "training_stress_score")
                 if v is not None:
                     try:
                         file_tss = float(v)

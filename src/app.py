@@ -779,6 +779,7 @@ app = FastAPI(title="Shepherd", version=_VERSION, lifespan=lifespan)
 # Global exception handler — catches unhandled errors and logs them
 from starlette.requests import Request as StarletteRequest
 from starlette.responses import JSONResponse as StarletteJSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 @app.exception_handler(Exception)
 async def generic_exception_handler(request: StarletteRequest, exc: Exception):
@@ -787,6 +788,16 @@ async def generic_exception_handler(request: StarletteRequest, exc: Exception):
         status_code=500,
         content={"error": "Internal server error", "detail": "see server logs"},
     )
+
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: StarletteRequest, exc: StarletteHTTPException):
+    # One error shape (docs/API.md): a refused request carries its sentence in
+    # both `error` and `detail`, so every client reads the same key.
+    body = {"detail": exc.detail}
+    if isinstance(exc.detail, str):
+        body["error"] = exc.detail
+    return StarletteJSONResponse(body, status_code=exc.status_code, headers=getattr(exc, "headers", None))
 
 
 # ── Shared JSON body helper ──────────────────────────────────────────────────
@@ -5189,34 +5200,10 @@ def api_3d_fitness_status():
 
 
 def _v136_extract_fit_power_series(fit_path: Path) -> list:
-    """Lightweight FIT → power_series helper for the backfill loop.
-
-    Mirrors the RecordMessage scan in `_parse_fit_stats` but returns ONLY
-    the watts list — used so the backfill doesn't redo FTP-test detection
-    or eFTP estimation on every old ride.
-    """
-    try:
-        from fit_tool.fit_file import FitFile
-    except Exception:
-        return []
-    try:
-        ff = FitFile.from_file(str(fit_path))
-    except Exception:
-        return []
-    out: list = []
-    try:
-        for rec in ff.records:
-            msg = rec.message
-            if type(msg).__name__ != "RecordMessage":
-                continue
-            try:
-                pw = _fit_val(msg, "power")
-                out.append(int(pw) if pw is not None else 0)
-            except Exception:
-                out.append(0)
-    except Exception:
-        return out
-    return out
+    """Per-record watts for the backfill loop; [] when the FIT will not parse."""
+    from fit_activity import parse_record_streams
+    streams = parse_record_streams(fit_path)
+    return streams["power"] if streams else []
 
 
 @app.post("/api/wellness/backfill-3d-fitness", responses={200: {"model": api_models.Backfill3d}})
@@ -18054,23 +18041,9 @@ def _sync_icu_activities_locked(force: bool = False) -> dict:
             # before the guard existed. Cheap, idempotent, and it is what lets
             # the rider's own FIT import finally win the dedupe.
             _rs.purge_stub_icu_records()
-            # Deletions made ON intervals.icu propagate here too: sync only
-            # ever upserted, so a ride deleted upstream (the double-upload
-            # case: Karoo + Garmin, one copy removed) stayed on the calendar
-            # forever. Ids come from the raw fetched list — not the persisted
-            # subset — and the fetch provably succeeded to reach this line;
-            # the aborted pass skips this block entirely.
-            if not aborted:
-                _pruned = _rs.prune_deleted_icu_records(
-                    {str(a.get("id") or a.get("activity_id"))
-                     for a in _activities
-                     if a.get("id") or a.get("activity_id")},
-                    _sync_days)
-                if _pruned:
-                    # Not counted as "updated" — the toast would report ghost
-                    # rides as new activity. The cache drop is what matters:
-                    # every reader must stop seeing the pruned records now.
-                    clear_cache()
+            # #31: a ride intervals.icu stops listing is never removed here;
+            # upstream deletions do not propagate, so a data-source block
+            # cannot cost the rider their history.
     except db.SyncAborted:
         pass
     except Exception as e:  # noqa: BLE001 — best-effort heal, never break sync

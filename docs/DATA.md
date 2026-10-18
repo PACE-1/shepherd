@@ -101,11 +101,9 @@ these rules keep what is already stored:
 
 - **Wellness:** a field the sync returns empty never replaces a stored value
   (`ride_storage.persist_wellness`).
-- **Rides:** a ride intervals.icu stops listing is moved to
-  `<profile>/rides/icu/_pruned/` instead of being deleted. It disappears from the
-  calendar (that is how a deleted duplicate upload is cleaned up) but the file
-  stays and can be copied back. A pass that would prune more than 20 rides
-  refuses and prunes none.
+- **Rides:** sync only adds and updates. A ride intervals.icu stops listing stays
+  on the calendar and in the database; upstream deletions do not propagate, so a
+  deleted duplicate upload has to be removed by hand.
 - **Withheld rides count:** an activity intervals.icu lists with a sport and a
   length but nothing computed from the recording (no load, intensity, power or
   heart rate) marks the planned session done when it covers the planned length

@@ -10,6 +10,7 @@ import { rideInsight } from "@/lib/coach"
 import { fmtMinutes } from "@/lib/home"
 import { deleteRide, fitUrl, getFtpAnalysis, getRide, isFitRide, reviewFtp, setRace, setRpe, updateFtp, ZONE_NAMES } from "@/lib/rides"
 import type { Series } from "@/lib/analysis"
+import { averagePace, formatClock, sportKind, type SportKind } from "@/lib/sports"
 import { LineChart } from "@/screens/Chart"
 import { CoachInsight } from "@/screens/Coach"
 import { Panel, Row, useLoad } from "@/screens/panel"
@@ -17,16 +18,18 @@ import { Panel, Row, useLoad } from "@/screens/panel"
 const when = (iso?: string | null) => (iso ? new Date(iso).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }) : "—")
 const num = (v: unknown, unit = "", digits = 0) => (typeof v === "number" ? `${digits ? v.toFixed(digits) : Math.round(v)}${unit}` : "—")
 
-function Zones({ tiz }: { tiz: Record<string, number> }) {
-  const zones = Object.entries(tiz).filter(([k]) => k in ZONE_NAMES)
+const HR_ZONE_NAMES: Record<string, string> = Object.fromEntries([1, 2, 3, 4, 5, 6, 7].map((n) => [`z${n}`, `Zone ${n}`]))
+
+function Zones({ tiz, title = "Time in power zones", names = ZONE_NAMES }: { tiz: Record<string, number>; title?: string; names?: Record<string, string> }) {
+  const zones = Object.entries(tiz).filter(([k]) => k in names)
   const total = zones.reduce((n, [, s]) => n + (s || 0), 0)
   if (!total) return null
   return (
     <div className="space-y-1">
-      <h3 className="text-xs font-semibold text-muted-foreground">Time in power zones</h3>
+      <h3 className="text-xs font-semibold text-muted-foreground">{title}</h3>
       {zones.map(([k, secs]) => (
         <div key={k} className="flex items-center gap-2 text-sm">
-          <span className="w-36 text-muted-foreground">{ZONE_NAMES[k]}</span>
+          <span className="w-36 text-muted-foreground">{names[k]}</span>
           <span className="h-2 flex-1 rounded-full bg-muted" aria-hidden>
             <span className="block h-2 rounded-full bg-primary" style={{ width: `${(100 * (secs || 0)) / total}%` }} />
           </span>
@@ -37,7 +40,7 @@ function Zones({ tiz }: { tiz: Record<string, number> }) {
   )
 }
 
-function Traces({ samples }: { samples: Record<string, number[]> }) {
+function Traces({ samples, noun }: { samples: Record<string, number[]>; noun: string }) {
   const t = samples.t_s ?? []
   const trace = (key: string, name: string, color: string, unit: string): { s: Series; unit: string } | null => {
     const v = samples[key] ?? []
@@ -48,7 +51,7 @@ function Traces({ samples }: { samples: Record<string, number[]> }) {
   return (
     <div className="space-y-3">
       {charts.map(({ s, unit }) => (
-        <LineChart key={s.name} series={[s]} unit={unit} summary={`${s.name} over the ride`} />
+        <LineChart key={s.name} series={[s]} unit={unit} summary={`${s.name} over the ${noun}`} />
       ))}
     </div>
   )
@@ -206,7 +209,71 @@ function FtpVerdict({ id, a }: { id: string; a: FtpTestAnalysis }) {
   )
 }
 
+const NOUN: Record<SportKind, string> = { cycling: "ride", running: "run", swimming: "swim", other: "activity" }
+
+/** The numbers worth showing for this sport. Cycling keeps its power rows; a run or swim shows pace instead. */
+function Facts({ r, kind }: { r: Ride; kind: SportKind }) {
+  const pace = averagePace(kind, r.moving_s || r.duration_s, r.distance_km)
+  const common = (
+    <>
+      <Row label="Date" value={when(r.started_at)} />
+      <Row label="Duration" value={r.duration_s ? fmtMinutes(Math.round(r.duration_s / 60)) : "—"} />
+    </>
+  )
+  const load = <Row label="Load" value={num(r.tss)} />
+  const hr = <Row label="Heart rate (avg / max)" value={`${num(r.avg_hr)} / ${num(r.hr_max)}`} />
+  if (kind === "running")
+    return (
+      <>
+        {common}
+        <Row label="Distance" value={num(r.distance_km, " km", 2)} />
+        <Row label="Average pace" value={pace ? `${formatClock(pace)} /km` : "—"} />
+        <Row label="Climbing" value={num(r.elevation_m, " m")} />
+        {hr}
+        {load}
+      </>
+    )
+  if (kind === "swimming")
+    return (
+      <>
+        {common}
+        <Row label="Distance" value={typeof r.distance_km === "number" ? `${Math.round(r.distance_km * 1000)} m` : "—"} />
+        <Row label="Average pace" value={pace ? `${formatClock(pace)} /100 m` : "—"} />
+        {hr}
+        {load}
+      </>
+    )
+  if (kind === "other")
+    return (
+      <>
+        {common}
+        <Row label="Distance" value={num(r.distance_km, " km", 1)} />
+        {hr}
+        {load}
+      </>
+    )
+  return (
+    <>
+      <Row label="Date" value={when(r.started_at)} />
+      <Row label="Duration" value={r.duration_s ? fmtMinutes(Math.round(r.duration_s / 60)) : "—"} />
+      <Row label="Distance" value={num(r.distance_km, " km", 1)} />
+      <Row label="Climbing" value={num(r.elevation_m, " m")} />
+      <Row label="Average power" value={num(r.avg_power_w, " W")} />
+      <Row label="Normalised power" value={num(r.np_w, " W")} />
+      <Row label="Intensity factor" value={num(r.if_pct, "%")} />
+      <Row label="Load (TSS)" value={num(r.tss)} />
+      <Row label="Work" value={num(r.kj, " kJ")} />
+      {hr}
+      <Row label="Cadence" value={num(r.avg_cadence, " rpm")} />
+      <Row label="Decoupling" value={num(r.decoupling_pct, "%", 1)} />
+    </>
+  )
+}
+
 function Body({ r }: { r: Ride }) {
+  const kind = sportKind(r.sport)
+  const noun = NOUN[kind]
+  const hrTiz = r.hr_time_in_zone as Record<string, number> | null | undefined
   const [confirming, setConfirming] = useState(false)
   const [deleted, setDeleted] = useState(false)
   const [error, setError] = useState("")
@@ -226,22 +293,11 @@ function Body({ r }: { r: Ride }) {
   return (
     <div className="space-y-4">
       <dl className="grid gap-x-6 gap-y-1 sm:grid-cols-2">
-        <Row label="Date" value={when(r.started_at)} />
-        <Row label="Duration" value={r.duration_s ? fmtMinutes(Math.round(r.duration_s / 60)) : "—"} />
-        <Row label="Distance" value={num(r.distance_km, " km", 1)} />
-        <Row label="Climbing" value={num(r.elevation_m, " m")} />
-        <Row label="Average power" value={num(r.avg_power_w, " W")} />
-        <Row label="Normalised power" value={num(r.np_w, " W")} />
-        <Row label="Intensity factor" value={num(r.if_pct, "%")} />
-        <Row label="Load (TSS)" value={num(r.tss)} />
-        <Row label="Work" value={num(r.kj, " kJ")} />
-        <Row label="Heart rate (avg / max)" value={`${num(r.avg_hr)} / ${num(r.hr_max)}`} />
-        <Row label="Cadence" value={num(r.avg_cadence, " rpm")} />
-        <Row label="Decoupling" value={num(r.decoupling_pct, "%", 1)} />
+        <Facts r={r} kind={kind} />
       </dl>
-      {r.samples && <Traces samples={r.samples as Record<string, number[]>} />}
-      {tiz && <Zones tiz={tiz} />}
-      {prs.length > 0 && (
+      {r.samples && <Traces samples={r.samples as Record<string, number[]>} noun={noun} />}
+      {kind === "cycling" ? tiz && <Zones tiz={tiz} /> : hrTiz && <Zones tiz={hrTiz} title="Time in heart-rate zones" names={HR_ZONE_NAMES} />}
+      {kind === "cycling" && prs.length > 0 && (
         <div>
           <h3 className="text-xs font-semibold text-muted-foreground">Personal records on this ride</h3>
           <ul className="list-disc pl-5 text-sm">
@@ -252,7 +308,7 @@ function Body({ r }: { r: Ride }) {
           </ul>
         </div>
       )}
-      {intervals.length > 0 && (
+      {kind === "cycling" && intervals.length > 0 && (
         <div>
           <h3 className="text-xs font-semibold text-muted-foreground">Intervals</h3>
           <ul className="divide-y text-sm">
@@ -271,7 +327,7 @@ function Body({ r }: { r: Ride }) {
           </ul>
         </div>
       )}
-      <CoachInsight label="Review this ride" run={() => rideInsight(r.ride_id)} />
+      <CoachInsight label={`Review this ${noun}`} run={() => rideInsight(r.ride_id)} />
       <Rpe id={r.ride_id} initial={typeof r.rpe === "number" ? r.rpe : null} />
       {r.activity_id && <RaceFlag activityId={r.activity_id} initial={r.is_race === true} />}
       <div className="flex flex-wrap items-center gap-2">
@@ -303,15 +359,16 @@ function Body({ r }: { r: Ride }) {
 export function RideDetail({ id }: { id: string }) {
   const fetcher = useCallback(() => getRide(id), [id])
   const [load, retry] = useLoad<Ride>(fetcher)
+  const kind = load.state === "ok" ? sportKind(load.data.sport) : "cycling"
   return (
     <div className="space-y-4">
       <a href="#/analysis" className={buttonVariants({ size: "sm", variant: "ghost" })}>
         Back to Analysis
       </a>
-      <Panel title={load.state === "ok" ? load.data.name || "Ride" : "Ride"} load={load} retry={retry}>
+      <Panel title={load.state === "ok" ? load.data.name || (kind === "cycling" ? "Ride" : kind === "other" ? "Activity" : kind === "running" ? "Run" : "Swim") : "Ride"} load={load} retry={retry}>
         {(r) => <Body r={r} />}
       </Panel>
-      <FtpTest id={id} />
+      {kind === "cycling" && <FtpTest id={id} />}
     </div>
   )
 }

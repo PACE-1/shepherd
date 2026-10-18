@@ -6276,6 +6276,10 @@ export interface components {
             ftp_at_ride?: number | null;
             /** Hr Max */
             hr_max?: number | null;
+            /** Hr Time In Zone */
+            hr_time_in_zone?: {
+                [key: string]: unknown;
+            } | null;
             /** If Pct */
             if_pct?: number | null;
             /**
