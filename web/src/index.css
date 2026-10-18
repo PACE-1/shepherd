@@ -239,3 +239,46 @@
     @apply bg-popover text-popover-foreground;
     }
 }
+
+/* Phone layout (#130). Layout only; the palettes above are not touched. */
+@media (max-width: 767px) {
+    /* 44px touch targets. Switches, checkboxes and radios keep their drawn size and get a larger hit area instead. */
+    button:not([role="switch"]):not([role="checkbox"]):not([role="radio"]),
+    select,
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]) {
+        min-height: 44px;
+    }
+    button:not([role="switch"]):not([role="checkbox"]):not([role="radio"]) {
+        min-width: 44px;
+    }
+    /* Download links stand alone as actions, unlike links inside a sentence. */
+    a[download] {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+    }
+    [role="switch"], [role="checkbox"], [role="radio"], input[type="checkbox"], input[type="radio"] {
+        position: relative;
+    }
+    [role="switch"]::after, [role="checkbox"]::after, [role="radio"]::after {
+        content: "";
+        position: absolute;
+        inset: 50% auto auto 50%;
+        width: 44px;
+        height: 44px;
+        transform: translate(-50%, -50%);
+    }
+    /* 16px stops iOS Safari zooming the page when a field is focused. */
+    input, select, textarea {
+        font-size: 16px;
+    }
+    /* A wide table scrolls inside its card instead of widening the page. */
+    table {
+        display: block;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+    img, svg, canvas, video {
+        max-width: 100%;
+    }
+}

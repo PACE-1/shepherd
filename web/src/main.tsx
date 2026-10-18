@@ -6,9 +6,11 @@ import App from "./App.tsx"
 import { ThemeProvider } from "@/components/theme-provider.tsx"
 import { installErrorReporting } from "@/lib/errorReport.ts"
 import { applyStoredPalette } from "@/lib/palette.ts"
+import { registerServiceWorker } from "@/lib/pwa.ts"
 
 installErrorReporting()
 applyStoredPalette()
+registerServiceWorker()
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

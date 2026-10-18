@@ -38,6 +38,24 @@ private network only. The app serves plain HTTP. Uvicorn trusts forwarding
 headers only from `127.0.0.1` unless `FORWARDED_ALLOW_IPS` is set; keep it that
 way unless the proxy is on another host. Run exactly one worker.
 
+## Use it on a phone (#130)
+
+The interface adapts to phone widths (a bottom tab bar, tables that scroll inside
+their card) and can be installed as an app from `/v2/`: Chrome and Edge offer
+"Install app" in the menu, Safari offers Share, "Add to Home Screen".
+
+- **HTTPS is required.** Browsers only install an app and run its service worker
+  from a secure origin: `https://`, or `http://localhost`. A phone reaching the
+  server at `http://192.168.x.x:22400` can use the phone layout in a normal tab
+  but cannot install it. Put the TLS proxy from the section above in front.
+- **What the installed app keeps offline:** the page, scripts, styles and icons
+  under `/v2/` (`web/public/sw.js`). Never `/api`: every ride, plan and wellness
+  figure is read from the server each time, so nothing is stale and nothing
+  private is stored on the phone by the worker. Offline, the app opens but shows
+  load errors until the server is reachable.
+- **Behind the access token** the manifest is requested with the session cookie
+  (`crossorigin="use-credentials"`), so sign in once in the browser first, then install.
+
 ## Behind an OIDC proxy (Pocket ID)
 
 The app has one shared token and no OIDC client of its own. To put Pocket ID (or
