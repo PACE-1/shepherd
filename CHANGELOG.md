@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- **Added: notifications (#131).** Daily readiness, missed session and sync failure notices in an in-app bell, with an optional ntfy-compatible POST; each can be switched off in Settings.
+- **Added: phone layout and installable app (#130).** Bottom tab bar and thumb-sized controls, and a web app you can install when served over HTTPS.
+- **Added: "At a glance" on Home and a guided setup (#145, #105).** Plain-language status, today's session, week progress and a next step; a guided setup walks new riders through connecting, rider numbers, goal and availability.
+- **Added: workout builder for cycling (#110).** Build structured workouts with power or heart-rate targets and repeats, preview intensity, IF and TSS, save them to your Library and send them to your intervals.icu calendar for Garmin.
+- **Added: running (#118, #119).** Friel pace and heart-rate zones, a critical-speed test that can set your threshold pace, a grade-adjusted pace converter, and per-run rTSS/hrTSS with cadence and stride, each with its method and confidence.
+- **Added: injury and illness (#113).** Record an injury or illness, pause the plan while it lasts, return through a conservative easy-only ramp, and see a weekly ramp-rate warning per sport. Not medical advice.
+- **Added: weight trend, critical power model and ride comparison (#114, #116).** Weight trend with W/kg history, a critical power model (CP and W' with 95% intervals), and side-by-side comparison of two rides or efforts.
+- **Added: readiness drivers (#128).** Readiness says which inputs fed today's score and shows the last 7 days of load by sport.
+- **Added: race predictor (#121).** 5K to marathon from your best recent run (Riegel) and your critical-speed test, with cited error and caveats.
+- **Added: swim critical speed and open-water notes (#122, #126).** CSS from a 400 m and 200 m time, per-swim sTSS, and notes on open-water swims.
+- **Added: nutrition and fueling (#112).** SparkyFitness sync (Settings, on demand) and a Fueling screen with carbohydrate per hour and per day targets compared with what you logged. Not yet run against a live SparkyFitness server.
+- **Added: weather forecast for planned sessions (#117).** Pick where you ride in setup, guided setup or Settings; a rated forecast (Open-Meteo) appears on Plan and Home. Your location stays on your machine.
+- **Added: races (#111).** A/B/C races with a taper before A and B races and a race-day timeline. Riders who already have B races get shorter easy sessions in the week before them on the next plan rebuild.
 - **Fixed: ride strain scores were never calculated** (a wrongly named parameter); they are now computed when a ride loads.
 - **Fixed: the first visit to the workout Library took about 8 seconds.** The library is prepared in the background at startup.
 - **Fixed: a slow earlier answer could replace a newer one on Settings and Analysis cards**, which showed as the wrong comparison or range.
