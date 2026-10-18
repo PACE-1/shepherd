@@ -5,6 +5,10 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 import { diff, formFrom } from "@/lib/settings"
 import { Settings } from "@/screens/Settings"
 
+// Settings includes the Appearance card, which needs a theme; these tests are not about it.
+vi.mock("@/components/theme-provider", () => ({ useTheme: () => ({ theme: "system", setTheme() {}, palette: "default", setPalette() {} }) }))
+
+
 const SETTINGS = {
   weight: 70, ftp: 250, eftp: 258.4, lthr: 170, max_hr: 190, target_mode: "power", lthr_is_set: true, w_per_kg: 3.57, ftp_source: "tested_ramp", ftp_source_date: "2026-09-01T10:00:00",
   power_zones: [{ zone: "Z1", name: "Z1 Active Recovery", low: 0, high: 137 }, { zone: "Z7", name: "Z7 Neuromuscular", low: 377, high: 99999 }],

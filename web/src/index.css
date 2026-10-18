@@ -119,6 +119,168 @@
     --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Colour schemes (data-palette on <html>, set by ThemeProvider). Each overrides the tokens above; the chart ramp is shared by both modes. Keep names in lib/palettes.ts. */
+
+[data-palette="ocean"] {
+    --chart-1: oklch(0.837 0.128 250);
+    --chart-2: oklch(0.705 0.16 250);
+    --chart-3: oklch(0.646 0.16 250);
+    --chart-4: oklch(0.553 0.144 250);
+    --chart-5: oklch(0.47 0.128 250);
+}
+[data-palette="ocean"] {
+    --background: #f8fbff;
+    --card: #ffffff;
+    --popover: #ffffff;
+    --primary: #1d4ed8;
+    --primary-foreground: #ffffff;
+    --sidebar-primary: #1d4ed8;
+    --sidebar-primary-foreground: #ffffff;
+    --secondary: #e8f0fb;
+    --muted: #e8f0fb;
+    --muted-foreground: #5b6b82;
+    --accent: #e8f0fb;
+    --border: #d6e2f3;
+    --input: #d6e2f3;
+    --ring: #60a5fa;
+}
+[data-palette="ocean"].dark {
+    --background: #0b1220;
+    --card: #111a2c;
+    --popover: #111a2c;
+    --primary: #60a5fa;
+    --primary-foreground: #0b1220;
+    --sidebar-primary: #60a5fa;
+    --sidebar-primary-foreground: #0b1220;
+    --secondary: #1a2640;
+    --muted: #152033;
+    --muted-foreground: #9aa8c0;
+    --accent: #1a2640;
+    --border: #22314d;
+    --input: #22314d;
+    --ring: #3b6fb5;
+}
+
+[data-palette="forest"] {
+    --chart-1: oklch(0.837 0.120 150);
+    --chart-2: oklch(0.705 0.15 150);
+    --chart-3: oklch(0.646 0.15 150);
+    --chart-4: oklch(0.553 0.135 150);
+    --chart-5: oklch(0.47 0.120 150);
+}
+[data-palette="forest"] {
+    --background: #f8fcf9;
+    --card: #ffffff;
+    --popover: #ffffff;
+    --primary: #15803d;
+    --primary-foreground: #ffffff;
+    --sidebar-primary: #15803d;
+    --sidebar-primary-foreground: #ffffff;
+    --secondary: #e7f3ea;
+    --muted: #e7f3ea;
+    --muted-foreground: #5a6e60;
+    --accent: #e7f3ea;
+    --border: #d3e6d9;
+    --input: #d3e6d9;
+    --ring: #6bbf86;
+}
+[data-palette="forest"].dark {
+    --background: #0a120d;
+    --card: #101b14;
+    --popover: #101b14;
+    --primary: #4ade80;
+    --primary-foreground: #08130c;
+    --sidebar-primary: #4ade80;
+    --sidebar-primary-foreground: #08130c;
+    --secondary: #172a1d;
+    --muted: #122017;
+    --muted-foreground: #97ab9d;
+    --accent: #172a1d;
+    --border: #213a2a;
+    --input: #213a2a;
+    --ring: #3f8a5a;
+}
+
+[data-palette="rose"] {
+    --chart-1: oklch(0.837 0.152 5);
+    --chart-2: oklch(0.705 0.19 5);
+    --chart-3: oklch(0.646 0.19 5);
+    --chart-4: oklch(0.553 0.171 5);
+    --chart-5: oklch(0.47 0.152 5);
+}
+[data-palette="rose"] {
+    --background: #fffafa;
+    --card: #ffffff;
+    --popover: #ffffff;
+    --primary: #be123c;
+    --primary-foreground: #ffffff;
+    --sidebar-primary: #be123c;
+    --sidebar-primary-foreground: #ffffff;
+    --secondary: #fbeaee;
+    --muted: #fbeaee;
+    --muted-foreground: #76606a;
+    --accent: #fbeaee;
+    --border: #f0d6dd;
+    --input: #f0d6dd;
+    --ring: #fb7185;
+}
+[data-palette="rose"].dark {
+    --background: #140a0d;
+    --card: #1e1115;
+    --popover: #1e1115;
+    --primary: #fb7185;
+    --primary-foreground: #1a060b;
+    --sidebar-primary: #fb7185;
+    --sidebar-primary-foreground: #1a060b;
+    --secondary: #2d1a20;
+    --muted: #23141a;
+    --muted-foreground: #b79ca5;
+    --accent: #2d1a20;
+    --border: #3d2229;
+    --input: #3d2229;
+    --ring: #a8404f;
+}
+
+[data-palette="violet"] {
+    --chart-1: oklch(0.837 0.136 295);
+    --chart-2: oklch(0.705 0.17 295);
+    --chart-3: oklch(0.646 0.17 295);
+    --chart-4: oklch(0.553 0.153 295);
+    --chart-5: oklch(0.47 0.136 295);
+}
+[data-palette="violet"] {
+    --background: #fbf9ff;
+    --card: #ffffff;
+    --popover: #ffffff;
+    --primary: #6d28d9;
+    --primary-foreground: #ffffff;
+    --sidebar-primary: #6d28d9;
+    --sidebar-primary-foreground: #ffffff;
+    --secondary: #efe9fb;
+    --muted: #efe9fb;
+    --muted-foreground: #675f7a;
+    --accent: #efe9fb;
+    --border: #e0d6f4;
+    --input: #e0d6f4;
+    --ring: #a78bfa;
+}
+[data-palette="violet"].dark {
+    --background: #0f0b17;
+    --card: #171125;
+    --popover: #171125;
+    --primary: #a78bfa;
+    --primary-foreground: #120a24;
+    --sidebar-primary: #a78bfa;
+    --sidebar-primary-foreground: #120a24;
+    --secondary: #231a3a;
+    --muted: #1a1330;
+    --muted-foreground: #a89fc0;
+    --accent: #231a3a;
+    --border: #31254d;
+    --input: #31254d;
+    --ring: #6d53b5;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

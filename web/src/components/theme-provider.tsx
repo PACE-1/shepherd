@@ -1,5 +1,7 @@
 import * as React from "react"
 
+import { isPalette, type Palette } from "@/lib/palettes"
+
 type Theme = "dark" | "light" | "system"
 type ResolvedTheme = "dark" | "light"
 
@@ -13,6 +15,8 @@ type ThemeProviderProps = {
 type ThemeProviderState = {
   theme: Theme
   setTheme: (theme: Theme) => void
+  palette: Palette
+  setPalette: (palette: Palette) => void
 }
 
 const COLOR_SCHEME_QUERY = "(prefers-color-scheme: dark)"
@@ -91,6 +95,29 @@ export function ThemeProvider({
 
     return defaultTheme
   })
+
+  const paletteKey = `${storageKey}-palette`
+  const [palette, setPaletteState] = React.useState<Palette>(() => {
+    const stored = localStorage.getItem(paletteKey)
+    return isPalette(stored) ? stored : "default"
+  })
+
+  const setPalette = React.useCallback(
+    (next: Palette) => {
+      localStorage.setItem(paletteKey, next)
+      setPaletteState(next)
+    },
+    [paletteKey]
+  )
+
+  React.useEffect(() => {
+    const root = document.documentElement
+    if (palette === "default") {
+      delete root.dataset.palette
+    } else {
+      root.dataset.palette = palette
+    }
+  }, [palette])
 
   const setTheme = React.useCallback(
     (nextTheme: Theme) => {
@@ -184,6 +211,11 @@ export function ThemeProvider({
         return
       }
 
+      if (event.key === paletteKey) {
+        setPaletteState(isPalette(event.newValue) ? event.newValue : "default")
+        return
+      }
+
       if (event.key !== storageKey) {
         return
       }
@@ -201,14 +233,16 @@ export function ThemeProvider({
     return () => {
       window.removeEventListener("storage", handleStorageChange)
     }
-  }, [defaultTheme, storageKey])
+  }, [defaultTheme, storageKey, paletteKey])
 
   const value = React.useMemo(
     () => ({
       theme,
       setTheme,
+      palette,
+      setPalette,
     }),
-    [theme, setTheme]
+    [theme, setTheme, palette, setPalette]
   )
 
   return (

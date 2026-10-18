@@ -13,6 +13,7 @@ import { Folders } from "@/screens/Folders"
 import { ApiKeyConnect } from "@/screens/ApiKeyConnect"
 import { AiCoachSettings } from "@/screens/Coach"
 import { FtpHistory } from "@/screens/FtpHistory"
+import { Appearance } from "@/screens/Appearance"
 import { Panel, Row, useLoad } from "@/screens/panel"
 import { ZonesEditor } from "@/screens/ZonesEditor"
 
@@ -262,6 +263,7 @@ export function Settings() {
       <AiCoachSettings />
       <CalendarPush />
       <Folders />
+      <Appearance />
       <About />
       <div className="lg:col-span-2">
         <FtpHistory />

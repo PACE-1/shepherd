@@ -11,6 +11,10 @@ import { Panel } from "@/screens/panel"
 import { Settings } from "@/screens/Settings"
 import { ZonesEditor } from "@/screens/ZonesEditor"
 
+// Settings includes the Appearance card, which needs a theme; these tests are not about it.
+vi.mock("@/components/theme-provider", () => ({ useTheme: () => ({ theme: "system", setTheme() {}, palette: "default", setPalette() {} }) }))
+
+
 const json = (b: unknown, status = 200) => new Response(JSON.stringify(b), { status })
 type Handler = (body: unknown, init?: RequestInit) => Response
 function mock(routes: Record<string, Handler>) {

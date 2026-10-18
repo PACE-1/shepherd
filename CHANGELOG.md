@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Colour schemes.** Settings has a new Appearance card with Ocean, Forest, Rose and Violet schemes next to the default, each with a light and a dark variant shown as a preview. The choice is remembered on this device and charts and dropdowns follow it.
 - **Fixed: changing the AI provider could send the old API key to the new server.** A saved key is now reused only for the same provider and address; otherwise you must enter one.
 - **Fixed: AI coach requests no longer freeze the rest of the app** while the model is answering.
 - **Fixed: editing a daily check-in no longer erases its saved notes.**
