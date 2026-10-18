@@ -811,3 +811,18 @@ test("Companion sessions: a run and swim split puts runs and swims in the Plan w
   await expect(section.getByText(/· dismissed/).first()).toBeVisible()
   await request.put(base + "/api/balance/targets", { data: { targets: null, limiter: null } })
 })
+
+test("Strength and mobility: browse the exercise lists and switch the stage", async ({ page }) => {
+  await page.goto("#/settings")
+  await page.getByRole("link", { name: "Browse and print" }).click()
+  await expect(page.getByRole("heading", { name: "Strength and mobility" })).toBeVisible()
+  const a = page.getByRole("article", { name: /Strength A/ })
+  await expect(a.getByText(/1\. Goblet squat/)).toBeVisible()
+  await expect(a.getByText(/1-3 sets of 8-12 repetitions/).first()).toBeVisible()
+  await expect(a.getByText(/arbitrary units \(session-RPE\), not comparable with TSS/)).toBeVisible()
+  await expect(page.getByText(/Stop if anything hurts/).first()).toBeVisible()
+  await page.getByLabel("Training stage").selectOption("experienced")
+  await expect(page.getByRole("article", { name: /Strength A/ }).getByText(/3-4 sets of 4-6 repetitions/).first()).toBeVisible()
+  await page.getByRole("button", { name: /^Mobility/ }).click()
+  await expect(page.getByRole("article", { name: /Mobility/ }).getByText(/2 holds of 30 s each side/).first()).toBeVisible()
+})

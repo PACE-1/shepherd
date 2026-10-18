@@ -18,6 +18,7 @@ import { RideDetail } from "@/screens/RideDetail"
 import { Setup } from "@/screens/Setup"
 import { Settings } from "@/screens/Settings"
 import { Shuffle } from "@/screens/Shuffle"
+import { StrengthSessions } from "@/screens/StrengthSessions"
 import { WorkoutBuilder } from "@/screens/WorkoutBuilder"
 
 // ponytail: hash routing, no router dependency. Swap for react-router when nested routes or loaders are needed.
@@ -53,6 +54,7 @@ export function App() {
   if (head === "fueling") return <AppShell tab="analysis"><Fueling /></AppShell>
   if (head === "gear") return <AppShell tab="plan"><Gear /></AppShell>
   if (head === "races") return <AppShell tab="plan"><Races /></AppShell>
+  if (head === "strength") return <AppShell tab="plan"><StrengthSessions /></AppShell>
   if (head === "compare" && rest.length) return <AppShell tab="analysis"><RideCompare key={route} a={decodeURIComponent(rest[0])} b={rest[1] ? decodeURIComponent(rest[1]) : undefined} /></AppShell>
   const tab = isTab(route) ? route : "home"
   return (
