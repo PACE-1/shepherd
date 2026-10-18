@@ -143,6 +143,9 @@ _last_sync_error: str | None = None
 # (the CLI path never registers). Failures are logged and swallowed — a
 # broken callback must never break the sync loop.
 post_sync_callback = None
+# #31: start days of the activities the last pass skipped as intervals.icu
+# stubs (listed, data withheld). Read by notifications.check_sync_health.
+last_stub_days: list = []
 
 
 def get_db() -> sqlite3.Connection:
@@ -764,6 +767,7 @@ def sync_activities(days: int = 90, _snapshot=None) -> int:
         return 0
 
     count = 0
+    stub_days: list = []
     with sync_write_gate(snapshot):
         db = get_db()
         try:
@@ -775,6 +779,7 @@ def sync_activities(days: int = 90, _snapshot=None) -> int:
                 # v3.11.6 (issue #11) — same rule as the ride store: a stub
                 # ICU will not re-share (Strava-origin) has no data to mirror.
                 if is_icu_stub(a):
+                    stub_days.append(dt)
                     continue
                 # Widened projection — real columns (not just raw_json) for fast filtering.
                 distance_m = a.get("distance")
@@ -834,6 +839,7 @@ def sync_activities(days: int = 90, _snapshot=None) -> int:
             db.rollback()
             raise
         db.commit()
+    last_stub_days[:] = stub_days
 
     # v2.5.0 W3: mirror the athlete-level lthr / athlete_max_hr carried on
     # every ICU activity payload into the active profile — same post-batch

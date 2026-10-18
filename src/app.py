@@ -7601,6 +7601,8 @@ def _after_background_sync() -> None:
     the plausibility guard), which /api/weekly-plan used to run on a read."""
     _icu_push_daily_from_sync()
     _auto_recalc_from_sync()
+    import folder_import
+    folder_import.scan_in_background()      # #31: no-op without a folder; never raises
     try:
         from profile_manager import ProfileManager
         if not ProfileManager.get().prefs.get("eftp_auto_apply", False):
@@ -13119,6 +13121,12 @@ def _collect_week_activities(current_week, today: date, include_today: bool = Fa
             "id": a.get("id") or a.get("icu_id"),
             "sport": a.get("sport", ""),
         }
+        # #31: listed with a sport and a length but nothing computed from the
+        # recording (no load, intensity, power or HR): intervals.icu withheld it.
+        if not real_load and if_ is None and not any(
+                a.get(k) or raw.get(k) for k in ("avg_hr", "avg_power", "average_heartrate",
+                                                 "average_watts", "icu_average_watts")):
+            entry["withheld"] = True
         for seen in seen_keys:
             if start is not None and seen["start"] is not None:
                 same = (abs((start - seen["start"]).total_seconds()) <= 120
@@ -13147,6 +13155,30 @@ def _collect_week_activities(current_week, today: date, include_today: bool = Fa
     except Exception as e:
         _log.debug(f"Local rides fetch failed: {e}")
     return actual
+
+
+def _rematch_week(week, actual: list, today: date) -> dict:
+    """tp.rematch_week, then #31: withheld rides that cover the planned length
+    mark the session done. Without load or intensity the matcher can only call
+    such a day partly done (or still pending today), and the ride is the only
+    evidence there is."""
+    preview = tp.rematch_week(week, actual, today)
+    by_day: dict[str, list[dict]] = {}
+    for a in actual:
+        if a.get("withheld"):
+            by_day.setdefault(a["date"], []).append(a)
+    summary = preview.get("summary") or {}
+    for m in preview.get("matches", []):
+        rides = by_day.get(m.get("session_date"))
+        planned = float((m.get("details") or {}).get("planned_duration") or 0)
+        if (not rides or planned <= 0 or m.get("new_status") not in ("done_partial", "missed", "pending")
+                or sum(r["duration_min"] for r in rides) < planned * (1 - tp.REMATCH_TOL_DURATION_PCT)):
+            continue
+        summary[m["new_status"]] = max(0, summary.get(m["new_status"], 0) - 1)
+        summary["done"] = summary.get("done", 0) + 1
+        m["new_status"] = "done"
+        m["activity_id"] = max(rides, key=lambda r: r["duration_min"])["id"]
+    return preview
 
 
 @app.get("/api/plan/daily-adapt", responses={200: {"model": api_models.DailyAdapt}})
@@ -15743,7 +15775,7 @@ def _reconcile_current_week(plan: dict, today: date) -> "tuple[int, dict | None]
         seen.add(week_idx)
         try:
             actual = _collect_week_activities(week, today, include_today=True)
-            preview = tp.rematch_week(week, actual, today)
+            preview = _rematch_week(week, actual, today)
             n += _apply_rematch_preview_to_plan(plan, week_idx, preview)
         except Exception:  # noqa: BLE001 - one week failing must not block the other
             if anchor == today:
@@ -15807,7 +15839,7 @@ async def api_plan_rematch(request: Request, apply: int = Query(0)):
             return {"action": "no_current_week"}
 
         actual = _collect_week_activities(current_week, today, include_today=True)
-        preview = tp.rematch_week(current_week, actual, today)
+        preview = _rematch_week(current_week, actual, today)
 
         return {"ok": True, "apply": False, **preview}
 

@@ -18,7 +18,7 @@ const COMPARISON: [string, string, string, boolean][] = [
   ["Readiness", "HRV and sleep from your watch, every morning", "HRV typed in by hand", false],
   ["Workouts", "Pushed to your device via the intervals.icu calendar", "Download each one as ZWO or FIT", false],
   ["Your plan", "The full plan, adapting to what you ride", "The full plan, adapting to what you import", true],
-  ["Account", "Free account; connect Garmin, Wahoo, Zwift or Strava to it once", "Nothing to sign up for", true],
+  ["Account", "Free account; connect your bike computer, watch or training app to it once", "Nothing to sign up for", true],
 ]
 
 export function IcuComparison() {

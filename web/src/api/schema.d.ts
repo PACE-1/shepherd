@@ -260,6 +260,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/folder-import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["folder_import_state_api_folder_import_get"];
+        put: operations["folder_import_save_api_folder_import_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/folder-import/scan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["folder_import_scan_api_folder_import_scan_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/fueling": {
         parameters: {
             query?: never;
@@ -3583,6 +3615,99 @@ export interface components {
              * @default 0
              */
             count: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** FolderImportFailure */
+        FolderImportFailure: {
+            /** File */
+            file: string;
+            /** Reason */
+            reason: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** FolderImportScan */
+        FolderImportScan: {
+            /**
+             * Aborted
+             * @default false
+             */
+            aborted: boolean;
+            /**
+             * Already Imported
+             * @default 0
+             */
+            already_imported: number;
+            /**
+             * Duplicate
+             * @default 0
+             */
+            duplicate: number;
+            /**
+             * Error
+             * @default
+             */
+            error: string;
+            /**
+             * Failed
+             * @default 0
+             */
+            failed: number;
+            /**
+             * Failures
+             * @default []
+             */
+            failures: components["schemas"]["FolderImportFailure"][];
+            /**
+             * Finished At
+             * @default
+             */
+            finished_at: string;
+            /**
+             * Imported
+             * @default 0
+             */
+            imported: number;
+            /**
+             * Remaining
+             * @default 0
+             */
+            remaining: number;
+            /** Started At */
+            started_at: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** FolderImportStarted */
+        FolderImportStarted: {
+            /** Running */
+            running: boolean;
+            /** Started */
+            started: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /** FolderImportState */
+        FolderImportState: {
+            /**
+             * Folder
+             * @default
+             */
+            folder: string;
+            last_scan?: components["schemas"]["FolderImportScan"] | null;
+            /** Max Files */
+            max_files: number;
+            /**
+             * Recursive
+             * @default false
+             */
+            recursive: boolean;
+            /**
+             * Running
+             * @default false
+             */
+            running: boolean;
         } & {
             [key: string]: unknown;
         };
@@ -7587,6 +7712,66 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EventProjection"];
+                };
+            };
+        };
+    };
+    folder_import_state_api_folder_import_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FolderImportState"];
+                };
+            };
+        };
+    };
+    folder_import_save_api_folder_import_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FolderImportState"];
+                };
+            };
+        };
+    };
+    folder_import_scan_api_folder_import_scan_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FolderImportStarted"];
                 };
             };
         };

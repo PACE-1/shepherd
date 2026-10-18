@@ -177,7 +177,7 @@ export function Setup() {
         })
       } else {
         setGarmin({
-          text: "No activities in the last 6 weeks yet. Enable Garmin Connect above and ride — new rides can take a few minutes to sync.",
+          text: "No activities in the last 6 weeks yet. Connect your device or app above and ride — new rides can take a few minutes to sync.",
           ok: true,
         })
       }
@@ -317,10 +317,10 @@ export function Setup() {
               </div>
               {connected && (
                 <div className="grid gap-2 border-t pt-4">
-                  <h3 className="font-semibold">3 · Garmin Connect → Intervals.icu</h3>
+                  <h3 className="font-semibold">3 · Get your rides into Intervals.icu</h3>
                   <p className="text-sm text-muted-foreground">
-                    So new rides appear in your plan automatically, let Intervals.icu pull them from{" "}
-                    <b>Garmin Connect</b> (one-time):
+                    So new rides appear in your plan automatically, connect the device or app you record with to
+                    Intervals.icu (one-time):
                   </p>
                   <ol className="list-decimal pl-5 text-sm">
                     <li>
@@ -330,11 +330,11 @@ export function Setup() {
                       </a>{" "}
                       → <b>Connections</b>
                     </li>
-                    <li>Click <b>Garmin Connect</b> → authorise (one-click OAuth)</li>
+                    <li>Pick the service your rides are recorded with (your bike computer, watch or training app) → authorise</li>
                   </ol>
                   <p className="text-xs text-muted-foreground">
-                    New rides can take a few minutes to appear, and the connection is region-specific — if it fails,
-                    retry from a desktop browser.
+                    New rides can take a few minutes to appear. Without a connection, or if rides stop arriving, you can
+                    import FIT files instead: one at a time on the Analysis tab, or a whole folder in Settings (Folder import).
                   </p>
                   <Button variant="outline" className="w-fit" onClick={doGarmin}>Check sync</Button>
                   {garmin && <p role="status" className={`text-sm ${garmin.ok ? "" : "text-destructive"}`}>{garmin.text}</p>}

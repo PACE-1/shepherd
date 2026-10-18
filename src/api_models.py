@@ -1892,3 +1892,35 @@ class GearOverview(_Model):
     suggestions: list[GearSuggestion] = []
     recent: list[GearRide] = []
     method: str = ""
+
+
+# ── Folder import (#31 Phase 1) ──────────────────────────────────────────────
+class FolderImportFailure(_Model):
+    file: str
+    reason: str
+
+
+class FolderImportScan(_Model):
+    started_at: str
+    finished_at: str = ""
+    imported: int = 0
+    duplicate: int = 0                   # already stored (intervals.icu or an earlier import)
+    failed: int = 0
+    already_imported: int = 0            # files a previous scan handled
+    remaining: int = 0                   # new files left for the next scan (per-scan cap)
+    aborted: bool = False
+    error: str = ""
+    failures: list[FolderImportFailure] = []
+
+
+class FolderImportState(_Model):
+    folder: str = ""
+    recursive: bool = False
+    running: bool = False
+    max_files: int
+    last_scan: Optional[FolderImportScan] = None
+
+
+class FolderImportStarted(_Model):
+    started: bool                        # False: a scan was already running
+    running: bool

@@ -10,6 +10,7 @@ import { getIcuConnection, getLimits, type Limits } from "@/lib/setup"
 import { CalendarPush } from "@/screens/CalendarPush"
 import { Diagnostics } from "@/screens/Diagnostics"
 import { Folders } from "@/screens/Folders"
+import { FolderImport } from "@/screens/FolderImport"
 import { ApiKeyConnect } from "@/screens/ApiKeyConnect"
 import { AiCoachSettings } from "@/screens/Coach"
 import { FtpHistory } from "@/screens/FtpHistory"
@@ -275,6 +276,7 @@ export function Settings() {
       <NotificationsSettings />
       <CalendarPush />
       <Folders />
+      <FolderImport />
       <LocationCard />
       <About />
       <YourData />
