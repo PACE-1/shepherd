@@ -167,6 +167,7 @@ jobs:
           [ "$served" = "$VERSION" ] || fail "image serves version '$served', expected '$VERSION'"
           curl -fsS --max-time 5 -H "Authorization: Bearer $TOKEN" http://127.0.0.1:22400/v2/ | grep -q 'id="root"' \
             || fail "/v2/ has no app root (web build missing from the image)"
+          [ "$(docker exec "$NAME" id -u)" != "0" ] || fail "container runs as root (#153)"
           [ "$(docker inspect -f '{{.Architecture}}' shepherd:smoke)" = "amd64" ] || fail "image is not amd64"
           echo "OK: healthz, access gate, version $served, web UI"
 
