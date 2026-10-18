@@ -2093,6 +2093,11 @@ class PlannedWeek:
     # or None for the default weekly-mixed plan. Set ONLY when
     # goal.block_periodization is on; None keeps the block plug-ins dormant.
     block_focus: "str | None" = None
+    # Companion sessions (run / swim / strength / brick; MASTER_DECISIONS ADDENDUM 5): CompanionSession
+    # rows added by multisport_plan.overlay AFTER the cycling week is built. Every cycling pass walks
+    # ``sessions`` only, so these are invisible to it. Serialised only when non-empty (week_to_dict), so
+    # a cycling-only rider's plan JSON is byte-identical.
+    companions: list = field(default_factory=list)
 
 
 @dataclass
@@ -2160,6 +2165,19 @@ class PlannedSession:
     # Dataclass field so the canonical _planned_session_to/from_json
     # round-trip (app.py) carries it through regenerate/refit/reforecast.
     execution: dict | None = None
+
+
+@dataclass
+class CompanionSession(PlannedSession):
+    """A non-cycling session next to the cycling plan (ADDENDUM 5). Lives only in
+    ``PlannedWeek.companions``; ``zwo_file`` stays empty and ``tss_estimate`` 0 (no cross-sport
+    load number is invented). ``sport`` is running | swimming | strength; ``workout`` holds steps in
+    the workout_builder shape; ``template_id``/``hard`` record which multisport_plan template made it."""
+    id: str = ""
+    sport: str = "running"
+    template_id: str = ""
+    hard: bool = False
+    workout: dict | None = None
 
 
 # ── v4.4.0 — phase targets (CONCEPT-SCI §1, §5) ───────────────────────────────
@@ -8615,6 +8633,99 @@ def _clip_week_to_phase(pw: "PlannedWeek", phase: "Phase", cursor: date) -> None
     pw.tss_target = round((pw.tss_target or 0) * span / 7)
 
 
+# ── Companion sessions: the multi-sport tail of every plan builder (ADDENDUM 5) ─────────────────────
+# generate_plan, regenerate_from_today, recalculate_plan and extend_continuous_plan are wrapped. A rider
+# without saved sport targets giving a non-cycling sport a share (sport_balance.balance_targets.json)
+# runs the wrapped function exactly as before. Otherwise the cycling builder is given the cycling share of
+# goal.hours_per_week (restored afterwards, so the stored goal keeps the rider's total) and
+# multisport_plan.overlay adds companions to the weeks it returns. The cycling builder is not changed.
+_overlay_state = threading.local()
+
+
+def _companion_context() -> "dict | None":
+    """The rider's split, limiter, thresholds and injury episodes, or None when overlay is off (no
+    targets, no non-cycling share, or a profile file that cannot be read)."""
+    try:
+        import injury
+        import multisport
+        import multisport_plan
+        import sport_balance
+        from profile_manager import ProfileManager
+        home = ProfileManager.get().active_dir
+        stored = sport_balance.read_targets(home / sport_balance.FILE_NAME)
+        if not multisport_plan.overlay_on(stored["targets"]):
+            return None
+        return {"targets": stored["targets"], "limiter": stored["limiter"],
+                "thresholds": multisport.read_thresholds(home / "sport_thresholds.json"),
+                "episodes": injury.read_episodes(home / injury.FILE_NAME)}
+    except Exception:  # noqa: BLE001 — an unreadable profile file means "cycling only", never a failed plan
+        log.debug("companion context unavailable", exc_info=True)
+        return None
+
+
+def _companion_availability(goal, total_hours: float, overrides) -> dict:
+    """multisport_plan.overlay's availability: the rider's total weekly hours, per-weekday hours (0 on
+    rest days) and the per-date overrides the cycling builder was given."""
+    days = set(goal.available_days or range(7)) - set(goal.rest_days or [])
+    return {"hours_per_week": float(total_hours or 0),
+            "weekday": {wd: (float(goal.max_hours_for_day(wd)) if wd in days else 0.0) for wd in range(7)},
+            "date": {str(k): float(v) for k, v in (overrides or {}).items()}}
+
+
+def _companion_blocks(periods, episodes) -> list:
+    """Time off for companions: plan rows that are not injury episodes block every sport; each episode
+    (src/injury.py) blocks the sport it names ("all" blocks every sport, "cycling" none of them)."""
+    rows = []
+    for p in periods or []:
+        if isinstance(p, dict):
+            if not p.get("episode_id"):
+                rows.append({"start": p.get("start"), "end": p.get("end"), "sport": "all"})
+        elif isinstance(p, (tuple, list)) and len(p) == 2:
+            rows.append({"start": p[0], "end": p[1], "sport": "all"})
+    for e in episodes or []:
+        rows.append({"start": e.get("start"), "end": e.get("end"), "sport": e.get("sport") or "all"})
+    return rows
+
+
+def _companion_overlay(fn):
+    import functools
+    import inspect
+    sig = inspect.signature(fn)
+
+    @functools.wraps(fn)
+    def entry(*args, **kwargs):
+        if getattr(_overlay_state, "active", False):
+            return fn(*args, **kwargs)        # recalculate_plan -> extend_continuous_plan: once only
+        ctx = _companion_context()
+        if ctx is None:
+            return fn(*args, **kwargs)        # cycling-only rider: exactly the old path
+        import multisport_plan
+        a = sig.bind(*args, **kwargs).arguments
+        goal = a["goal"]
+        total = goal.hours_per_week
+        goal.hours_per_week = multisport_plan.scaled_cycling_hours(total, ctx["targets"])
+        _overlay_state.active = True
+        try:
+            out = fn(*args, **kwargs)
+        finally:
+            goal.hours_per_week = total
+            _overlay_state.active = False
+        weeks = out[1]
+        prior = [c for w in (a.get("old_plan_weeks") or a.get("current_plan_weeks") or [])
+                 for c in (getattr(w, "companions", None) or [])]
+        for w in weeks:                       # a rebuilt week object carries the old week's companions
+            if not w.companions:
+                w.companions = [c for c in prior if w.start <= c.day <= w.end]
+        multisport_plan.overlay(
+            weeks, targets=ctx["targets"], limiter=ctx["limiter"], thresholds=ctx["thresholds"],
+            availability=_companion_availability(goal, total, a.get("availability_overrides")),
+            unavailable_periods=_companion_blocks(a.get("unavailable_periods"), ctx["episodes"]),
+            today=clock.today())
+        return out
+    return entry
+
+
+@_companion_overlay
 def generate_plan(
     goal: Goal,
     unavailable_periods: "list[tuple[date, date]] | None" = None,
@@ -12749,7 +12860,10 @@ from dataclasses import fields as _dc_fields  # noqa: E402
 _PS_JSON_ONLY_KEYS = ("variation", "adapted_reason", "auto_moved", "ftp_test_type",
                       "pre_adapt", "tsb_eased_from")
 _SESSION_FIELDS = tuple(f.name for f in _dc_fields(PlannedSession))
-_WEEK_FIELDS = tuple(f.name for f in _dc_fields(PlannedWeek))
+# ``companions`` is written by week_to_dict only when non-empty (a cycling-only plan stays byte-identical).
+_WEEK_FIELDS = tuple(f.name for f in _dc_fields(PlannedWeek) if f.name != "companions")
+# The fields CompanionSession adds to PlannedSession; a stored dict carrying "sport" and "workout" is one.
+_COMPANION_FIELDS = tuple(f.name for f in _dc_fields(CompanionSession) if f.name not in _SESSION_FIELDS)
 _SESSION_DEFAULTS = {"session_type": "z2", "duration_min": 0, "tss_estimate": 0.0,
                      "description": ""}
 _WEEK_DEFAULTS = {"week_num": 0, "phase": "", "tss_target": 0, "is_stepback": False}
@@ -12773,12 +12887,15 @@ def session_to_dict(s) -> dict:
     for k in _PS_JSON_ONLY_KEYS:
         if hasattr(s, k):
             out[k] = getattr(s, k)
+    if isinstance(s, CompanionSession):
+        out.update({k: getattr(s, k) for k in _COMPANION_FIELDS})
     return out
 
 
 def session_from_dict(d: dict) -> "PlannedSession":
     """The inverse of session_to_dict. Raises on a missing or malformed day;
-    any other missing field takes its default."""
+    any other missing field takes its default. A companion's dict (it carries
+    ``sport`` and ``workout``) reads back as a CompanionSession."""
     day = _as_date(d["day"])
     kw = {k: d[k] for k in _SESSION_FIELDS if k in d and k != "day"}
     if not kw.get("day_name"):
@@ -12786,7 +12903,10 @@ def session_from_dict(d: dict) -> "PlannedSession":
     for k, v in _SESSION_DEFAULTS.items():
         if kw.get(k) is None:
             kw[k] = v
-    s = PlannedSession(day=day, **kw)
+    if "sport" in d and "workout" in d:
+        s = CompanionSession(day=day, **kw, **{k: d[k] for k in _COMPANION_FIELDS if k in d})
+    else:
+        s = PlannedSession(day=day, **kw)
     for k in _PS_JSON_ONLY_KEYS:
         if k in d:
             setattr(s, k, d[k])
@@ -12800,6 +12920,8 @@ def week_to_dict(w) -> dict:
         if hasattr(out[name], "isoformat"):
             out[name] = out[name].isoformat()
     out["sessions"] = [session_to_dict(s) for s in (w.sessions or [])]
+    if getattr(w, "companions", None):
+        out["companions"] = [session_to_dict(c) for c in w.companions]
     return out
 
 
@@ -12821,8 +12943,14 @@ def week_from_dict(d: dict) -> "PlannedWeek":
             sessions.append(session_from_dict(s))
         except (KeyError, TypeError, ValueError):
             log.warning("plan codec: skipped a session it could not read: %r", s)
+    companions = []
+    for c in d.get("companions") or []:
+        try:
+            companions.append(session_from_dict(c))
+        except (KeyError, TypeError, ValueError):
+            log.warning("plan codec: skipped a companion it could not read: %r", c)
     return PlannedWeek(start=_as_date(d["start"]), end=_as_date(d["end"]),
-                       sessions=sessions, **kw)
+                       sessions=sessions, companions=companions, **kw)
 
 
 def _iter_pending_unmatched(plan_dict: dict, today: date):
@@ -13488,6 +13616,7 @@ def build_recovery_ramp(
     return recovery_weeks
 
 
+@_companion_overlay
 def regenerate_from_today(
     goal: Goal,
     old_plan_weeks: list[PlannedWeek],
@@ -14132,6 +14261,7 @@ def compute_event_readiness(goal: Goal, current_ctl: float) -> dict:
     }
 
 
+@_companion_overlay
 def recalculate_plan(
     goal: Goal,
     current_plan_weeks: list[PlannedWeek],
@@ -14626,6 +14756,7 @@ def recalculate_plan(
 # CONTINUOUS ROLLING EXTEND (3.4.0 W1) — IP_CONTINUOUS_MODE §2, grill P2/B
 # ══════════════════════════════════════════════════════════════════════════════
 
+@_companion_overlay
 def extend_continuous_plan(
     goal: Goal,
     current_plan_weeks: list[PlannedWeek],
