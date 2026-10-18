@@ -1220,6 +1220,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/sports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_sports_api_sports_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/sync/progress": {
         parameters: {
             query?: never;
@@ -3027,6 +3043,11 @@ export interface components {
             /** Session Type */
             session_type: string;
             /**
+             * Sport
+             * @default ride
+             */
+            sport: string;
+            /**
              * Status
              * @default pending
              */
@@ -3866,6 +3887,50 @@ export interface components {
              * @default
              */
             workout_dir: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** SportLoad */
+        SportLoad: {
+            /** Atl */
+            atl: number;
+            /** Ctl */
+            ctl: number;
+            /** Tsb */
+            tsb: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** SportThreshold */
+        SportThreshold: {
+            /** Tested On */
+            tested_on: string;
+            /** Unit */
+            unit: string;
+            /** Value */
+            value: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** SportsRead */
+        SportsRead: {
+            /**
+             * Icu
+             * @default {}
+             */
+            icu: {
+                [key: string]: unknown;
+            };
+            /** Load */
+            load: {
+                [key: string]: components["schemas"]["SportLoad"];
+            };
+            /** Thresholds */
+            thresholds: {
+                [key: string]: {
+                    [key: string]: components["schemas"]["SportThreshold"] | null;
+                };
+            };
         } & {
             [key: string]: unknown;
         };
@@ -6081,6 +6146,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EnsureProfile"];
+                };
+            };
+        };
+    };
+    api_sports_api_sports_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SportsRead"];
                 };
             };
         };

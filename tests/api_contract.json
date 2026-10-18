@@ -3324,6 +3324,11 @@
             "title": "Session Type",
             "type": "string"
           },
+          "sport": {
+            "default": "ride",
+            "title": "Sport",
+            "type": "string"
+          },
           "status": {
             "default": "pending",
             "title": "Status",
@@ -5371,6 +5376,95 @@
           }
         },
         "title": "SetupDefaults",
+        "type": "object"
+      },
+      "SportLoad": {
+        "additionalProperties": true,
+        "properties": {
+          "atl": {
+            "title": "Atl",
+            "type": "number"
+          },
+          "ctl": {
+            "title": "Ctl",
+            "type": "number"
+          },
+          "tsb": {
+            "title": "Tsb",
+            "type": "number"
+          }
+        },
+        "required": [
+          "ctl",
+          "atl",
+          "tsb"
+        ],
+        "title": "SportLoad",
+        "type": "object"
+      },
+      "SportThreshold": {
+        "additionalProperties": true,
+        "properties": {
+          "tested_on": {
+            "title": "Tested On",
+            "type": "string"
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "number"
+          }
+        },
+        "required": [
+          "value",
+          "unit",
+          "tested_on"
+        ],
+        "title": "SportThreshold",
+        "type": "object"
+      },
+      "SportsRead": {
+        "additionalProperties": true,
+        "properties": {
+          "icu": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Icu",
+            "type": "object"
+          },
+          "load": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/SportLoad"
+            },
+            "title": "Load",
+            "type": "object"
+          },
+          "thresholds": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/SportThreshold"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "type": "object"
+            },
+            "title": "Thresholds",
+            "type": "object"
+          }
+        },
+        "required": [
+          "thresholds",
+          "load"
+        ],
+        "title": "SportsRead",
         "type": "object"
       },
       "SyncProgress": {
@@ -8041,6 +8135,23 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EnsureProfile"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/sports": {
+      "get": {
+        "operationId": "api_sports_api_sports_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SportsRead"
                 }
               }
             },

@@ -176,6 +176,7 @@ class PlanSession(_Model):
     description: str = ""
     zwo_file: str = ""
     zwo_name: str = ""
+    sport: str = "ride"
     nutrition_note: str = ""
     matched: bool = True
     adapted: bool = False
@@ -1083,3 +1084,21 @@ class LlmConnection(_Model):
 class Insight(_Model):
     text: str
     model: str = ""
+
+
+class SportThreshold(_Model):
+    value: float
+    unit: str
+    tested_on: str
+
+
+class SportLoad(_Model):
+    ctl: float
+    atl: float
+    tsb: float
+
+
+class SportsRead(_Model):
+    thresholds: dict[str, dict[str, Optional[SportThreshold]]]   # sport -> key -> latest
+    load: dict[str, SportLoad]                                   # ride/run/swim/other/combined, local
+    icu: dict = {}                                               # intervals.icu's combined CTL/ATL/TSB

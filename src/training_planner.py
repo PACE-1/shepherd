@@ -2160,6 +2160,9 @@ class PlannedSession:
     # Dataclass field so the canonical _planned_session_to/from_json
     # round-trip (app.py) carries it through regenerate/refit/reforecast.
     execution: dict | None = None
+    # #109: "ride" | "run" | "swim". A plan saved before this field existed has
+    # no key and loads as a ride, which is what every such session was.
+    sport: str = "ride"
 
 
 # ── v4.4.0 — phase targets (CONCEPT-SCI §1, §5) ───────────────────────────────

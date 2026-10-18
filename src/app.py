@@ -1312,6 +1312,35 @@ def _workout_folders_state() -> dict:
     return out
 
 
+@app.get("/api/sports", responses={200: {"model": api_models.SportsRead}})
+def api_sports():
+    """Per-sport thresholds and load, plus intervals.icu's combined fitness (#109)."""
+    import sports
+    return {"thresholds": sports.thresholds(), "load": sports.load_state(),
+            "icu": _fitness_state()}
+
+
+@app.get("/api/sports/thresholds/{key}/history")
+def api_sports_threshold_history(key: str):
+    import sports
+    if key not in sports.THRESHOLDS:
+        raise HTTPException(404, f"unknown threshold {key!r}")
+    return sports.threshold_history(key)
+
+
+@app.post("/api/sports/thresholds")
+def api_sports_set_threshold(body: dict):
+    """Record a threshold test: {key, value, date?}. Keys: ftp, run_pace (s/km),
+    run_lthr, swim_css (s/100m)."""
+    import sports
+    try:
+        on = date.fromisoformat(str(body["date"])[:10]) if body.get("date") else None
+        sports.set_threshold(str(body.get("key")), body.get("value"), on)
+    except (ValueError, TypeError) as e:
+        raise HTTPException(400, str(e))
+    return {"ok": True}
+
+
 @app.get("/api/settings/workout-folders", responses={200: {"model": api_models.WorkoutFolders}})
 def api_workout_folders():
     return _workout_folders_state()
