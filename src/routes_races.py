@@ -6,6 +6,8 @@ The list is stored per profile (races.py). Every change is mirrored into the pla
 
 The race-day plan reuses the existing event projection (training_planner._project_event_capability, the
 model behind /api/event/projection) for the expected duration and power. Fueling is not planned here.
+The race-day plan is cycling-only: a triathlon, run or swim race gets its timeline (without the cycling
+warm-up) and no power or pacing estimate, and says so.
 """
 import json
 from datetime import date, timedelta
@@ -24,6 +26,8 @@ router = APIRouter()
 # The warm-up the app's generated workouts use (workout_gen._WARMUP_S, 15 min ramping 50 -> 70 % FTP).
 WARMUP_MIN = _WARMUP_S // 60
 FUELING_TEXT = "Fueling plan comes from the Nutrition settings."
+NOT_CYCLING = ("The race-day plan is cycling-only for now: no pacing or power estimate is planned for a "
+               "triathlon, run or swim race.")
 POWER_METHOD = ("The event projection (Allen & Coggan duration-to-IF table blended with the event type's IF "
                 "ceiling, Pinot & Grappe 2011 power profile). The range runs between those two IFs; the "
                 "projection's own estimate sits inside it.")
@@ -32,7 +36,10 @@ POWER_CONFIDENCE = ("Low to moderate: a model estimate from your FTP, weight and
 TAPER_METHOD = ("Volume is cut and intensity kept (Bosquet et al. 2007 meta-analysis: 8-14 days, volume down "
                 "41-60 %, intensity and frequency kept; Mujika & Padilla 2003). A race: the plan's taper, about "
                 "60 % then 40 % of the load before it over the last 12 days. B race: about 60 % over its last 7 "
-                "days, easy for the last 3 with openers the day before. C race: no taper, an easy day before.")
+                "days, easy for the last 3 with openers the day before. C race: no taper, an easy day before. "
+                "Run, swim and strength sessions in the plan taper too: in the A taper weeks by the same fractions, "
+                "before a B race in step with the week's riding. Triathlon, run and swim races are labels: no "
+                "distance-specific plan is built.")
 TAPER_CONFIDENCE = ("Moderate for the A taper (group averages, mostly swimmers and runners; how much you gain "
                     "from it varies from rider to rider), low for the B taper (no study covers secondary races).")
 
@@ -212,6 +219,8 @@ def _fitness_inputs() -> tuple[dict, float, float | None, dict]:
 
 
 def _power(race: dict) -> dict:
+    if (race.get("discipline") or "cycling") != "cycling":
+        return {"available": False, "reason": NOT_CYCLING}
     if not race.get("event_km"):
         return {"available": False, "reason": "Add the race distance to get a duration and power estimate."}
     athlete, ctl, longest, best = _fitness_inputs()
@@ -240,8 +249,9 @@ def race_day(race_id: str):
         raise HTTPException(status_code=404, detail="No such race")
     power = _power(race)
     duration = race.get("expected_duration_h") or power.get("projected_duration_h")
+    warmup = WARMUP_MIN if (race.get("discipline") or "cycling") == "cycling" else 0
     return {"race": {**race, "in_plan": plan is not None and races.in_plan(race, goal),
                      "days_to_go": (date.fromisoformat(race["date"]) - clock.today()).days,
                      "taper": _taper(race, plan, goal, plan is not None and races.in_plan(race, goal))},
-            "warmup_min": WARMUP_MIN, "timeline": races.timeline(race, WARMUP_MIN, duration),
+            "warmup_min": warmup, "timeline": races.timeline(race, warmup, duration),
             "expected_duration_h": race.get("expected_duration_h"), "power": power, "fueling": FUELING_TEXT}

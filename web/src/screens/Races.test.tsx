@@ -2,7 +2,7 @@ import { cleanup, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
-import { bodyOf, countdown, emptyForm, raceProblem } from "@/lib/races"
+import { bodyOf, countdown, disciplineText, emptyForm, raceProblem } from "@/lib/races"
 import { Races } from "@/screens/Races"
 
 const json = (b: unknown, status = 200) => new Response(JSON.stringify(b), { status })
@@ -92,5 +92,52 @@ describe("Races", () => {
     await userEvent.click(await screen.findByRole("button", { name: "Delete A race: Spring Fondo" }))
     expect((await screen.findByRole("alert")).textContent).toMatch(/plan's goal/)
     expect(urls).not.toContain("/api/plan/regenerate")
+  })
+})
+
+describe("Races: triathlon, run and swim races (labels only)", () => {
+  it("validates the distance and sends the discipline", () => {
+    const f = { ...emptyForm(), date: "2027-06-01", discipline: "triathlon" }
+    expect(raceProblem(f, "2026-10-18", true)).toMatch(/triathlon distance/)
+    expect(raceProblem({ ...f, distance: "70.3" }, "2026-10-18", true)).toBe("")
+    expect(bodyOf({ ...f, distance: "70.3" })).toMatchObject({ discipline: "triathlon", distance: "70.3" })
+    expect(bodyOf({ ...f, discipline: "running", distance: "70.3" })).toMatchObject({ discipline: "running", distance: null })
+    expect(disciplineText({ discipline: "triathlon", distance: "olympic" })).toBe("Triathlon (olympic)")
+    expect(disciplineText({ discipline: "cycling", distance: null })).toBe("")
+  })
+
+  it("adds a triathlon race without the cycling-only fields and shows that the race-day plan is cycling-only", async () => {
+    const tri = { ...A, id: "t1", name: "Half", date: "2027-06-01", priority: "B", discipline: "triathlon", distance: "70.3", event_km: 0, event_climb_m: 0, days_to_go: 226, taper: taper({ kind: "short", text: "Smaller taper." }) }
+    let current = status()
+    const posts: unknown[] = []
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string, init?: RequestInit) => {
+        if (url === "/api/races" && init?.method === "POST") {
+          posts.push(JSON.parse(String(init.body)))
+          current = status({ races: [A, tri], stored: true })
+          return json(current)
+        }
+        if (url === "/api/races/t1/race-day")
+          return json({ ...DAY, race: tri, warmup_min: 0, timeline: [], power: { available: false, reason: "The race-day plan is cycling-only for now." } })
+        return json(current)
+      }),
+    )
+    render(<Races />)
+    await screen.findByText("Full taper over the last 12 days.")
+    const discipline = screen.getAllByLabelText("Discipline").at(-1)!
+    await userEvent.selectOptions(discipline, "triathlon")
+    expect(screen.queryAllByLabelText("Climbing (m)")).toHaveLength(0)
+    expect(screen.getByText(/No distance-specific triathlon plan is built/)).toBeTruthy()
+    await userEvent.type(screen.getAllByLabelText("Date").at(-1)!, "2027-06-01")
+    const add = screen.getByRole("button", { name: "Add race and rebuild plan" }) as HTMLButtonElement
+    expect(add.disabled).toBe(true)
+    await userEvent.selectOptions(screen.getByLabelText("Triathlon distance"), "70.3")
+    await userEvent.click(add)
+    expect(await screen.findByText(/Triathlon \(70\.3\)/)).toBeTruthy()
+    expect(posts[0]).toMatchObject({ discipline: "triathlon", distance: "70.3" })
+    await userEvent.click(screen.getByRole("button", { name: "Race day plan for B race: Half" }))
+    expect(await screen.findByText("The race-day plan is cycling-only for now.")).toBeTruthy()
+    expect(screen.getByText(/to see the day's timeline\./)).toBeTruthy()
   })
 })

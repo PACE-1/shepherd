@@ -847,6 +847,29 @@
         "title": "BestEffortDelta",
         "type": "object"
       },
+      "BrickTransition": {
+        "additionalProperties": true,
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "transition_target_s": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transition Target S"
+          }
+        },
+        "title": "BrickTransition",
+        "type": "object"
+      },
       "BuilderLoaded": {
         "additionalProperties": true,
         "properties": {
@@ -5210,6 +5233,28 @@
       "PlanCompanion": {
         "additionalProperties": true,
         "properties": {
+          "brick_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Brick Note"
+          },
+          "brick_of": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Brick Of"
+          },
           "completion_matches": {
             "anyOf": [
               {
@@ -5254,6 +5299,17 @@
           "id": {
             "title": "Id",
             "type": "string"
+          },
+          "limiter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limiter"
           },
           "session_type": {
             "title": "Session Type",
@@ -5358,6 +5414,17 @@
             },
             "title": "Today",
             "type": "array"
+          },
+          "transition_target_s": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transition Target S"
           },
           "weeks": {
             "default": [],
@@ -6743,6 +6810,17 @@
             "default": "cycling",
             "title": "Discipline",
             "type": "string"
+          },
+          "distance": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance"
           },
           "event_climb_m": {
             "default": 0,
@@ -13407,6 +13485,23 @@
         }
       }
     },
+    "/api/plan/bricks/transition": {
+      "put": {
+        "operationId": "plan_brick_transition_api_plan_bricks_transition_put",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrickTransition"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/plan/companions": {
       "get": {
         "operationId": "plan_companions_api_plan_companions_get",
@@ -13416,6 +13511,23 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PlanCompanions"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/plan/companions/{companion_id}/brick-note": {
+      "post": {
+        "operationId": "plan_brick_note_api_plan_companions__companion_id__brick_note_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanionDismissed"
                 }
               }
             },

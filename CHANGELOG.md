@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- **Added: run, swim and strength sessions in the plan, next to the cycling plan.** For riders who save a sport split (hours per sport), the plan gains companion sessions: run, swim, strength and mobility, with a transition-time target and a "how the run felt" note for brick runs. Cycling-only riders' plans are unchanged. All session structures are design templates after published sources (Daniels, ACSM 2009, CSS convention), not validated against recorded runs or swims. (#120 #122 #123 #124 #127)
+- **Added: run workout library (#120).** Eight run sessions with Friel pace-zone or effort targets, an estimated rTSS, filters and `.fit`/`.txt` downloads in the Library. Not tried on a Garmin.
+- **Added: swim sessions (CSS based) and strength/mobility sessions** with exercise lists, sets, reps and session-RPE load; browse and print under Settings.
+- **Added: limiter emphasis, strength spacing, tapering companions, triathlon/run/swim race labels (#124 #127 #125 #111).** Distance-specific triathlon periodisation is not built.
+- **Planner: the weekly intensity ceiling (18% above 106% FTP) now overrides a phase's hard-session floor (#11).** A plan that starts on a Sunday loses its one-day first week's anaerobic session.
+- **Fixed: Folder import could skip a same-named file in a newly chosen folder.**
 - **Added: Docker image published to ghcr.io/pace-1/shepherd on each release tag** (vX.Y.Z, X.Y, latest; prereleases get their exact tag only).
 - **#31: a ride intervals.icu lists without its data now completes the planned session; one notice when rides visibly stop coming through; setup no longer points riders to Garmin; new Settings > Folder import brings in .fit files from a folder (duplicates skipped, files left untouched).**
 - **Added: Plan links to Races and Injury & illness, Settings links to Gear; the plan form no longer fails with "one A event per plan" when B/C races are added; a due gear item now raises a bell notice.**

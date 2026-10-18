@@ -88,3 +88,19 @@ Known defects found, not fixed:
 - #13 server access: implemented (`src/access.py`, `docs/SERVER.md`, `tests/test_access_control.py`). Not verified: that intervals.icu accepts a remote-browser OAuth callback (use the API-key connection on a server).
 - #132 naming: `docs/NAMING.md` records the name-collision search (GNU Shepherd exists; no registered mark found, which is not a clearance) and what the owner still has to check. Fork detach: owner action, permanent, may lose issues: see that doc before doing it.
 - #31 Garmin block: a listed-but-withheld ride (sport and length present, no load/power/HR) now completes a planned session; one sync-health notice per episode (needs evidence); setup copy neutral; folder importer in Settings. Not verified against a real block (the shape of a withheld Garmin ride is assumed). Not done: upgrading sessions already marked "partly done" (needs the planner); in Docker the clock may be UTC while intervals.icu start times are local, so a duplicate can be missed by the offset; in server mode the folder setting reveals whether a path exists (revisit with #13).
+
+## Multi-sport planning (companion sessions), built 2026-10-18
+
+Design: `docs/ROADMAP.md` history and the owner-approved ADDENDUM 5 (a `companions` list per plan week, opt-in through the rider's saved sport split; the cycling solver is untouched; cycling-only plans are byte-identical).
+
+| Issue | State | Remaining scope |
+|---|---|---|
+| #120 run library | built | Design templates after Daniels; several figures marked "verify"; never checked against recorded runs or imported into a Garmin; no HR targets. |
+| #122 swim sessions | built | No pace zones (none citable); set shapes are coaching-practice templates. |
+| #127 strength | built | Only the ACSM 2009 novice range is from the paper; other ranges are marked "verify". Mobility is labelled separately. No training stage reaches the builder (always the novice stage; no rider stage data exists). |
+| #123 bricks | built | "Key ride", one brick a week and the placeholder run durations have no citation. |
+| #124 limiter | built | The limiter claims hard slots and the longest day; no hours move beyond the rider's own split. |
+| #125 triathlon plans | label only | A triathlon race takes a distance label (sprint/olympic/70.3/ironman/custom). No distance-specific volumes, phase lengths or weekly-hours tables: they need a citable source. The plan toward it uses the rider's own hours and split. |
+| #111 run/swim races | label only | Non-cycling B/C races still take the cycling B taper and replace that day's ride; the race-day plan stays cycling-only. |
+
+Engine caveats: `brick_of`, `brick_note` and `limiter` live inside a companion's `workout` dict (the planner dataclass has no fields for them; promote them when `training_planner.py` is next opened); companions add no load number (`tss_estimate` 0); reforecast, refit and daily-adapt still use the full weekly hours for cycling; moving a companion and undoing a dismiss are not built.

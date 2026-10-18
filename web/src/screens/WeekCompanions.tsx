@@ -1,8 +1,9 @@
 import { useCallback, useState } from "react"
 
 import { Button } from "@/components/ui/button"
-import { companionStatus, dismissCompanion, getCompanions, NOT_VALIDATED, sportLabel, weekCompanions } from "@/lib/companions"
+import { companionLabel, companionStatus, dismissCompanion, getCompanions, NOT_VALIDATED, weekCompanions } from "@/lib/companions"
 import { fmtMinutes } from "@/lib/home"
+import { BrickDetails } from "@/screens/BrickDetails"
 import { useLoad } from "@/screens/panel"
 
 const dayLabel = (iso: string) =>
@@ -41,8 +42,10 @@ export function WeekCompanions({ start }: { start: string }) {
           return (
             <li key={c.id} className={`flex flex-wrap items-center gap-2 py-2 text-sm ${c.status === "dismissed" ? "opacity-60" : ""}`}>
               <span className="min-w-56 flex-1">
-                {dayLabel(c.day)} · <span className="font-medium">{sportLabel(c.sport)}</span>
+                {dayLabel(c.day)} · <span className="font-medium">{companionLabel(c)}</span>
                 <span className="block text-xs text-muted-foreground">{c.description}</span>
+                {c.limiter && <span className="block text-xs font-medium">{c.limiter}</span>}
+                {c.brick_of && <BrickDetails c={c} target={load.data.transition_target_s ?? null} onSaved={refresh} />}
               </span>
               <span className="text-muted-foreground">
                 {fmtMinutes(c.duration_min ?? 0)}
@@ -50,7 +53,7 @@ export function WeekCompanions({ start }: { start: string }) {
                 {status ? ` · ${status}` : ""}
               </span>
               {c.status === "pending" && (
-                <Button size="sm" variant="ghost" disabled={busy === c.id} aria-label={`Dismiss ${sportLabel(c.sport)} ${dayLabel(c.day)}`} onClick={() => dismiss(c.id)}>
+                <Button size="sm" variant="ghost" disabled={busy === c.id} aria-label={`Dismiss ${companionLabel(c)} ${dayLabel(c.day)}`} onClick={() => dismiss(c.id)}>
                   Dismiss
                 </Button>
               )}

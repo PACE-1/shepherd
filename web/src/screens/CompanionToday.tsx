@@ -1,4 +1,4 @@
-import { getCompanions, NOT_VALIDATED, sportLabel } from "@/lib/companions"
+import { companionLabel, getCompanions, NOT_VALIDATED } from "@/lib/companions"
 import { fmtMinutes } from "@/lib/home"
 import { useLoad } from "@/screens/panel"
 
@@ -15,7 +15,7 @@ export function CompanionToday() {
       <ul className="space-y-1">
         {list.map((c) => (
           <li key={c.id} className="text-sm">
-            <span className="font-medium">{sportLabel(c.sport)}</span> · {fmtMinutes(c.duration_min ?? 0)}
+            <span className="font-medium">{companionLabel(c)}</span> · {fmtMinutes(c.duration_min ?? 0)}
             {c.status === "done" ? " · done" : ""}
             <span className="block text-xs text-muted-foreground">{c.description}</span>
           </li>

@@ -1,8 +1,16 @@
 """Races (#111): the rider's race list with A/B/C priorities, and how it reaches the plan.
 
 One JSON file per profile (``races.json``). A race reuses the plan goal's event fields (``event_km``,
-``event_climb_m``, ``event_type``) and adds what a race-day plan needs: discipline (cycling only for now),
-an expected duration, a start time and an arrival time.
+``event_climb_m``, ``event_type``) and adds what a race-day plan needs: a discipline, an expected duration,
+a start time and an arrival time.
+
+Disciplines (#125, #111 follow-on). ``cycling`` races are what they always were. ``triathlon`` (with a
+``distance`` label: sprint | olympic | 70.3 | ironman | custom), ``running`` and ``swimming`` races are
+LABELS: there are no distance-specific volumes, phase lengths or weekly-hours tables (no citable source is
+available here). The plan toward one uses the rider's own hours and sport split, the cycling plan's taper
+(the A race's, or the B race's, as for any race) and the companion overlay, whose sessions taper too
+(multisport_plan). Their cycling-only fields (event type, distance, climbing) are not stored and never
+reach the plan's goal, so the cycling planner never reads a run distance as a ride.
 
 Migration. A rider who never opened the Races screen has no file. Their list is read from the plan's goal:
 the goal event (an event plan's ``event_date`` + ``event_*`` fields) is the A race and ``goal.events`` the
@@ -34,7 +42,8 @@ from atomic_io import update_json
 
 FILE_NAME = "races.json"
 PRIORITIES = ("A", "B", "C")
-DISCIPLINES = ("cycling",)  # run and swim races are not supported yet
+DISCIPLINES = ("cycling", "triathlon", "running", "swimming")
+TRI_DISTANCES = ("sprint", "olympic", "70.3", "ironman", "custom")   # labels only
 # The planner's event types (training_planner.EVENT_TYPE_IF keys); a test keeps the two in step.
 EVENT_TYPES = ("crit", "sportive", "century", "granfondo", "ultra")
 NAME_MAX = 80
@@ -80,7 +89,8 @@ def _plan_id(priority: str, d: str) -> str:
 
 def _race(**kw) -> dict:
     return {"id": kw.get("id") or uuid.uuid4().hex[:12], "name": kw.get("name", ""), "date": kw["date"],
-            "priority": kw.get("priority", "B"), "discipline": "cycling",
+            "priority": kw.get("priority", "B"), "discipline": kw.get("discipline") or "cycling",
+            "distance": kw.get("distance"),
             "event_type": kw.get("event_type") or "granfondo", "event_km": float(kw.get("event_km") or 0),
             "event_climb_m": float(kw.get("event_climb_m") or 0),
             "expected_duration_h": kw.get("expected_duration_h"), "start_time": kw.get("start_time"),
@@ -159,7 +169,16 @@ def _clean(body: dict, old: dict | None = None) -> dict:
         raise ValueError("priority must be A, B or C")
     disc = str(b.get("discipline") or "cycling").lower()
     if disc not in DISCIPLINES:
-        raise ValueError("only cycling races are supported for now")
+        raise ValueError(f"discipline must be one of {', '.join(DISCIPLINES)}")
+    dist = b.get("distance")
+    if disc == "triathlon":
+        dist = str(dist or "").lower()
+        if dist not in TRI_DISTANCES:
+            raise ValueError(f"a triathlon needs a distance: {', '.join(TRI_DISTANCES)}")
+    else:
+        dist = None
+    if disc != "cycling":   # cycling-only fields: the planner would read them as a ride
+        b = {**b, "event_type": None, "event_km": None, "event_climb_m": None}
     etype = str(b.get("event_type") or "granfondo").lower()
     if etype not in EVENT_TYPES:
         raise ValueError(f"event_type must be one of {', '.join(EVENT_TYPES)}")
@@ -177,7 +196,8 @@ def _clean(body: dict, old: dict | None = None) -> dict:
     if times["start_time"] and times["arrive_time"] and times["arrive_time"] > times["start_time"]:
         raise ValueError("arrival time must not be after the start time")
     return _race(id=(old or {}).get("id"), name=str(b.get("name") or "").strip()[:NAME_MAX],
-                 date=_day(b.get("date")).isoformat(), priority=prio, event_type=etype,
+                 date=_day(b.get("date")).isoformat(), priority=prio, discipline=disc, distance=dist,
+                 event_type=etype,
                  event_km=_num(b.get("event_km"), "distance (km)", KM_MAX),
                  event_climb_m=_num(b.get("event_climb_m"), "climbing (m)", CLIMB_MAX),
                  expected_duration_h=hours, **times)
@@ -277,6 +297,9 @@ def sync_plan_goal(plan: dict, races: list[dict]) -> bool:
     a = goal_event_date(goal)
     for r in races:
         if r.get("priority") == "A" and a and r.get("date") == a.isoformat():
+            if (r.get("discipline") or "cycling") != "cycling":
+                goal["event_name"] = r.get("name", "")   # a label: the goal keeps its own ride fields
+                continue
             goal.update({"event_name": r.get("name", ""), "event_km": r.get("event_km") or 0,
                          "event_climb": r.get("event_climb_m") or 0,
                          "event_type": r.get("event_type") or "granfondo"})
@@ -291,7 +314,7 @@ def _hhmm(t: datetime) -> str:
 def timeline(race: dict, warmup_min: int, duration_h: float | None) -> list[dict]:
     """The day's timeline from the rider's start (and arrival) time: arrive, warm up, start, finish.
     Empty without a start time. ``duration_h`` (the rider's own estimate, else the projection) sets the
-    finish; none is shown without one."""
+    finish; none is shown without one. ``warmup_min`` 0 leaves the warm-up row out."""
     if not race.get("start_time"):
         return []
     start = datetime.combine(_day(race["date"]), datetime.strptime(race["start_time"], "%H:%M").time())
@@ -299,7 +322,8 @@ def timeline(race: dict, warmup_min: int, duration_h: float | None) -> list[dict
     rows = []
     if race.get("arrive_time"):
         rows.append({"time": race["arrive_time"], "label": "Arrive"})
-    rows.append({"time": _hhmm(warm), "label": f"Warm up ({warmup_min} min)"})
+    if warmup_min:
+        rows.append({"time": _hhmm(warm), "label": f"Warm up ({warmup_min} min)"})
     rows.append({"time": race["start_time"], "label": "Start"})
     if duration_h:
         rows.append({"time": _hhmm(start + timedelta(hours=duration_h)), "label": "Expected finish"})

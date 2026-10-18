@@ -9,18 +9,23 @@ import { isoDay } from "@/lib/home"
 import {
   countdown,
   createRace,
+  DISCIPLINES,
+  disciplineText,
   emptyForm,
   EVENT_TYPES,
   fmtHours,
   formOf,
   getRaceDay,
   getRaces,
+  isCycling,
+  LABEL_NOTE,
   PRIORITY_TEXT,
   raceProblem,
   rebuildIfNeeded,
   removeRace,
   saveRace,
   syncRaces,
+  TRI_DISTANCES,
   type Priority,
   type RaceForm,
 } from "@/lib/races"
@@ -73,23 +78,50 @@ function RaceEditor({ race, onChanged, onCancel }: { race?: Race; onChanged: () 
         </NativeSelect>
       </Label>
       <Label className="flex-col items-start gap-1">
-        Type
-        <NativeSelect value={f.event_type} onChange={set("event_type")}>
-          {EVENT_TYPES.map(([id, label]) => (
+        Discipline
+        <NativeSelect value={f.discipline} onChange={set("discipline")}>
+          {DISCIPLINES.map(([id, label]) => (
             <option key={id} value={id}>
               {label}
             </option>
           ))}
         </NativeSelect>
       </Label>
-      <Label className="flex-col items-start gap-1">
-        Distance (km)
-        <Input inputMode="decimal" className="max-w-24" value={f.event_km} onChange={set("event_km")} />
-      </Label>
-      <Label className="flex-col items-start gap-1">
-        Climbing (m)
-        <Input inputMode="numeric" className="max-w-24" value={f.event_climb_m} onChange={set("event_climb_m")} />
-      </Label>
+      {f.discipline === "triathlon" && (
+        <Label className="flex-col items-start gap-1">
+          Triathlon distance
+          <NativeSelect value={f.distance} onChange={set("distance")}>
+            <option value="">Pick one</option>
+            {TRI_DISTANCES.map(([id, label]) => (
+              <option key={id} value={id}>
+                {label}
+              </option>
+            ))}
+          </NativeSelect>
+        </Label>
+      )}
+      {isCycling(f.discipline) && (
+        <>
+          <Label className="flex-col items-start gap-1">
+            Type
+            <NativeSelect value={f.event_type} onChange={set("event_type")}>
+              {EVENT_TYPES.map(([id, label]) => (
+                <option key={id} value={id}>
+                  {label}
+                </option>
+              ))}
+            </NativeSelect>
+          </Label>
+          <Label className="flex-col items-start gap-1">
+            Distance (km)
+            <Input inputMode="decimal" className="max-w-24" value={f.event_km} onChange={set("event_km")} />
+          </Label>
+          <Label className="flex-col items-start gap-1">
+            Climbing (m)
+            <Input inputMode="numeric" className="max-w-24" value={f.event_climb_m} onChange={set("event_climb_m")} />
+          </Label>
+        </>
+      )}
       <Label className="flex-col items-start gap-1">
         Your expected duration (h)
         <Input inputMode="decimal" className="max-w-24" value={f.expected_duration_h} onChange={set("expected_duration_h")} />
@@ -102,7 +134,7 @@ function RaceEditor({ race, onChanged, onCancel }: { race?: Race; onChanged: () 
         Start
         <Input type="time" value={f.start_time} onChange={set("start_time")} />
       </Label>
-      <p className="w-full text-xs text-muted-foreground">Cycling races only for now.</p>
+      {!isCycling(f.discipline) && <p className="w-full text-xs text-muted-foreground">{LABEL_NOTE}</p>}
       <Button size="sm" disabled={busy || !!why} onClick={save}>
         {busy ? "Saving…" : race ? "Save race and rebuild plan" : "Add race and rebuild plan"}
       </Button>
@@ -122,6 +154,7 @@ function RaceEditor({ race, onChanged, onCancel }: { race?: Race; onChanged: () 
 }
 
 const label = (r: Race) => `${r.priority} race${r.name ? `: ${r.name}` : ""}`
+const kind = (r: Race) => (disciplineText(r) ? ` · ${disciplineText(r)}` : "")
 
 function RaceList({ data, onChanged, onRaceDay }: { data: RacesStatus; onChanged: () => void; onRaceDay: (id: string) => void }) {
   const [editing, setEditing] = useState<string | null>(null)
@@ -135,7 +168,8 @@ function RaceList({ data, onChanged, onRaceDay }: { data: RacesStatus; onChanged
           <li key={r.id} className="space-y-1 py-2">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span>
-                <span className="font-medium">{label(r)}</span> · {r.date} · {countdown(r.days_to_go)}
+                <span className="font-medium">{label(r)}</span>
+                {kind(r)} · {r.date} · {countdown(r.days_to_go)}
                 {r.event_km ? ` · ${r.event_km} km` : ""}
                 {r.event_climb_m ? ` / ${r.event_climb_m} m` : ""}
               </span>
@@ -231,7 +265,9 @@ function RaceDay({ id }: { id: string }) {
                 ))}
               </ol>
             ) : (
-              <p className="text-muted-foreground">Add a start time (Edit) to see the day's timeline: a {d.warmup_min} min warm-up before the start.</p>
+              <p className="text-muted-foreground">
+                Add a start time (Edit) to see the day's timeline{d.warmup_min ? `: a ${d.warmup_min} min warm-up before the start` : ""}.
+              </p>
             )}
             <dl className="grid gap-x-6 gap-y-1 sm:grid-cols-2">
               {d.expected_duration_h != null && <Row label="Your expected duration" value={fmtHours(d.expected_duration_h)} />}

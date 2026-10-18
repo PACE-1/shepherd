@@ -10,6 +10,28 @@ export const EVENT_TYPES: [string, string][] = [
   ["crit", "Criterium / short race"],
   ["ultra", "Ultra"],
 ]
+export const DISCIPLINES: [string, string][] = [
+  ["cycling", "Cycling"],
+  ["triathlon", "Triathlon"],
+  ["running", "Running"],
+  ["swimming", "Swimming"],
+]
+// Labels only: no distance-specific plan is built (src/races.py).
+export const TRI_DISTANCES: [string, string][] = [
+  ["sprint", "Sprint"],
+  ["olympic", "Olympic"],
+  ["70.3", "70.3"],
+  ["ironman", "Ironman"],
+  ["custom", "Custom"],
+]
+export const LABEL_NOTE =
+  "Triathlon, run and swim races are labels: the plan toward one uses your own hours and sport split, the cycling plan's taper and your run, swim and strength sessions, which taper too. No distance-specific triathlon plan is built, and the race-day plan is cycling-only."
+export const isCycling = (discipline: string | null | undefined) => (discipline ?? "cycling") === "cycling"
+const DISC_LABEL = Object.fromEntries(DISCIPLINES)
+/** "Triathlon (70.3)", "Running", "" for a cycling race. */
+export const disciplineText = (r: Pick<Race, "discipline" | "distance">) =>
+  isCycling(r.discipline) ? "" : `${DISC_LABEL[r.discipline ?? ""] ?? r.discipline}${r.distance ? ` (${r.distance})` : ""}`
+
 export const PRIORITY_TEXT: Record<Priority, string> = {
   A: "A: the race the plan builds toward (full taper)",
   B: "B: matters (smaller taper)",
@@ -21,6 +43,8 @@ export interface RaceForm {
   name: string
   date: string
   priority: Priority
+  discipline: string
+  distance: string
   event_type: string
   event_km: string
   event_climb_m: string
@@ -33,6 +57,8 @@ export const emptyForm = (): RaceForm => ({
   name: "",
   date: "",
   priority: "B",
+  discipline: "cycling",
+  distance: "",
   event_type: "granfondo",
   event_km: "",
   event_climb_m: "",
@@ -45,6 +71,8 @@ export const formOf = (r: Race): RaceForm => ({
   name: r.name ?? "",
   date: r.date,
   priority: r.priority as Priority,
+  discipline: r.discipline ?? "cycling",
+  distance: r.distance ?? "",
   event_type: r.event_type ?? "granfondo",
   event_km: r.event_km ? String(r.event_km) : "",
   event_climb_m: r.event_climb_m ? String(r.event_climb_m) : "",
@@ -60,7 +88,8 @@ export function bodyOf(f: RaceForm) {
     name: f.name.trim(),
     date: f.date,
     priority: f.priority,
-    discipline: "cycling",
+    discipline: f.discipline,
+    distance: f.discipline === "triathlon" ? f.distance || null : null,
     event_type: f.event_type,
     event_km: num(f.event_km) ?? 0,
     event_climb_m: num(f.event_climb_m) ?? 0,
@@ -74,6 +103,7 @@ export function bodyOf(f: RaceForm) {
 export function raceProblem(f: RaceForm, today: string, isNew: boolean): string {
   if (!f.date) return "Pick the race date."
   if (isNew && f.date < today) return "The race can't be in the past."
+  if (f.discipline === "triathlon" && !f.distance) return "Pick the triathlon distance."
   for (const [v, what] of [[f.event_km, "Distance"], [f.event_climb_m, "Climbing"], [f.expected_duration_h, "Expected duration"]] as const) {
     if (v.trim() !== "" && !(Number(v) >= 0)) return `${what} must be a number, 0 or more.`
   }

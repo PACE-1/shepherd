@@ -1677,7 +1677,8 @@ class Race(_Model):
     name: str = ""
     date: str
     priority: str                        # A | B | C
-    discipline: str = "cycling"
+    discipline: str = "cycling"          # cycling | triathlon | running | swimming
+    distance: Optional[str] = None       # triathlon only: sprint | olympic | 70.3 | ironman | custom (a label)
     event_type: str = "granfondo"
     event_km: float = 0
     event_climb_m: float = 0
@@ -1939,6 +1940,9 @@ class PlanCompanion(_Model):
     workout: Optional[dict] = None       # steps in the workout_builder shape
     dismissed_at: str = ""
     completion_matches: Optional[list] = None
+    brick_of: Optional[str] = None       # a brick run: the bike session it follows (cycling-<date>)
+    brick_note: Optional[str] = None     # the rider's note on how the run felt off the bike
+    limiter: Optional[str] = None        # one line: why the limiter sport got this slot
 
 
 class PlanCompanionWeek(_Model):
@@ -1953,6 +1957,7 @@ class PlanCompanions(_Model):
     has_plan: bool = False
     note: str = ""                       # "not validated against real runs/swims yet"
     today: list[PlanCompanion] = []
+    transition_target_s: Optional[int] = None   # the rider's brick transition-time target (no default)
     weeks: list[PlanCompanionWeek] = []
 
 
@@ -2082,3 +2087,10 @@ class RunSessions(_Model):
     note: str                            # design templates after Daniels; not validated against recorded runs
     method: str
     sessions: list[RunSession] = []
+
+
+# ── Multi-sport engine wave 2 (ENGINE): bricks (#123) ─────────────────────────
+
+class BrickTransition(_Model):
+    ok: bool = True
+    transition_target_s: Optional[int] = None

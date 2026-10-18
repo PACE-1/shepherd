@@ -151,7 +151,7 @@ def test_routes_empty_profile_then_targets_and_actuals():
     empty = c.get("/api/balance?weeks=4")
     assert empty.status_code == 200
     body = empty.json()
-    assert len(body["weeks"]) == 4 and body["has_targets"] is False and body["has_history"] is False and "not built yet" in body["limiter_note"]
+    assert len(body["weeks"]) == 4 and body["has_targets"] is False and body["has_history"] is False and "first pick" in body["limiter_note"]
     assert c.get("/api/balance?weeks=0").status_code == 422 and c.get("/api/balance?weeks=500").status_code == 422
 
     d = db.get_db()

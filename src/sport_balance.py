@@ -6,8 +6,8 @@ training load for each activity, the same number multisport.load_by_sport uses (
 scale, so load shares across sports are indicative, not exact). Sports come from multisport.sport_of.
 
 There is no default split: until the rider saves targets (percent of weekly hours per sport, summing to
-100) there is nothing to compare against. The limiter is a display marker only; the planner does not read
-it (planner emphasis is not built).
+100) there is nothing to compare against. The planner's companion overlay (multisport_plan) gives a run or
+swim limiter first pick of hard-session slots and of the longest free day; a cycling limiter changes nothing.
 """
 from __future__ import annotations
 
@@ -21,7 +21,8 @@ from multisport import SPORTS, _read, sport_of
 
 FILE_NAME = "balance_targets.json"
 LIMITER_SPORTS = ("cycling", "running", "swimming")
-LIMITER_NOTE = "Planner emphasis toward your limiter is not built yet; for now the sport is only highlighted."
+LIMITER_NOTE = ("The plan gives a run or swim limiter first pick of the hard-session slots and of the longest "
+                "free day, within your own split (no hours move). A cycling limiter changes nothing.")
 METHOD = ("Hours come from each activity's duration; load is intervals.icu's training load for it, which is "
           "on that sport's own scale, so shares of load across sports are indicative.")
 
