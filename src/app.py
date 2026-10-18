@@ -934,13 +934,23 @@ async def _access_gate(request, call_next):
     token = _access.configured_token()
     if not token or request.url.path in _access.OPEN_PATHS:
         return await call_next(request)
-    if _access.is_authorized(token, request.headers.get("authorization", ""),
-                             request.cookies.get(_access.COOKIE, "")):
+    auth = request.headers.get("authorization", "")
+    client = request.client.host if request.client else ""
+    if _access.has_bearer(auth) and _access.retry_after(client):
+        return _throttled(_access.retry_after(client))
+    if _access.is_authorized(token, auth, request.cookies.get(_access.COOKIE, "")):
         return await call_next(request)
+    if _access.has_bearer(auth):
+        _access.record_failure(client)    # a wrong bearer token is a guess too (#152)
     if request.url.path.startswith("/api/") or request.method != "GET":
         return StarletteJSONResponse({"error": "authentication required"}, status_code=401)
     from starlette.responses import RedirectResponse as _Redirect
     return _Redirect("/login", status_code=303)
+
+
+def _throttled(wait: int):
+    return StarletteJSONResponse({"error": "too many failed attempts"}, status_code=429,
+                                 headers={"Retry-After": str(wait)})
 
 
 _LOGIN_PAGE = """<!doctype html><meta charset="utf-8"><title>Shepherd - sign in</title>
@@ -965,14 +975,21 @@ async def login_submit(request: Request):
     token = _access.configured_token()
     form = parse_qs((await request.body()).decode("utf-8", "replace"))
     given = (form.get("token") or [""])[0]
+    client = request.client.host if request.client else ""
+    wait = _access.retry_after(client)
+    if wait:
+        return HTMLResponse(_LOGIN_PAGE % "<p>Too many failed attempts. Try again later.</p>",
+                            status_code=429, headers={"Retry-After": str(wait)})
     if not token or not _access.is_authorized(token, f"Bearer {given}", ""):
+        _access.record_failure(client)
         return HTMLResponse(_LOGIN_PAGE % "<p>Wrong token.</p>", status_code=401)
+    _access.clear_failures(client)
     from starlette.responses import RedirectResponse as _Redirect
     resp = _Redirect("/", status_code=303)
     secure = (request.url.scheme == "https"
               or request.headers.get("x-forwarded-proto", "").lower() == "https")
     resp.set_cookie(_access.COOKIE, _access.session_value(token), httponly=True,
-                    samesite="strict", secure=secure, max_age=30 * 24 * 3600)
+                    samesite="strict", secure=secure, max_age=_access.SESSION_MAX_AGE)
     return resp
 
 
