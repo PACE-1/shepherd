@@ -1959,3 +1959,35 @@ class PlanCompanions(_Model):
 class CompanionDismissed(_Model):
     ok: bool = True
     companion: PlanCompanion
+
+
+# ── Run session library (#120): routes_run_sessions.py ─────────────────────────────────────────────────
+class RunProfilePoint(_Model):
+    x: float                             # minutes
+    y: float                             # % of threshold speed at the step's intended zone
+
+
+class RunSession(_Model):
+    id: str
+    name: str
+    kind: str                            # easy | long | recovery | strides | tempo | cruise | intervals | hills
+    session_type: str
+    stimulus: str                        # recovery | aerobic | threshold | vo2max | speed
+    daniels: str                         # Daniels category: E | T | I | R
+    intent: str
+    hard: bool
+    min_minutes: int
+    max_minutes: int
+    minutes: int                         # the length the workout below is built for
+    workout: dict                        # workout_builder shape; pace_pct_threshold or effort targets
+    rtss_estimate: float                 # run_metrics.rtss at the intended zones: an estimate
+    profile: list[RunProfilePoint] = []
+    source: str = ""
+
+
+class RunSessions(_Model):
+    threshold_pace_s_per_km: Optional[float] = None
+    targets: str                         # "pace" (threshold pace saved) | "effort"
+    note: str                            # design templates after Daniels; not validated against recorded runs
+    method: str
+    sessions: list[RunSession] = []

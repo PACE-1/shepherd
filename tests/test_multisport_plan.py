@@ -386,7 +386,8 @@ def test_a_library_module_registers_on_import_and_can_retire_its_placeholder(tmp
     saved = dict(mp._REGISTRY)
     try:
         mod = __import__("sessions_zzdemo")
-        assert [t.id for t in mp.templates_for("running", "easy")] == ["demo-run"]
+        ids = [t.id for t in mp.templates_for("running", "easy")]   # the real run library may be loaded too
+        assert "demo-run" in ids and "placeholder-run-easy" not in ids
         assert mp.unregister("demo-run") is True and mp.unregister("demo-run") is False
     finally:
         sys.modules.pop("sessions_zzdemo", None)

@@ -49,6 +49,14 @@ MAX_TOTAL_S = 12 * 3600
 POWER_MIN, POWER_MAX = 10, 300      # % FTP
 HR_MIN, HR_MAX = 50, 105            # % LTHR: Coggan L1-L4, the HR-guidable band
 MAX_NAME, MAX_DESC, MAX_NOTE = 80, 500, 120
+# Target kinds each sport's workouts may use. validate() defaults to the cycling set, so the builder's
+# routes and to_zwo never see a running target.
+CYCLING_TARGETS = ("power", "hr")
+# Running (#120, src/sessions_run.py): pace as % of threshold pace (time per km, Friel's convention in
+# run_metrics, so a lower % is faster): lo = the fast end, hi = the slow end; either may be None for
+# Friel's open-ended zones (Z1 has no slow bound, Z5c no fast bound). effort = a text cue only.
+RUN_TARGETS = ("pace_pct_threshold", "effort")
+PACE_PCT_MIN, PACE_PCT_MAX = 50, 200    # input sanity limits, not physiology
 
 # (lthr %, ftp %) anchors: hr_targets' zone tops, from its own table.
 _HR_ANCHORS = [(row[3] * 100.0, row[1]) for row in hr_targets._HR_ROWS]
@@ -72,11 +80,33 @@ def _num(v):
     return float(v) if v == v and abs(v) != float("inf") else None
 
 
-def _check_target(t, path: str, dur_s, errors: list, warnings: list) -> None:
+def _check_run_target(t: dict, path: str, errors: list) -> None:
+    if t.get("kind") == "effort":
+        label = t.get("label")
+        if not isinstance(label, str) or not label.strip() or len(label) > MAX_NOTE:
+            errors.append({"path": path + ".label", "message": f"An effort target needs a label of at most {MAX_NOTE} characters."})
+        return
+    given = [v for v in (t.get("lo"), t.get("hi")) if v is not None]
+    nums = [n for n in (_num(v) for v in given) if n is not None]
+    if not given or len(nums) != len(given):
+        errors.append({"path": path, "message": "A pace target needs a fast end, a slow end or both (% of threshold pace)."})
+    elif not all(PACE_PCT_MIN <= v <= PACE_PCT_MAX for v in nums):
+        errors.append({"path": path, "message": f"A pace target must be between {PACE_PCT_MIN} and {PACE_PCT_MAX} % of threshold pace."})
+    elif len(nums) == 2 and nums[0] > nums[1]:
+        errors.append({"path": path, "message": "The fast end of a pace target is slower than its slow end."})
+
+
+def _check_target(t, path: str, dur_s, errors: list, warnings: list, kinds=CYCLING_TARGETS) -> None:
     if not isinstance(t, dict):
         errors.append({"path": path, "message": "A target is required."})
         return
     kind = t.get("kind")
+    if kinds != CYCLING_TARGETS:
+        if kind in kinds and kind in RUN_TARGETS:
+            _check_run_target(t, path, errors)
+        else:
+            errors.append({"path": path + ".kind", "message": f"Target '{kind}' is not supported for this sport."})
+        return
     if kind == "power":
         lo_b, hi_b, unit = POWER_MIN, POWER_MAX, "% FTP"
     elif kind == "hr":
@@ -97,7 +127,7 @@ def _check_target(t, path: str, dur_s, errors: list, warnings: list) -> None:
                         f"under {hr_targets.HR_MIN_SEG_S} s is hard to hit; consider power.")
 
 
-def _check_block(b, path: str, errors: list, warnings: list) -> float:
+def _check_block(b, path: str, errors: list, warnings: list, kinds=CYCLING_TARGETS) -> float:
     """Validate one timed block; return its seconds (0 when invalid)."""
     if not isinstance(b, dict):
         errors.append({"path": path, "message": "Step is missing."})
@@ -109,15 +139,16 @@ def _check_block(b, path: str, errors: list, warnings: list) -> float:
     elif d > MAX_STEP_S:
         errors.append({"path": path + ".duration_s", "message": f"A step can be at most {MAX_STEP_S // 3600} hours."})
         d = None
-    _check_target(b.get("target"), path + ".target", d, errors, warnings)
+    _check_target(b.get("target"), path + ".target", d, errors, warnings, kinds)
     note = b.get("cadence_note", "")
     if note is not None and (not isinstance(note, str) or len(note) > MAX_NOTE):
         errors.append({"path": path + ".cadence_note", "message": f"Cadence note must be text of at most {MAX_NOTE} characters."})
     return d or 0
 
 
-def validate(workout) -> "tuple[list[dict], list[str]]":
-    """(errors, warnings). errors = [{"path", "message"}]; empty means exportable."""
+def validate(workout, kinds=CYCLING_TARGETS) -> "tuple[list[dict], list[str]]":
+    """(errors, warnings). errors = [{"path", "message"}]; empty means exportable.
+    ``kinds``: the target kinds allowed (CYCLING_TARGETS, the default, or RUN_TARGETS)."""
     errors: list = []
     warnings: list = []
     if not isinstance(workout, dict):
@@ -145,14 +176,14 @@ def validate(workout) -> "tuple[list[dict], list[str]]":
             continue
         kind = s.get("kind")
         if kind in STEP_KINDS:
-            total += _check_block(s, p, errors, warnings)
+            total += _check_block(s, p, errors, warnings, kinds)
         elif kind == "repeat":
             c = _num(s.get("count"))
             if c is None or c != int(c) or not 1 <= c <= MAX_REPEATS:
                 errors.append({"path": p + ".count", "message": f"Repeats must be a whole number from 1 to {MAX_REPEATS}."})
                 c = 0
-            on = _check_block(s.get("on"), p + ".on", errors, warnings)
-            off = _check_block(s.get("off"), p + ".off", errors, warnings)
+            on = _check_block(s.get("on"), p + ".on", errors, warnings, kinds)
+            off = _check_block(s.get("off"), p + ".off", errors, warnings, kinds)
             total += c * (on + off)
         else:
             errors.append({"path": p + ".kind", "message": f"Unknown step type '{kind}'."})
