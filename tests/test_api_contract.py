@@ -27,7 +27,12 @@ def test_every_documented_route_still_exists_with_its_method():
     import os, tempfile
     os.environ.setdefault("SHEPHERD_HOME", tempfile.mkdtemp(prefix="domestique-contract-"))
     import app as app_module
-    live = {(r.path, m.lower()) for r in app_module.app.routes
+
+    def flat(routes):  # routers from src/routes_*.py are listed as one entry holding their own routes
+        for r in routes:
+            sub = getattr(r, "original_router", None)
+            yield from flat(sub.routes) if sub is not None else [r]
+    live = {(r.path, m.lower()) for r in flat(app_module.app.routes)
             for m in getattr(r, "methods", set()) or ()}
     for path, ops in snap["paths"].items():
         for method in ops:

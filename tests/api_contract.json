@@ -2490,6 +2490,199 @@
         "title": "IcuRaces",
         "type": "object"
       },
+      "InjuryEpisode": {
+        "additionalProperties": true,
+        "properties": {
+          "body_area": {
+            "default": "",
+            "title": "Body Area",
+            "type": "string"
+          },
+          "end": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "note": {
+            "default": "",
+            "title": "Note",
+            "type": "string"
+          },
+          "sport": {
+            "default": "all",
+            "title": "Sport",
+            "type": "string"
+          },
+          "start": {
+            "title": "Start",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "start"
+        ],
+        "title": "InjuryEpisode",
+        "type": "object"
+      },
+      "InjuryRampWeek": {
+        "additionalProperties": true,
+        "properties": {
+          "easy_only": {
+            "default": false,
+            "title": "Easy Only",
+            "type": "boolean"
+          },
+          "end": {
+            "title": "End",
+            "type": "string"
+          },
+          "phase": {
+            "title": "Phase",
+            "type": "string"
+          },
+          "start": {
+            "title": "Start",
+            "type": "string"
+          },
+          "tss_target": {
+            "default": 0,
+            "title": "Tss Target",
+            "type": "number"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "phase"
+        ],
+        "title": "InjuryRampWeek",
+        "type": "object"
+      },
+      "InjuryReturn": {
+        "additionalProperties": true,
+        "properties": {
+          "absence_days": {
+            "title": "Absence Days",
+            "type": "integer"
+          },
+          "end": {
+            "title": "End",
+            "type": "string"
+          },
+          "episode_days": {
+            "title": "Episode Days",
+            "type": "integer"
+          },
+          "episode_id": {
+            "title": "Episode Id",
+            "type": "string"
+          },
+          "start": {
+            "title": "Start",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          },
+          "weeks_done": {
+            "title": "Weeks Done",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "episode_id",
+          "type",
+          "start",
+          "end",
+          "episode_days",
+          "absence_days",
+          "weeks_done"
+        ],
+        "title": "InjuryReturn",
+        "type": "object"
+      },
+      "InjuryStatus": {
+        "additionalProperties": true,
+        "properties": {
+          "active": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InjuryEpisode"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "episodes": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/InjuryEpisode"
+            },
+            "title": "Episodes",
+            "type": "array"
+          },
+          "has_plan": {
+            "default": false,
+            "title": "Has Plan",
+            "type": "boolean"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "plan_synced": {
+            "default": false,
+            "title": "Plan Synced",
+            "type": "boolean"
+          },
+          "ramp_weeks": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/InjuryRampWeek"
+            },
+            "title": "Ramp Weeks",
+            "type": "array"
+          },
+          "return_ramp": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InjuryReturn"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "note"
+        ],
+        "title": "InjuryStatus",
+        "type": "object"
+      },
       "Insight": {
         "additionalProperties": true,
         "properties": {
@@ -4093,6 +4286,116 @@
           }
         },
         "title": "RaceAdded",
+        "type": "object"
+      },
+      "RampRate": {
+        "additionalProperties": true,
+        "properties": {
+          "as_of": {
+            "title": "As Of",
+            "type": "string"
+          },
+          "combined": {
+            "$ref": "#/components/schemas/RampRateLine"
+          },
+          "confidence": {
+            "title": "Confidence",
+            "type": "string"
+          },
+          "high": {
+            "title": "High",
+            "type": "number"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "sports": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/RampRateLine"
+            },
+            "default": {},
+            "title": "Sports",
+            "type": "object"
+          },
+          "threshold": {
+            "title": "Threshold",
+            "type": "number"
+          },
+          "warn": {
+            "title": "Warn",
+            "type": "boolean"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "as_of",
+          "threshold",
+          "high",
+          "combined",
+          "warn",
+          "method",
+          "confidence",
+          "note"
+        ],
+        "title": "RampRate",
+        "type": "object"
+      },
+      "RampRateLine": {
+        "additionalProperties": true,
+        "properties": {
+          "change_pct": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Change Pct"
+          },
+          "level": {
+            "title": "Level",
+            "type": "string"
+          },
+          "prev_4wk_avg": {
+            "title": "Prev 4Wk Avg",
+            "type": "number"
+          },
+          "ratio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ratio"
+          },
+          "week_load": {
+            "title": "Week Load",
+            "type": "number"
+          }
+        },
+        "required": [
+          "week_load",
+          "prev_4wk_avg",
+          "level"
+        ],
+        "title": "RampRateLine",
         "type": "object"
       },
       "Readiness": {
@@ -6990,6 +7293,91 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/IcuRaces"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/injury": {
+      "get": {
+        "operationId": "injury_status_api_injury_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InjuryStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/injury/episodes": {
+      "post": {
+        "operationId": "injury_add_api_injury_episodes_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InjuryStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/injury/episodes/{episode_id}": {
+      "delete": {
+        "operationId": "injury_delete_api_injury_episodes__episode_id__delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InjuryStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/injury/episodes/{episode_id}/resolve": {
+      "post": {
+        "operationId": "injury_resolve_api_injury_episodes__episode_id__resolve_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InjuryStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/injury/ramp-rate": {
+      "get": {
+        "operationId": "injury_ramp_rate_api_injury_ramp_rate_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RampRate"
                 }
               }
             },
