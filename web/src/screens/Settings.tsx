@@ -287,6 +287,7 @@ export function Settings() {
         <SportsCard />
       </div>
       <p className="text-sm lg:col-span-2">Bikes, shoes and components: <a className="underline" href="#/gear">Gear and service reminders</a>.</p>
+      <p className="text-sm lg:col-span-2">Strength and mobility sessions for your plan: <a className="underline" href="#/strength">Browse and print</a>.</p>
       <div className="lg:col-span-2"><RunZones /></div>
       <div className="lg:col-span-2"><RacePredictor /></div>
       <div className="lg:col-span-2"><SwimZones /></div>
