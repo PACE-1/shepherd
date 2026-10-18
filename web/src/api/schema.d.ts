@@ -164,6 +164,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/diag/frontend-error": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_diag_frontend_error_api_diag_frontend_error_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/diag/health": {
         parameters: {
             query?: never;
@@ -220,6 +236,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["fueling_today_api_fueling_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/icu/athlete-numbers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_icu_athlete_numbers_api_icu_athlete_numbers_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1044,6 +1076,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/profile/dfa-backfill/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_profile_dfa_backfill_cancel_api_profile_dfa_backfill_cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/profile/dfa-backfill/status": {
         parameters: {
             query?: never;
@@ -1524,6 +1572,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/rides/{ride_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["api_ride_delete_api_rides__ride_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/run/activities": {
         parameters: {
             query?: never;
@@ -1652,6 +1716,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/setup/check-activities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["setup_check_activities_api_setup_check_activities_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/setup/defaults": {
         parameters: {
             query?: never;
@@ -1678,6 +1758,70 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["setup_ensure_profile_api_setup_ensure_profile_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/setup/limits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["setup_limits_api_setup_limits_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/setup/pick-folder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["setup_pick_folder_api_setup_pick_folder_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/setup/save": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["setup_save_api_setup_save_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/setup/test-icu": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["setup_test_icu_api_setup_test_icu_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1791,6 +1935,22 @@ export interface paths {
         put: operations["open_water_edit_api_swim_open_water__note_id__put"];
         post?: never;
         delete: operations["open_water_delete_api_swim_open_water__note_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_sync_api_sync_post"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -2120,6 +2280,45 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * ActivitiesCheck
+         * @description POST /api/setup/check-activities: HTTP 200 either way; ``ok`` false carries ``error``.
+         */
+        ActivitiesCheck: {
+            /** Count */
+            count?: number | null;
+            /** Error */
+            error?: string | null;
+            /** Garmin Count */
+            garmin_count?: number | null;
+            /** Latest Date */
+            latest_date?: string | null;
+            /** Ok */
+            ok: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /**
+         * AthleteNumbers
+         * @description GET /api/icu/athlete-numbers: null for any value intervals.icu does not hold.
+         */
+        AthleteNumbers: {
+            /** Ftp */
+            ftp?: number | null;
+            /** Lthr */
+            lthr?: number | null;
+            /** Max Hr */
+            max_hr?: number | null;
+            /**
+             * Ok
+             * @default false
+             */
+            ok: boolean;
+            /** Weight */
+            weight?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
         /** AutoAdjustResult */
         AutoAdjustResult: {
             /**
@@ -2847,6 +3046,15 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** DfaBackfillCancelRequested */
+        DfaBackfillCancelRequested: {
+            /** Status */
+            status: string;
+            /** Task Id */
+            task_id: string;
+        } & {
+            [key: string]: unknown;
+        };
         /** DfaRide */
         DfaRide: {
             /** Algo Version */
@@ -3171,6 +3379,21 @@ export interface components {
              * @default 0
              */
             count: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /**
+         * FrontendErrorLogged
+         * @description POST /api/diag/frontend-error: ``code`` is the code that was logged (unknown codes become E_FRONTEND_GENERIC).
+         */
+        FrontendErrorLogged: {
+            /** Code */
+            code: string;
+            /**
+             * Ok
+             * @default true
+             */
+            ok: boolean;
         } & {
             [key: string]: unknown;
         };
@@ -3507,6 +3730,26 @@ export interface components {
              * @default false
              */
             write_ok: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /**
+         * IcuKeyCheck
+         * @description POST /api/setup/test-icu: HTTP 200 either way; ``ok`` false carries ``error``.
+         */
+        IcuKeyCheck: {
+            /** Athlete Id */
+            athlete_id?: string | null;
+            /** Eftp */
+            eftp?: number | null;
+            /** Error */
+            error?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Ok */
+            ok: boolean;
+            /** Weight */
+            weight?: number | null;
         } & {
             [key: string]: unknown;
         };
@@ -3988,6 +4231,19 @@ export interface components {
              * @default []
              */
             notes: components["schemas"]["OpenWaterNote"][];
+        } & {
+            [key: string]: unknown;
+        };
+        /**
+         * PickedFolder
+         * @description GET /api/setup/pick-folder: "" when the dialog was cancelled or unavailable.
+         */
+        PickedFolder: {
+            /**
+             * Path
+             * @default
+             */
+            path: string;
         } & {
             [key: string]: unknown;
         };
@@ -5669,6 +5925,51 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /**
+         * SetupLimits
+         * @description GET /api/setup/limits: [min, max] per setup field.
+         */
+        SetupLimits: {
+            /** Age */
+            age?: number[] | null;
+            /** Cp */
+            cp?: number[] | null;
+            /** Ftp */
+            ftp?: number[] | null;
+            /** Hours Per Week */
+            hours_per_week?: number[] | null;
+            /** Lthr */
+            lthr?: number[] | null;
+            /** Max Hr */
+            max_hr?: number[] | null;
+            /** Weight */
+            weight?: number[] | null;
+            /** Wprime J */
+            wprime_j?: number[] | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /**
+         * SetupSaved
+         * @description POST /api/setup/save. The optional keys appear only when they apply.
+         */
+        SetupSaved: {
+            /** Athlete Id Detected */
+            athlete_id_detected?: string | null;
+            /** Athlete Name */
+            athlete_name?: string | null;
+            /** Creds Test */
+            creds_test?: string | null;
+            /**
+             * Ok
+             * @default true
+             */
+            ok: boolean;
+            /** Warning */
+            warning?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
         /** SportLoadLine */
         SportLoadLine: {
             /** Atl */
@@ -5870,6 +6171,33 @@ export interface components {
             ts?: number | null;
             /** Updated */
             updated?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /**
+         * SyncResult
+         * @description POST /api/sync. ``status`` is "skipped" when no credentials are configured.
+         */
+        SyncResult: {
+            /**
+             * Activities
+             * @default 0
+             */
+            activities: number;
+            /** Error */
+            error?: string | null;
+            /**
+             * Status
+             * @default
+             */
+            status: string;
+            /** Timestamp */
+            timestamp: string;
+            /**
+             * Wellness
+             * @default 0
+             */
+            wellness: number;
         } & {
             [key: string]: unknown;
         };
@@ -6807,6 +7135,26 @@ export interface operations {
             };
         };
     };
+    api_diag_frontend_error_api_diag_frontend_error_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FrontendErrorLogged"];
+                };
+            };
+        };
+    };
     api_diag_health_api_diag_health_get: {
         parameters: {
             query?: never;
@@ -6883,6 +7231,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Fueling"];
+                };
+            };
+        };
+    };
+    api_icu_athlete_numbers_api_icu_athlete_numbers_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AthleteNumbers"];
                 };
             };
         };
@@ -8027,6 +8395,26 @@ export interface operations {
             };
         };
     };
+    api_profile_dfa_backfill_cancel_api_profile_dfa_backfill_cancel_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DfaBackfillCancelRequested"];
+                };
+            };
+        };
+    };
     api_profile_dfa_backfill_status_api_profile_dfa_backfill_status_get: {
         parameters: {
             query?: never;
@@ -8687,6 +9075,26 @@ export interface operations {
             };
         };
     };
+    api_ride_delete_api_rides__ride_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Ok"];
+                };
+            };
+        };
+    };
     run_activities_api_run_activities_get: {
         parameters: {
             query?: never;
@@ -8887,6 +9295,26 @@ export interface operations {
             };
         };
     };
+    setup_check_activities_api_setup_check_activities_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActivitiesCheck"];
+                };
+            };
+        };
+    };
     setup_defaults_api_setup_defaults_get: {
         parameters: {
             query?: never;
@@ -8923,6 +9351,86 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EnsureProfile"];
+                };
+            };
+        };
+    };
+    setup_limits_api_setup_limits_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetupLimits"];
+                };
+            };
+        };
+    };
+    setup_pick_folder_api_setup_pick_folder_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PickedFolder"];
+                };
+            };
+        };
+    };
+    setup_save_api_setup_save_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetupSaved"];
+                };
+            };
+        };
+    };
+    setup_test_icu_api_setup_test_icu_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IcuKeyCheck"];
                 };
             };
         };
@@ -9123,6 +9631,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Ok"];
+                };
+            };
+        };
+    };
+    api_sync_api_sync_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SyncResult"];
                 };
             };
         };

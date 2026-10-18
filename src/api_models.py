@@ -1727,3 +1727,83 @@ class RaceDayPlan(_Model):
     expected_duration_h: Optional[float] = None
     power: RacePower
     fueling: str
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# #10, UI route inventory slice (docs/api-inventory-ui.md). Models for the
+# routes the web app calls that had no response model. Every field below was
+# seen in a real TestClient response (or its branch, with the network faked).
+# Models document; they never validate (see the module docstring).
+# ═════════════════════════════════════════════════════════════════════════════
+class SetupLimits(_Model):
+    """GET /api/setup/limits: [min, max] per setup field."""
+    ftp: Optional[list[float]] = None
+    weight: Optional[list[float]] = None
+    lthr: Optional[list[float]] = None
+    max_hr: Optional[list[float]] = None
+    hours_per_week: Optional[list[float]] = None
+    age: Optional[list[float]] = None
+    cp: Optional[list[float]] = None
+    wprime_j: Optional[list[float]] = None
+
+
+class IcuKeyCheck(_Model):
+    """POST /api/setup/test-icu: HTTP 200 either way; ``ok`` false carries ``error``."""
+    ok: bool
+    error: Optional[str] = None
+    name: Optional[str] = None
+    athlete_id: Optional[str] = None
+    eftp: Optional[int] = None
+    weight: Optional[float] = None
+
+
+class ActivitiesCheck(_Model):
+    """POST /api/setup/check-activities: HTTP 200 either way; ``ok`` false carries ``error``."""
+    ok: bool
+    error: Optional[str] = None
+    count: Optional[int] = None
+    garmin_count: Optional[int] = None
+    latest_date: Optional[str] = None
+
+
+class PickedFolder(_Model):
+    """GET /api/setup/pick-folder: "" when the dialog was cancelled or unavailable."""
+    path: str = ""
+
+
+class SetupSaved(_Model):
+    """POST /api/setup/save. The optional keys appear only when they apply."""
+    ok: bool = True
+    creds_test: Optional[str] = None             # "passed" | "failed: <reason>"
+    athlete_id_detected: Optional[str] = None
+    athlete_name: Optional[str] = None
+    warning: Optional[str] = None
+
+
+class AthleteNumbers(_Model):
+    """GET /api/icu/athlete-numbers: null for any value intervals.icu does not hold."""
+    ok: bool = False
+    ftp: Optional[float] = None
+    weight: Optional[float] = None
+    lthr: Optional[float] = None
+    max_hr: Optional[float] = None
+
+
+class SyncResult(_Model):
+    """POST /api/sync. ``status`` is "skipped" when no credentials are configured."""
+    timestamp: str
+    wellness: int = 0
+    activities: int = 0
+    status: str = ""
+    error: Optional[str] = None
+
+
+class DfaBackfillCancelRequested(_Model):
+    status: str                                  # "cancel_requested"
+    task_id: str
+
+
+class FrontendErrorLogged(_Model):
+    """POST /api/diag/frontend-error: ``code`` is the code that was logged (unknown codes become E_FRONTEND_GENERIC)."""
+    ok: bool = True
+    code: str
