@@ -5,7 +5,8 @@ name: Publish Docker image
 #   ghcr.io/pace-1/shepherd:vX.Y.Z   always
 #   ghcr.io/pace-1/shepherd:X.Y      stable tags only, and only if this is the newest vX.Y.*
 #   ghcr.io/pace-1/shepherd:latest   stable tags only, and only if this is the newest stable tag
-# A tag with a '-' (v4.1.0-rc1) is a prerelease: it gets its exact tag and nothing else.
+#   ghcr.io/pace-1/shepherd:beta     prerelease tags only, and only if this is the newest prerelease tag
+# A tag with a '-' (v4.0.0-beta.1) is a prerelease: it gets its exact tag and :beta, never X.Y or latest.
 #
 # linux/amd64 only. requirements-linux-py312.lock is a pip-compile for one
 # platform and nothing here has built or run the image on arm64, so arm64 is not
@@ -79,7 +80,11 @@ jobs:
             fi
             tags="${IMAGE}:${REF_NAME}"
             case "$version" in
-              *-*) echo "Prerelease: only the exact tag is published" ;;
+              *-*)
+                # sort -V orders beta.2 before beta.10 and beta before rc.
+                newest_pre="$(git tag -l 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+-' | sort -V | tail -1)"
+                [ "$newest_pre" = "$REF_NAME" ] && tags="$tags ${IMAGE}:beta"
+                ;;
               *)
                 major_minor="${version%.*}"
                 # sort -V orders by version number, not by push time, so
