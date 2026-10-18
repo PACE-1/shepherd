@@ -2668,6 +2668,136 @@
         "title": "MigrationResult",
         "type": "object"
       },
+      "NotificationEvents": {
+        "additionalProperties": true,
+        "properties": {
+          "missed": {
+            "default": true,
+            "title": "Missed",
+            "type": "boolean"
+          },
+          "readiness": {
+            "default": true,
+            "title": "Readiness",
+            "type": "boolean"
+          },
+          "sync_failure": {
+            "default": true,
+            "title": "Sync Failure",
+            "type": "boolean"
+          }
+        },
+        "title": "NotificationEvents",
+        "type": "object"
+      },
+      "NotificationItem": {
+        "additionalProperties": true,
+        "properties": {
+          "body": {
+            "title": "Body",
+            "type": "string"
+          },
+          "day": {
+            "title": "Day",
+            "type": "string"
+          },
+          "event": {
+            "title": "Event",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "read": {
+            "default": false,
+            "title": "Read",
+            "type": "boolean"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "event",
+          "day",
+          "title",
+          "body",
+          "ts"
+        ],
+        "title": "NotificationItem",
+        "type": "object"
+      },
+      "NotificationList": {
+        "additionalProperties": true,
+        "properties": {
+          "items": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/NotificationItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "unread": {
+            "default": 0,
+            "title": "Unread",
+            "type": "integer"
+          }
+        },
+        "title": "NotificationList",
+        "type": "object"
+      },
+      "NotificationSettings": {
+        "additionalProperties": true,
+        "properties": {
+          "events": {
+            "$ref": "#/components/schemas/NotificationEvents",
+            "default": {
+              "missed": true,
+              "readiness": true,
+              "sync_failure": true
+            }
+          },
+          "has_url": {
+            "default": false,
+            "title": "Has Url",
+            "type": "boolean"
+          },
+          "readiness_time": {
+            "default": "",
+            "title": "Readiness Time",
+            "type": "string"
+          }
+        },
+        "title": "NotificationSettings",
+        "type": "object"
+      },
+      "NotificationTest": {
+        "additionalProperties": true,
+        "properties": {
+          "error": {
+            "default": "",
+            "title": "Error",
+            "type": "string"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "title": "NotificationTest",
+        "type": "object"
+      },
       "Ok": {
         "additionalProperties": true,
         "properties": {
@@ -7160,6 +7290,89 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MigrationResult"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/notifications": {
+      "get": {
+        "operationId": "api_notifications_api_notifications_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationList"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/notifications/read": {
+      "post": {
+        "operationId": "api_notifications_read_api_notifications_read_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationList"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/notifications/settings": {
+      "get": {
+        "operationId": "api_notifications_settings_api_notifications_settings_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationSettings"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "operationId": "api_notifications_save_api_notifications_settings_put",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationSettings"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/notifications/test": {
+      "post": {
+        "operationId": "api_notifications_test_api_notifications_test_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationTest"
                 }
               }
             },

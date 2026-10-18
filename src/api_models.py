@@ -1117,3 +1117,37 @@ class LlmConnection(_Model):
 class Insight(_Model):
     text: str
     model: str = ""
+
+
+# ── Notifications (#131) ─────────────────────────────────────────────────────
+
+class NotificationItem(_Model):
+    id: int
+    event: str                        # readiness | missed | sync_failure
+    day: str
+    title: str
+    body: str
+    ts: str
+    read: bool = False
+
+
+class NotificationList(_Model):
+    items: list[NotificationItem] = []
+    unread: int = 0
+
+
+class NotificationEvents(_Model):
+    readiness: bool = True
+    missed: bool = True
+    sync_failure: bool = True
+
+
+class NotificationSettings(_Model):
+    has_url: bool = False             # the URL itself is never returned
+    events: NotificationEvents = NotificationEvents()
+    readiness_time: str = ""          # HH:MM, or "" for the first sync of the day
+
+
+class NotificationTest(_Model):
+    ok: bool
+    error: str = ""

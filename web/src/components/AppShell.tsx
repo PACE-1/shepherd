@@ -5,6 +5,7 @@ import { Logo } from "@/components/Logo"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { api } from "@/lib/api"
 import { Notices } from "@/screens/Notices"
+import { NotificationsBell } from "@/screens/NotificationsBell"
 
 export const TABS = [
   { id: "home", label: "Home" },
@@ -60,6 +61,7 @@ export function AppShell({ tab, children }: { tab: TabId; children: ReactNode })
           <Button size="sm" variant="ghost" render={<a href="#/profile-picker" />}>
             Switch rider
           </Button>
+          <NotificationsBell />
           <ThemeToggle />
         </nav>
         <Notices />
