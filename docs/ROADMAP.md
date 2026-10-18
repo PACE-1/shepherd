@@ -84,3 +84,5 @@ Known defects found, not fixed:
 - `web/src/lib/planForm.ts` sends the A event inside `events` when an event goal has B/C races; `generate_plan` refuses an A there with a 400.
 - Test-order pollution: running `test_api_contract.py` before the account tests in one process fails about 17 of them (they pass alone). The full parallel gate is unaffected.
 - Not started (need a design decision): #123 bricks, #125 race-distance plans, #127 strength sessions, run/swim sessions in the plan. They depend on how a plan holds non-cycling sessions.
+- #132 rebrand: README rewritten (install, platforms, configuration, first run, update, backup). Still open and not doable from here: the naming/trademark availability search (GNU Shepherd and Shepherd.js exist) and detaching the GitHub fork network (a GitHub account action). `NOTICE` still lists third-party packages (bleak, pycycling, openant) from the removed trainer subsystem; fix in the cleanup pass.
+- #13 server access: implemented (`src/access.py`, `docs/SERVER.md`, `tests/test_access_control.py`). Not verified: that intervals.icu accepts a remote-browser OAuth callback (use the API-key connection on a server).
