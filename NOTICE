@@ -17,15 +17,6 @@ THIRD-PARTY SOFTWARE
 
 This product includes software developed by third parties:
 
-- bleak (MIT License)
-  https://github.com/hbldh/bleak
-
-- pycycling (MIT License)
-  https://github.com/zacharyedwardbull/pycycling
-
-- openant (MIT License)
-  https://github.com/Tigge/openant
-
 - FastAPI (MIT License)
   https://github.com/tiangolo/fastapi
 
@@ -65,9 +56,6 @@ This product includes software developed by third parties:
 
 - starlette (BSD-3-Clause License)
   https://www.starlette.io/
-
-- websockets (BSD-3-Clause License)
-  https://websockets.readthedocs.io/
 
 ================================================================================
 DATA ATTRIBUTION
