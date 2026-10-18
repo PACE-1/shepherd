@@ -2029,3 +2029,26 @@ class StrengthSessions(_Model):
     load_note: str
     load_method: str
     sources: list[str]
+# ── Swim session library (routes_swim_sessions.py) ──────────────────────────────────────────────
+class SwimSession(_Model):
+    id: str
+    name: str
+    kind: str                            # easy | recovery | endurance | css | threshold
+    session_type: str                    # swim_endurance | swim_css
+    intent: str
+    hard: bool = False
+    minutes: int                         # the length the set text is written for
+    minutes_min: int
+    minutes_max: int
+    lines: list[str] = []                # the set text, one line per part
+    note: str = ""                       # pool length, and "no CSS saved" when that is so
+
+
+class SwimSessions(_Model):
+    css_s_per_100m: Optional[float] = None
+    has_css: bool = False
+    pool_m: int = 25
+    source: str = ""                     # Wakayoshi 1992/1993; set shapes are coaching templates
+    not_validated: str = ""
+    download_note: str = ""              # plain text only, no FIT
+    sessions: list[SwimSession] = []

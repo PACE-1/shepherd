@@ -10370,6 +10370,124 @@
         "title": "SwimCssTest",
         "type": "object"
       },
+      "SwimSession": {
+        "additionalProperties": true,
+        "properties": {
+          "hard": {
+            "default": false,
+            "title": "Hard",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "intent": {
+            "title": "Intent",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "lines": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "minutes": {
+            "title": "Minutes",
+            "type": "integer"
+          },
+          "minutes_max": {
+            "title": "Minutes Max",
+            "type": "integer"
+          },
+          "minutes_min": {
+            "title": "Minutes Min",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "note": {
+            "default": "",
+            "title": "Note",
+            "type": "string"
+          },
+          "session_type": {
+            "title": "Session Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "session_type",
+          "intent",
+          "minutes",
+          "minutes_min",
+          "minutes_max"
+        ],
+        "title": "SwimSession",
+        "type": "object"
+      },
+      "SwimSessions": {
+        "additionalProperties": true,
+        "properties": {
+          "css_s_per_100m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Css S Per 100M"
+          },
+          "download_note": {
+            "default": "",
+            "title": "Download Note",
+            "type": "string"
+          },
+          "has_css": {
+            "default": false,
+            "title": "Has Css",
+            "type": "boolean"
+          },
+          "not_validated": {
+            "default": "",
+            "title": "Not Validated",
+            "type": "string"
+          },
+          "pool_m": {
+            "default": 25,
+            "title": "Pool M",
+            "type": "integer"
+          },
+          "sessions": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SwimSession"
+            },
+            "title": "Sessions",
+            "type": "array"
+          },
+          "source": {
+            "default": "",
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "title": "SwimSessions",
+        "type": "object"
+      },
       "SyncProgress": {
         "additionalProperties": true,
         "properties": {
@@ -14581,6 +14699,23 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OpenWaterNote"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/swim/sessions": {
+      "get": {
+        "operationId": "swim_sessions_api_swim_sessions_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SwimSessions"
                 }
               }
             },

@@ -41,6 +41,7 @@ function mock(over: Record<string, (body: unknown) => Response> = {}) {
     if (url === "/api/swim/css") return json({ css_s_per_100m: null, history: [], zones_note: "", method: "", confidence: "" })
     if (url === "/api/swim/activities") return json({ swims: [], missing: [], method: "", confidence: "", stroke_note: "" })
     if (url === "/api/swim/open-water") return json({ notes: [] })
+    if (url === "/api/swim/sessions") return json({ has_css: false, pool_m: 25, sessions: [] })
     if (url === "/api/profile/ftp-history") return json({ ftp_current: 250, ftp_source: "manual", history: [] })
     return json({}, 404)
   }))
