@@ -9,10 +9,9 @@ Three things have to hold and none of them were checked:
      read by the sampler's budget-fit, by the planner's zone rails and by the
      UI; if they are wrong every consumer is wrong together and consistently,
      which is the hardest kind of wrong to notice.
-  3. The two scanners agree with each other. `training_planner._scan` and
-     `app._scan_zwo_for_library` are separate implementations of the same
-     computation, 72 identical code lines apart. Until they are merged, they
-     must at least be shown to produce the same numbers.
+  3. The library rows and `app._scan_zwo_for_library` agree. They are now one
+     function (`training_planner.scan_zwo`, merged in #23); the check stays so
+     a future second scanner has to show it produces the same numbers.
 
 Ramps used to be binned at 20 slices regardless of length while the NP/IF
 series for the same segment was built at 1 Hz — two resolutions for one
