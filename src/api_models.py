@@ -1436,3 +1436,79 @@ class RideCompare(_Model):
     b: CompareSide
     delta: CompareSummary                    # b - a per summary field
     best_efforts: list[BestEffortDelta] = []
+
+
+# ── #111 races: A/B/C list, tapers, race-day plan (routes_races.py) ──────────
+
+class RaceTaper(_Model):
+    kind: str                            # full (A) | short (B) | opener | easy_day (C) | none
+    start: Optional[str] = None
+    end: Optional[str] = None
+    text: str = ""
+    planned_tss: Optional[float] = None  # planned load in the taper window
+    before_tss: Optional[float] = None   # B: planned load in the same number of days before it
+
+
+class Race(_Model):
+    id: str
+    name: str = ""
+    date: str
+    priority: str                        # A | B | C
+    discipline: str = "cycling"
+    event_type: str = "granfondo"
+    event_km: float = 0
+    event_climb_m: float = 0
+    expected_duration_h: Optional[float] = None
+    start_time: Optional[str] = None     # HH:MM
+    arrive_time: Optional[str] = None    # HH:MM
+    in_plan: bool = False
+    days_to_go: int = 0
+    taper: RaceTaper
+
+
+class RaceTaperWeek(_Model):
+    start: str
+    end: str
+    tss_target: float = 0
+    planned_tss: float = 0
+
+
+class RacesStatus(_Model):
+    races: list[Race] = []
+    stored: bool = False                 # False: read from the plan's goal, nothing saved yet
+    has_plan: bool = False
+    plan_a_date: Optional[str] = None    # the event plan's goal date (its A race)
+    taper_weeks: list[RaceTaperWeek] = []
+    plan_synced: bool = False            # the plan's goal changed: rebuild it
+    method: str = ""
+    confidence: str = ""
+
+
+class RaceTimelineRow(_Model):
+    time: str
+    label: str
+
+
+class RacePower(_Model):
+    available: bool
+    reason: Optional[str] = None
+    ftp: Optional[int] = None
+    projected_duration_h: Optional[float] = None
+    if_low: Optional[float] = None
+    if_high: Optional[float] = None
+    np_low: Optional[int] = None
+    np_high: Optional[int] = None
+    predicted_np: Optional[int] = None
+    predicted_if: Optional[float] = None
+    predicted_tss: Optional[float] = None
+    method: Optional[str] = None
+    confidence: Optional[str] = None
+
+
+class RaceDayPlan(_Model):
+    race: Race
+    warmup_min: int
+    timeline: list[RaceTimelineRow] = []
+    expected_duration_h: Optional[float] = None
+    power: RacePower
+    fueling: str
