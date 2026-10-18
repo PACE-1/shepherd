@@ -98,7 +98,16 @@ export function Setup() {
       } catch {
         saved = null
       }
-      setS(restore(base, saved))
+      // Anything typed while the defaults were loading wins over the restored values.
+      setS((cur) => {
+        const r = restore(base, saved)
+        if (!cur.touched.length) return r
+        return {
+          ...r,
+          values: { ...r.values, ...Object.fromEntries(cur.touched.map((id) => [id, cur.values[id]])) },
+          touched: [...new Set([...r.touched, ...cur.touched])],
+        }
+      })
       ready.current = true
     })()
     if (returnFailed) return () => ctrl.abort()
