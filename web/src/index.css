@@ -119,6 +119,108 @@
     --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Colour palettes (#106): each overrides only the accent tokens, in both modes. Keep the primary/foreground pairs at 4.5:1 or better (palette.test.ts). */
+
+:root[data-palette="ocean"] {
+    --primary: #2563eb;
+    --primary-foreground: #ffffff;
+    --ring: #2563eb;
+    --sidebar-primary: #2563eb;
+    --sidebar-primary-foreground: #ffffff;
+    --chart-1: oklch(0.82 0.12 255);
+    --chart-2: oklch(0.72 0.17 255);
+    --chart-3: oklch(0.62 0.19 255);
+    --chart-4: oklch(0.52 0.17 255);
+    --chart-5: oklch(0.42 0.13 255);
+}
+.dark[data-palette="ocean"] {
+    --primary: #60a5fa;
+    --primary-foreground: #0b1220;
+    --ring: #60a5fa;
+    --sidebar-primary: #60a5fa;
+    --sidebar-primary-foreground: #0b1220;
+    --chart-1: oklch(0.82 0.12 255);
+    --chart-2: oklch(0.72 0.17 255);
+    --chart-3: oklch(0.62 0.19 255);
+    --chart-4: oklch(0.52 0.17 255);
+    --chart-5: oklch(0.42 0.13 255);
+}
+
+:root[data-palette="forest"] {
+    --primary: #15803d;
+    --primary-foreground: #ffffff;
+    --ring: #15803d;
+    --sidebar-primary: #15803d;
+    --sidebar-primary-foreground: #ffffff;
+    --chart-1: oklch(0.82 0.12 150);
+    --chart-2: oklch(0.72 0.17 150);
+    --chart-3: oklch(0.62 0.19 150);
+    --chart-4: oklch(0.52 0.17 150);
+    --chart-5: oklch(0.42 0.13 150);
+}
+.dark[data-palette="forest"] {
+    --primary: #4ade80;
+    --primary-foreground: #052e16;
+    --ring: #4ade80;
+    --sidebar-primary: #4ade80;
+    --sidebar-primary-foreground: #052e16;
+    --chart-1: oklch(0.82 0.12 150);
+    --chart-2: oklch(0.72 0.17 150);
+    --chart-3: oklch(0.62 0.19 150);
+    --chart-4: oklch(0.52 0.17 150);
+    --chart-5: oklch(0.42 0.13 150);
+}
+
+:root[data-palette="sunset"] {
+    --primary: #c2410c;
+    --primary-foreground: #ffffff;
+    --ring: #c2410c;
+    --sidebar-primary: #c2410c;
+    --sidebar-primary-foreground: #ffffff;
+    --chart-1: oklch(0.82 0.12 50);
+    --chart-2: oklch(0.72 0.17 50);
+    --chart-3: oklch(0.62 0.19 50);
+    --chart-4: oklch(0.52 0.17 50);
+    --chart-5: oklch(0.42 0.13 50);
+}
+.dark[data-palette="sunset"] {
+    --primary: #fb923c;
+    --primary-foreground: #1c0a00;
+    --ring: #fb923c;
+    --sidebar-primary: #fb923c;
+    --sidebar-primary-foreground: #1c0a00;
+    --chart-1: oklch(0.82 0.12 50);
+    --chart-2: oklch(0.72 0.17 50);
+    --chart-3: oklch(0.62 0.19 50);
+    --chart-4: oklch(0.52 0.17 50);
+    --chart-5: oklch(0.42 0.13 50);
+}
+
+:root[data-palette="violet"] {
+    --primary: #6d28d9;
+    --primary-foreground: #ffffff;
+    --ring: #6d28d9;
+    --sidebar-primary: #6d28d9;
+    --sidebar-primary-foreground: #ffffff;
+    --chart-1: oklch(0.82 0.12 295);
+    --chart-2: oklch(0.72 0.17 295);
+    --chart-3: oklch(0.62 0.19 295);
+    --chart-4: oklch(0.52 0.17 295);
+    --chart-5: oklch(0.42 0.13 295);
+}
+.dark[data-palette="violet"] {
+    --primary: #a78bfa;
+    --primary-foreground: #1e1033;
+    --ring: #a78bfa;
+    --sidebar-primary: #a78bfa;
+    --sidebar-primary-foreground: #1e1033;
+    --chart-1: oklch(0.82 0.12 295);
+    --chart-2: oklch(0.72 0.17 295);
+    --chart-3: oklch(0.62 0.19 295);
+    --chart-4: oklch(0.52 0.17 295);
+    --chart-5: oklch(0.42 0.13 295);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

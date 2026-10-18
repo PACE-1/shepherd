@@ -13,6 +13,7 @@ import { Folders } from "@/screens/Folders"
 import { ApiKeyConnect } from "@/screens/ApiKeyConnect"
 import { AiCoachSettings } from "@/screens/Coach"
 import { FtpHistory } from "@/screens/FtpHistory"
+import { Appearance } from "@/screens/Appearance"
 import { SportsCard } from "@/screens/SportsCard"
 import { YourData } from "@/screens/YourData"
 import { Panel, Row, useLoad } from "@/screens/panel"
@@ -260,6 +261,7 @@ export function Settings() {
       <div className="lg:col-span-2">
         <Rider />
       </div>
+      <Appearance />
       <Sync />
       <AiCoachSettings />
       <CalendarPush />

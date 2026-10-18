@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
 import { diff, formFrom } from "@/lib/settings"
+import { ThemeProvider } from "@/components/theme-provider"
 import { Settings } from "@/screens/Settings"
 
 const SETTINGS = {
@@ -54,7 +55,7 @@ describe("diff", () => {
 describe("Settings", () => {
   it("shows the rider values, zones, sync state and version", async () => {
     mock()
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     expect(await screen.findByDisplayValue("250")).toBeTruthy()
     expect(screen.getByText(/FTP source: tested_ramp \(2026-09-01\)/)).toBeTruthy()
     expect(screen.getByText(/intervals.icu estimates 258 W/)).toBeTruthy()
@@ -66,7 +67,7 @@ describe("Settings", () => {
 
   it("saves only the changed field, then shows it as saved", async () => {
     const calls = mock({ "/api/settings": (b) => (b ? json({ ok: true, updated: {}, settings: { ...SETTINGS, ftp: 260 } }) : json(SETTINGS)) })
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     const ftp = await screen.findByDisplayValue("250")
     const save = screen.getByRole("button", { name: "Save changes" }) as HTMLButtonElement
     expect(save.disabled).toBe(true)
@@ -80,7 +81,7 @@ describe("Settings", () => {
 
   it("blocks a bad value without calling the server", async () => {
     const calls = mock()
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     const ftp = await screen.findByDisplayValue("250")
     await userEvent.clear(ftp)
     await userEvent.type(ftp, "5000")
@@ -91,7 +92,7 @@ describe("Settings", () => {
 
   it("shows the server's refusal", async () => {
     mock({ "/api/settings": (b) => (b ? json({ detail: "hr mode needs your LTHR" }, 400) : json(SETTINGS)) })
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     await userEvent.selectOptions(await screen.findByLabelText("Targets"), "hr")
     await userEvent.click(screen.getByRole("button", { name: "Save changes" }))
     expect((await screen.findByRole("alert")).textContent).toContain("hr mode needs your LTHR")
@@ -99,7 +100,7 @@ describe("Settings", () => {
 
   it("syncs on demand and reports a failure", async () => {
     const calls = mock({ "/api/sync": () => json({ detail: "ICU unreachable" }, 502) })
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     await userEvent.click(await screen.findByRole("button", { name: "Sync now" }))
     expect((await screen.findByText(/Couldn’t do that: ICU unreachable/))).toBeTruthy()
     expect(calls.filter((c) => c.url === "/api/sync/status").length).toBeGreaterThan(1)
@@ -107,14 +108,14 @@ describe("Settings", () => {
 
   it("disables sync when not connected and explains where to connect", async () => {
     mock({ "/api/icu/connection": () => json({ connected: false }) })
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     expect(await screen.findByText(/Not connected/)).toBeTruthy()
     expect((screen.getByRole("button", { name: "Sync now" }) as HTMLButtonElement).disabled).toBe(true)
   })
 
   it("reports whether an update is available", async () => {
     mock({ "/api/update/check": () => json({ current: "1.0.0", latest: "1.1.0", update_available: true, release_url: "https://example.test/r" }) })
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     await userEvent.click(await screen.findByRole("button", { name: "Check for updates" }))
     expect((await screen.findByRole("status")).textContent).toContain("Version 1.1.0 is available")
   })

@@ -449,3 +449,14 @@ test("Settings offers the data downloads, and they return files", async ({ page,
   expect(await csv.text()).toContain("date,ctl,atl")
   expect((await api(request, "/api/export/backup")).headers()["content-type"]).toBe("application/gzip")
 })
+
+test("Appearance: a palette changes the accent colour and survives a reload", async ({ page }) => {
+  const primary = () => page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--primary").trim())
+  await page.goto("#/settings")
+  await expect(page.getByRole("heading", { name: "Appearance" })).toBeVisible()
+  const before = await primary()
+  await page.getByRole("radio", { name: "Forest" }).click()
+  await expect.poll(primary).not.toBe(before)
+  await page.reload()
+  await expect(page.locator("html")).toHaveAttribute("data-palette", "forest")
+})

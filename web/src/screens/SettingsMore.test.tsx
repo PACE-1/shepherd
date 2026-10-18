@@ -8,6 +8,7 @@ import { Diagnostics } from "@/screens/Diagnostics"
 import { Folders } from "@/screens/Folders"
 import { HistoryBackfill } from "@/screens/HistoryBackfill"
 import { Panel } from "@/screens/panel"
+import { ThemeProvider } from "@/components/theme-provider"
 import { Settings } from "@/screens/Settings"
 import { ZonesEditor } from "@/screens/ZonesEditor"
 
@@ -203,7 +204,7 @@ describe("Settings connection", () => {
       "/api/icu/push": () => json({ connected: true, write_ok: true, sync_enabled: false, horizon_days: 14 }),
       "/api/settings/workout-folders": () => json({ builtin: { count: 1 }, extra: null }),
     })
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     expect((await screen.findByRole("link", { name: "Reconnect" })).getAttribute("href")).toBe("/oauth/icu/start?return_to=%2Fv2%2F%3Fwizard%3Dsettings")
     await userEvent.click(screen.getByRole("button", { name: "Disconnect…" }))
     expect(calls.some((c) => c.url === "/api/icu/disconnect")).toBe(false)
@@ -234,7 +235,7 @@ describe("Connect with an API key", () => {
       "/api/setup/test-icu": () => json({ ok: true, name: "Isaac", athlete_id: "i42" }),
       "/api/setup/save": () => ((connected = true), json({ ok: true })),
     })
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     await userEvent.click(await screen.findByRole("button", { name: "Connect with an API key" }))
     expect(screen.queryByRole("link", { name: "Connect intervals.icu" })).toBeNull()
     await userEvent.type(screen.getByLabelText("API key"), "  sekret  ")
@@ -248,7 +249,7 @@ describe("Connect with an API key", () => {
     const calls = base(() => json({ connected: false, method: "none", oauth_available: true }), {
       "/api/setup/test-icu": () => json({ ok: false, error: "Invalid API key." }),
     })
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     await userEvent.click(await screen.findByRole("button", { name: "Connect with an API key" }))
     await userEvent.type(screen.getByLabelText("API key"), "bad")
     await userEvent.click(screen.getByRole("button", { name: "Connect" }))
