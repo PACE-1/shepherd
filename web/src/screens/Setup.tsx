@@ -29,6 +29,9 @@ import {
 import { ApiKeyConnect } from "@/screens/ApiKeyConnect"
 import { icuLinkFailureText } from "@/lib/icuReasons"
 import { getIcuConnection, getLimits, saveSetup, type IcuConnection, type Limits } from "@/lib/setup"
+import type { WeatherPlace } from "@/api/types"
+import { placeLabel, saveLocation } from "@/lib/weather"
+import { PlaceSearch } from "@/screens/WeatherLocation"
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 type Link = "unlinked" | "linked" | "error"
@@ -54,6 +57,7 @@ export function Setup() {
   const [garmin, setGarmin] = useState<Msg>(null)
   const [saveMsg, setSaveMsg] = useState<Msg>(null)
   const [saving, setSaving] = useState(false)
+  const [place, setPlace] = useState<WeatherPlace | null>(null)   // kept in memory only, saved to the profile at the end
   const ready = useRef(false)
 
   // Persist after the first restore so a reload (or the OAuth round trip) keeps the rider's entries.
@@ -223,6 +227,7 @@ export function Setup() {
       } catch (e) {
         return setSaveMsg({ text: (e as Error).message || "Save failed.", ok: false })
       }
+      if (place) await saveLocation(place).catch(() => {})   // optional: setup is complete without it
       setSaveMsg({ text: "Setup complete! Redirecting to dashboard...", ok: true })
       try {
         localStorage.removeItem(LS_KEY)
@@ -437,6 +442,19 @@ export function Setup() {
               {num("s-hours", "Hours per week", { step: 0.5 })}
               <DayGrid label="Training days (click to toggle)" on={s.days} onToggle={(d) => setS((p) => toggleDay(p, d))} />
               <DayGrid label="Rest days (click to mark)" on={s.rest} onToggle={(d) => setS((p) => toggleRest(p, d))} />
+              <div className="grid gap-2">
+                <Label>Where do you ride? (optional)</Label>
+                <p className="text-sm text-muted-foreground">
+                  For the weather forecast next to your outdoor sessions. Skip it and the forecast stays off; you can add it later in Settings.
+                </p>
+                {place && (
+                  <p className="text-sm">
+                    Riding near <b>{placeLabel(place)}</b>.{" "}
+                    <Button size="sm" variant="ghost" onClick={() => setPlace(null)}>Use no location</Button>
+                  </p>
+                )}
+                <PlaceSearch onPick={setPlace} />
+              </div>
               {saveMsg && (
                 <p role={saveMsg.ok ? "status" : "alert"} className={`text-sm ${saveMsg.ok ? "text-primary" : "text-destructive"}`}>
                   {saveMsg.text}

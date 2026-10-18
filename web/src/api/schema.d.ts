@@ -1668,6 +1668,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/weather/forecast": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["weather_forecast_api_weather_forecast_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/weather/location": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["weather_location_api_weather_location_get"];
+        put: operations["weather_location_set_api_weather_location_put"];
+        post?: never;
+        delete: operations["weather_location_clear_api_weather_location_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/weather/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["weather_search_api_weather_search_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/week-summary": {
         parameters: {
             query?: never;
@@ -5283,6 +5331,127 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** WeatherAttribution */
+        WeatherAttribution: {
+            /** Text */
+            text: string;
+            /** Url */
+            url: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** WeatherDay */
+        WeatherDay: {
+            /** Date */
+            date: string;
+            /** Feels Max C */
+            feels_max_c?: number | null;
+            /** Feels Min C */
+            feels_min_c?: number | null;
+            /** Gust Max Kmh */
+            gust_max_kmh?: number | null;
+            /**
+             * Rain Mm
+             * @default 0
+             */
+            rain_mm: number;
+            /** Rain Pct Max */
+            rain_pct_max?: number | null;
+            /** Rating */
+            rating: string;
+            /**
+             * Reasons
+             * @default []
+             */
+            reasons: string[];
+            /**
+             * Suggest Indoor
+             * @default false
+             */
+            suggest_indoor: boolean;
+            /**
+             * Summary
+             * @default
+             */
+            summary: string;
+            /** Temp Max C */
+            temp_max_c?: number | null;
+            /** Temp Min C */
+            temp_min_c?: number | null;
+            /** Wind Max Kmh */
+            wind_max_kmh?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** WeatherForecast */
+        WeatherForecast: {
+            attribution: components["schemas"]["WeatherAttribution"];
+            /**
+             * Days
+             * @default []
+             */
+            days: components["schemas"]["WeatherDay"][];
+            /**
+             * Message
+             * @default
+             */
+            message: string;
+            /** Status */
+            status: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** WeatherLocation */
+        WeatherLocation: {
+            /** Has Location */
+            has_location: boolean;
+            /**
+             * Network Enabled
+             * @default true
+             */
+            network_enabled: boolean;
+            place?: components["schemas"]["WeatherPlace"] | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** WeatherPlace */
+        WeatherPlace: {
+            /**
+             * Country
+             * @default
+             */
+            country: string;
+            /** Latitude */
+            latitude: number;
+            /** Longitude */
+            longitude: number;
+            /** Name */
+            name: string;
+            /**
+             * Region
+             * @default
+             */
+            region: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** WeatherSearch */
+        WeatherSearch: {
+            /** Available */
+            available: boolean;
+            /**
+             * Message
+             * @default
+             */
+            message: string;
+            /**
+             * Results
+             * @default []
+             */
+            results: components["schemas"]["WeatherPlace"][];
+        } & {
+            [key: string]: unknown;
+        };
         /** WeekSummary */
         WeekSummary: {
             /**
@@ -7879,6 +8048,106 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["VersionInfo"];
+                };
+            };
+        };
+    };
+    weather_forecast_api_weather_forecast_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeatherForecast"];
+                };
+            };
+        };
+    };
+    weather_location_api_weather_location_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeatherLocation"];
+                };
+            };
+        };
+    };
+    weather_location_set_api_weather_location_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeatherLocation"];
+                };
+            };
+        };
+    };
+    weather_location_clear_api_weather_location_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeatherLocation"];
+                };
+            };
+        };
+    };
+    weather_search_api_weather_search_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeatherSearch"];
                 };
             };
         };

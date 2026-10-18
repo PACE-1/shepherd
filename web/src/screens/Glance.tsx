@@ -13,6 +13,7 @@ import { currentWeek, fmtMinutes, getReadiness, getWeekSummary, isoDay, reading 
 import { getSettings } from "@/lib/settings"
 import { getIcuConnection } from "@/lib/setup"
 import { useLoad, type Load } from "@/screens/panel"
+import { SessionWeather } from "@/screens/WeatherSession"
 
 const thisWeek = () => getWeekSummary(0)
 
@@ -85,6 +86,7 @@ export function Glance({ plan, stats }: { plan: Load<PlanRead>; stats: Load<Ride
                     <span className="font-medium">{s.zwo_name || s.session_type}</span> · {fmtMinutes(s.duration_min)}
                     {isDone(s) ? " · done" : ""}
                     <span className="block text-xs text-muted-foreground">{sessionWords(s.session_type)}</span>
+                    {!isDone(s) && <SessionWeather day={today} swapHref="#/plan" />}
                   </li>
                 ))}
               </ul>
