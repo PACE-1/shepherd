@@ -19850,6 +19850,17 @@ def dashboard():
     return RedirectResponse(url="/v2/#/home")
 
 
+# Feature routes live in their own modules: any src/routes_*.py that defines `router`
+# (a fastapi.APIRouter) is included here, so a new feature never edits this file.
+def _include_route_modules() -> None:
+    import importlib
+    for path in sorted(Path(__file__).resolve().parent.glob("routes_*.py")):
+        app.include_router(importlib.import_module(path.stem).router)
+
+
+_include_route_modules()
+
+
 if __name__ == "__main__":
     import uvicorn
     # Pinned to single-worker mode: this app holds per-process caches
