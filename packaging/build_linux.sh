@@ -33,8 +33,6 @@ if [ "$(uname -s)" != "Linux" ]; then
     echo "  Build it in the pinned container instead:"
     echo "    docker run --rm -v \"\$PWD\":/src -w /src ubuntu:22.04 bash build_linux.sh"
     echo ""
-    echo "  macOS DMG:   ./build_dmg.sh"
-    echo "  Windows EXE: built in CI"
     exit 1
 fi
 

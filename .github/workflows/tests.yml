@@ -5,10 +5,8 @@ name: Tests
 # errors and timeouts all fail the job). Linux is the fork's primary target
 # (Docker server and AppImage).
 #
-# The macOS job is the upstream project's former gate. It is kept for manual
-# runs (workflow_dispatch) only: no support decision has been recorded for
-# retiring macOS testing, but a 3-core hosted Mac needs about 70 minutes, so it
-# does not run on every pull request.
+# macOS and Windows testing are retired (#26): Linux, run as the Docker image the
+# project ships, is the only supported test target.
 on:
   pull_request:
     branches: [clean-main]
@@ -84,29 +82,3 @@ jobs:
         env:
           E2E_PYTHON: python
         run: pnpm e2e
-
-  macos:
-    name: macOS tests (manual, shard ${{ matrix.shard }} of 2)
-    if: github.event_name == 'workflow_dispatch'
-    runs-on: macos-14
-    timeout-minutes: 120
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Install
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt pytest pytest-xdist pytest-timeout fitparse Pillow
-      - name: Parallel bulk (this shard's files)
-        run: |
-          FILES=$(ls tests/test_*.py | awk -v s=${{ matrix.shard }} 'NR % 2 == s % 2')
-          python -m pytest $FILES -q -p no:cacheprovider -n 3 -m "not release_serial" --timeout=900 -rfE
-      - name: Serial tail
-        if: matrix.shard == 1
-        run: python -m pytest tests -q -p no:cacheprovider -m release_serial --timeout=900 -rfE
