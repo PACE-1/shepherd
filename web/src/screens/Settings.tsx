@@ -17,6 +17,7 @@ import { Appearance } from "@/screens/Appearance"
 import { NotificationsSettings } from "@/screens/Notifications"
 import { SportsCard } from "@/screens/SportsCard"
 import { RunZones } from "@/screens/RunZones"
+import { SwimZones } from "@/screens/SwimZones"
 import { YourData } from "@/screens/YourData"
 import { Panel, Row, useLoad } from "@/screens/panel"
 import { ZonesEditor } from "@/screens/ZonesEditor"
@@ -279,6 +280,7 @@ export function Settings() {
         <SportsCard />
       </div>
       <div className="lg:col-span-2"><RunZones /></div>
+      <div className="lg:col-span-2"><SwimZones /></div>
       <div className="lg:col-span-2">
         <Diagnostics />
       </div>

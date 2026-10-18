@@ -1436,3 +1436,66 @@ class RideCompare(_Model):
     b: CompareSide
     delta: CompareSummary                    # b - a per summary field
     best_efforts: list[BestEffortDelta] = []
+
+
+# ── #122 swim CSS, sTSS, stroke data; #126 open-water notes (routes_swim.py) ──
+class SwimCss(_Model):
+    css_s_per_100m: Optional[float] = None
+    history: list[SportThresholdEntry] = []
+    zones_note: str                          # why swim pace zones are not shown
+    method: str
+    confidence: str
+
+
+class SwimCssTest(_Model):
+    css_m_per_s: float
+    css_s_per_100m: float
+    anaerobic_distance_m: float
+    r2: Optional[float] = None
+    n_trials: int
+    method: str
+    confidence: str
+    saved: bool = False
+
+
+class SwimActivity(_Model):
+    id: str
+    date: Optional[str] = None
+    name: str = ""
+    type: str = ""
+    water: str = "unknown"                   # pool | open_water | unknown
+    duration_s: float = 0
+    distance_m: Optional[float] = None
+    pace_s_per_100m: Optional[float] = None
+    avg_hr: Optional[float] = None
+    icu_load: Optional[float] = None
+    intensity: Optional[float] = None
+    stss: Optional[float] = None
+    pool_length_m: Optional[float] = None
+    lengths: Optional[int] = None
+    stroke_rate: Optional[float] = None      # intervals.icu average_cadence, as recorded
+
+
+class SwimActivities(_Model):
+    css_s_per_100m: Optional[float] = None
+    swims: list[SwimActivity] = []
+    missing: list[str] = []
+    method: str
+    confidence: str
+    stroke_note: str
+
+
+class OpenWaterNote(_Model):
+    id: str
+    date: str
+    activity_id: Optional[str] = None
+    water_temp_c: Optional[float] = None
+    wetsuit: Optional[bool] = None
+    conditions: str = ""
+    course: str = ""
+    sighting: str = ""
+    note: str = ""
+
+
+class OpenWaterNotes(_Model):
+    notes: list[OpenWaterNote] = []

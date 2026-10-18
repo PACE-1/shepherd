@@ -3711,6 +3711,93 @@
         "title": "Ok",
         "type": "object"
       },
+      "OpenWaterNote": {
+        "additionalProperties": true,
+        "properties": {
+          "activity_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Activity Id"
+          },
+          "conditions": {
+            "default": "",
+            "title": "Conditions",
+            "type": "string"
+          },
+          "course": {
+            "default": "",
+            "title": "Course",
+            "type": "string"
+          },
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "note": {
+            "default": "",
+            "title": "Note",
+            "type": "string"
+          },
+          "sighting": {
+            "default": "",
+            "title": "Sighting",
+            "type": "string"
+          },
+          "water_temp_c": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Water Temp C"
+          },
+          "wetsuit": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wetsuit"
+          }
+        },
+        "required": [
+          "id",
+          "date"
+        ],
+        "title": "OpenWaterNote",
+        "type": "object"
+      },
+      "OpenWaterNotes": {
+        "additionalProperties": true,
+        "properties": {
+          "notes": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/OpenWaterNote"
+            },
+            "title": "Notes",
+            "type": "array"
+          }
+        },
+        "title": "OpenWaterNotes",
+        "type": "object"
+      },
       "PickerResult": {
         "additionalProperties": true,
         "properties": {
@@ -7272,6 +7359,299 @@
         "title": "SportsLoad",
         "type": "object"
       },
+      "SwimActivities": {
+        "additionalProperties": true,
+        "properties": {
+          "confidence": {
+            "title": "Confidence",
+            "type": "string"
+          },
+          "css_s_per_100m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Css S Per 100M"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "missing": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          },
+          "stroke_note": {
+            "title": "Stroke Note",
+            "type": "string"
+          },
+          "swims": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SwimActivity"
+            },
+            "title": "Swims",
+            "type": "array"
+          }
+        },
+        "required": [
+          "method",
+          "confidence",
+          "stroke_note"
+        ],
+        "title": "SwimActivities",
+        "type": "object"
+      },
+      "SwimActivity": {
+        "additionalProperties": true,
+        "properties": {
+          "avg_hr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Hr"
+          },
+          "date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date"
+          },
+          "distance_m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance M"
+          },
+          "duration_s": {
+            "default": 0,
+            "title": "Duration S",
+            "type": "number"
+          },
+          "icu_load": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Icu Load"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "intensity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Intensity"
+          },
+          "lengths": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lengths"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "pace_s_per_100m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pace S Per 100M"
+          },
+          "pool_length_m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pool Length M"
+          },
+          "stroke_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stroke Rate"
+          },
+          "stss": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stss"
+          },
+          "type": {
+            "default": "",
+            "title": "Type",
+            "type": "string"
+          },
+          "water": {
+            "default": "unknown",
+            "title": "Water",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "SwimActivity",
+        "type": "object"
+      },
+      "SwimCss": {
+        "additionalProperties": true,
+        "properties": {
+          "confidence": {
+            "title": "Confidence",
+            "type": "string"
+          },
+          "css_s_per_100m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Css S Per 100M"
+          },
+          "history": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SportThresholdEntry"
+            },
+            "title": "History",
+            "type": "array"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "zones_note": {
+            "title": "Zones Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "zones_note",
+          "method",
+          "confidence"
+        ],
+        "title": "SwimCss",
+        "type": "object"
+      },
+      "SwimCssTest": {
+        "additionalProperties": true,
+        "properties": {
+          "anaerobic_distance_m": {
+            "title": "Anaerobic Distance M",
+            "type": "number"
+          },
+          "confidence": {
+            "title": "Confidence",
+            "type": "string"
+          },
+          "css_m_per_s": {
+            "title": "Css M Per S",
+            "type": "number"
+          },
+          "css_s_per_100m": {
+            "title": "Css S Per 100M",
+            "type": "number"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "n_trials": {
+            "title": "N Trials",
+            "type": "integer"
+          },
+          "r2": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "R2"
+          },
+          "saved": {
+            "default": false,
+            "title": "Saved",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "css_m_per_s",
+          "css_s_per_100m",
+          "anaerobic_distance_m",
+          "n_trials",
+          "method",
+          "confidence"
+        ],
+        "title": "SwimCssTest",
+        "type": "object"
+      },
       "SyncProgress": {
         "additionalProperties": true,
         "properties": {
@@ -10470,6 +10850,121 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SportThresholds"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/swim/activities": {
+      "get": {
+        "operationId": "swim_activities_api_swim_activities_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SwimActivities"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/swim/css": {
+      "get": {
+        "operationId": "swim_css_api_swim_css_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SwimCss"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/swim/css-test": {
+      "post": {
+        "operationId": "swim_css_test_api_swim_css_test_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SwimCssTest"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/swim/open-water": {
+      "get": {
+        "operationId": "open_water_list_api_swim_open_water_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenWaterNotes"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "operationId": "open_water_add_api_swim_open_water_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenWaterNote"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/swim/open-water/{note_id}": {
+      "delete": {
+        "operationId": "open_water_delete_api_swim_open_water__note_id__delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "operationId": "open_water_edit_api_swim_open_water__note_id__put",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenWaterNote"
                 }
               }
             },
