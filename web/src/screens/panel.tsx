@@ -1,4 +1,4 @@
-import { Component, useCallback, useEffect, useState, type ReactNode } from "react"
+import { Component, useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -8,25 +8,28 @@ export type Load<T> = { state: "loading" } | { state: "ok"; data: T } | { state:
 // One independent request per card: a failure in one leaves the others usable and is retried alone.
 export function useLoad<T>(fetcher: () => Promise<T>) {
   const [value, setValue] = useState<Load<T>>({ state: "loading" })
-  const fetchInto = useCallback(() => {
+  // Only the newest request may set the value: a slower, older one (the fetcher changed meanwhile) is ignored.
+  const newest = useRef(0)
+  const load = useCallback(() => {
+    const mine = ++newest.current
     fetcher().then(
-      (data) => setValue({ state: "ok", data }),
-      (e: unknown) => setValue({ state: "error", message: e instanceof Error ? e.message : String(e) }),
+      (data) => mine === newest.current && setValue({ state: "ok", data }),
+      (e: unknown) => mine === newest.current && setValue({ state: "error", message: e instanceof Error ? e.message : String(e) }),
     )
   }, [fetcher])
   const run = useCallback(() => {
     setValue({ state: "loading" })
-    fetchInto()
-  }, [fetchInto])
+    load()
+  }, [load])
   // Re-reads without flipping to "Loading…", so a card keeps its content (and any message in it) while it refreshes.
   const refresh = useCallback(() => {
+    const mine = ++newest.current
     fetcher().then(
-      (data) => setValue({ state: "ok", data }),
+      (data) => mine === newest.current && setValue({ state: "ok", data }),
       () => {},
     )
   }, [fetcher])
-  // The state starts as "loading", so the first read only has to fetch.
-  useEffect(fetchInto, [fetchInto])
+  useEffect(load, [load])
   return [value, run, refresh] as const
 }
 

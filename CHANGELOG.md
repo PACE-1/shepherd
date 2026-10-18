@@ -2,6 +2,41 @@
 
 ## Unreleased
 
+- **Added: run, swim and strength sessions in the plan, next to the cycling plan.** For riders who save a sport split (hours per sport), the plan gains companion sessions: run, swim, strength and mobility, with a transition-time target and a "how the run felt" note for brick runs. Cycling-only riders' plans are unchanged. All session structures are design templates after published sources (Daniels, ACSM 2009, CSS convention), not validated against recorded runs or swims. (#120 #122 #123 #124 #127)
+- **Added: run workout library (#120).** Eight run sessions with Friel pace-zone or effort targets, an estimated rTSS, filters and `.fit`/`.txt` downloads in the Library. Not tried on a Garmin.
+- **Added: swim sessions (CSS based) and strength/mobility sessions** with exercise lists, sets, reps and session-RPE load; browse and print under Settings.
+- **Added: limiter emphasis, strength spacing, tapering companions, triathlon/run/swim race labels (#124 #127 #125 #111).** Distance-specific triathlon periodisation is not built.
+- **Planner: the weekly intensity ceiling (18% above 106% FTP) now overrides a phase's hard-session floor (#11).** A plan that starts on a Sunday loses its one-day first week's anaerobic session.
+- **Fixed: Folder import could skip a same-named file in a newly chosen folder.**
+- **Added: Docker image published to ghcr.io/pace-1/shepherd on each release tag** (vX.Y.Z, X.Y, latest; prereleases get their exact tag only).
+- **#31: a ride intervals.icu lists without its data now completes the planned session; one notice when rides visibly stop coming through; setup no longer points riders to Garmin; new Settings > Folder import brings in .fit files from a folder (duplicates skipped, files left untouched).**
+- **Added: Plan links to Races and Injury & illness, Settings links to Gear; the plan form no longer fails with "one A event per plan" when B/C races are added; a due gear item now raises a bell notice.**
+- **Changed: a short illness (under 15 days) no longer forces an easy-only return.** When you feel well, say "I'm back"; the planner's short-break rule (keep the intensity, cut the volume) applies. Injuries and longer illnesses keep the easy-only return.
+- **Added: gear tracking (#115).** Bikes, shoes and components with distance and hours, your own service thresholds, "service done" resets and best-effort intervals.icu gear matching.
+- **Added: weekly sport balance (#124).** Hours and load by sport per week and month against a target split you set, with an optional limiter marker (display only; planner emphasis not built).
+- **API: response models and a guard test for every JSON route the web UI calls (#10).**
+- **Docs: planner invariant audit by entry point with pinned invariant tests; no planner behaviour changed (#11).** See `docs/PLANNER_AUDIT.md`.
+- **Retired: macOS and Windows testing and builds (#26).** Linux (Docker and AppImage) is the only supported target; the AppImage release steps now fail the run when they break.
+- **Added: notifications (#131).** Daily readiness, missed session and sync failure notices in an in-app bell, with an optional ntfy-compatible POST; each can be switched off in Settings.
+- **Added: phone layout and installable app (#130).** Bottom tab bar and thumb-sized controls, and a web app you can install when served over HTTPS.
+- **Added: "At a glance" on Home and a guided setup (#145, #105).** Plain-language status, today's session, week progress and a next step; a guided setup walks new riders through connecting, rider numbers, goal and availability.
+- **Added: workout builder for cycling (#110).** Build structured workouts with power or heart-rate targets and repeats, preview intensity, IF and TSS, save them to your Library and send them to your intervals.icu calendar for Garmin.
+- **Added: running (#118, #119).** Friel pace and heart-rate zones, a critical-speed test that can set your threshold pace, a grade-adjusted pace converter, and per-run rTSS/hrTSS with cadence and stride, each with its method and confidence.
+- **Added: injury and illness (#113).** Record an injury or illness, pause the plan while it lasts, return through a conservative easy-only ramp, and see a weekly ramp-rate warning per sport. Not medical advice.
+- **Added: weight trend, critical power model and ride comparison (#114, #116).** Weight trend with W/kg history, a critical power model (CP and W' with 95% intervals), and side-by-side comparison of two rides or efforts.
+- **Added: readiness drivers (#128).** Readiness says which inputs fed today's score and shows the last 7 days of load by sport.
+- **Added: race predictor (#121).** 5K to marathon from your best recent run (Riegel) and your critical-speed test, with cited error and caveats.
+- **Added: swim critical speed and open-water notes (#122, #126).** CSS from a 400 m and 200 m time, per-swim sTSS, and notes on open-water swims.
+- **Added: nutrition and fueling (#112).** SparkyFitness sync (Settings, on demand) and a Fueling screen with carbohydrate per hour and per day targets compared with what you logged. Not yet run against a live SparkyFitness server.
+- **Added: weather forecast for planned sessions (#117).** Pick where you ride in setup, guided setup or Settings; a rated forecast (Open-Meteo) appears on Plan and Home. Your location stays on your machine.
+- **Added: races (#111).** A/B/C races with a taper before A and B races and a race-day timeline. Riders who already have B races get shorter easy sessions in the week before them on the next plan rebuild.
+- **Fixed: ride strain scores were never calculated** (a wrongly named parameter); they are now computed when a ride loads.
+- **Fixed: the first visit to the workout Library took about 8 seconds.** The library is prepared in the background at startup.
+- **Fixed: a slow earlier answer could replace a newer one on Settings and Analysis cards**, which showed as the wrong comparison or range.
+- **Fixed: Settings was wider than a phone screen.**
+- **Added: colour palettes (#106).** Settings > Appearance offers Graphite, Ocean, Forest, Sunset and Violet, each with a light and a dark variant, alongside light, dark and system. Charts and menus follow the palette.
+- **Added: download your data (#129).** Settings has CSV exports of activities, wellness and check-ins, and a full backup that leaves out your intervals.icu and AI keys.
+- **Added: training load by sport (#109).** Settings shows fitness, fatigue and form for cycling, running and swimming and for all sports together, and keeps run threshold pace and heart rate and swim critical speed with their history.
 - **Fixed: changing the AI provider could send the old API key to the new server.** A saved key is now reused only for the same provider and address; otherwise you must enter one.
 - **Fixed: AI coach requests no longer freeze the rest of the app** while the model is answering.
 - **Fixed: editing a daily check-in no longer erases its saved notes.**

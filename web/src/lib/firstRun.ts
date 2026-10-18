@@ -1,3 +1,4 @@
+import type { ActivitiesCheck, AthleteNumbers, PickedFolder } from "@/api/types"
 import { api } from "@/lib/api"
 import type { Limits, TargetMode } from "@/lib/setup"
 
@@ -156,11 +157,11 @@ export function restore(base: WizardState, o: Record<string, unknown> | null): W
 export interface SetupDefaults { workout_dir?: string; weight?: number; ftp?: number; lthr?: number; max_hr?: number }
 export const getDefaults = (signal?: AbortSignal) => api<SetupDefaults>("/api/setup/defaults", { signal })
 export const getAthleteNumbers = () =>
-  api<{ ok?: boolean; ftp?: number; weight?: number; lthr?: number; max_hr?: number }>("/api/icu/athlete-numbers")
+  api<AthleteNumbers>("/api/icu/athlete-numbers")
 export const checkActivities = () =>
-  api<{ ok: boolean; error?: string; count?: number; garmin_count?: number; latest_date?: string }>(
+  api<ActivitiesCheck>(
     "/api/setup/check-activities", { method: "POST", json: { use_connection: true } })
-export const pickFolder = () => api<{ path?: string }>("/api/setup/pick-folder")
+export const pickFolder = () => api<PickedFolder>("/api/setup/pick-folder")
 // 409 = a profile already exists and the picker must choose; any other non-ok is a failure.
 export async function ensureProfile(): Promise<true | number> {
   try {

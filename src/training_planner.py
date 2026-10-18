@@ -2093,6 +2093,11 @@ class PlannedWeek:
     # or None for the default weekly-mixed plan. Set ONLY when
     # goal.block_periodization is on; None keeps the block plug-ins dormant.
     block_focus: "str | None" = None
+    # Companion sessions (run / swim / strength / brick; MASTER_DECISIONS ADDENDUM 5): CompanionSession
+    # rows added by multisport_plan.overlay AFTER the cycling week is built. Every cycling pass walks
+    # ``sessions`` only, so these are invisible to it. Serialised only when non-empty (week_to_dict), so
+    # a cycling-only rider's plan JSON is byte-identical.
+    companions: list = field(default_factory=list)
 
 
 @dataclass
@@ -2160,6 +2165,19 @@ class PlannedSession:
     # Dataclass field so the canonical _planned_session_to/from_json
     # round-trip (app.py) carries it through regenerate/refit/reforecast.
     execution: dict | None = None
+
+
+@dataclass
+class CompanionSession(PlannedSession):
+    """A non-cycling session next to the cycling plan (ADDENDUM 5). Lives only in
+    ``PlannedWeek.companions``; ``zwo_file`` stays empty and ``tss_estimate`` 0 (no cross-sport
+    load number is invented). ``sport`` is running | swimming | strength; ``workout`` holds steps in
+    the workout_builder shape; ``template_id``/``hard`` record which multisport_plan template made it."""
+    id: str = ""
+    sport: str = "running"
+    template_id: str = ""
+    hard: bool = False
+    workout: dict | None = None
 
 
 # ── v4.4.0 — phase targets (CONCEPT-SCI §1, §5) ───────────────────────────────
@@ -8615,6 +8633,99 @@ def _clip_week_to_phase(pw: "PlannedWeek", phase: "Phase", cursor: date) -> None
     pw.tss_target = round((pw.tss_target or 0) * span / 7)
 
 
+# ── Companion sessions: the multi-sport tail of every plan builder (ADDENDUM 5) ─────────────────────
+# generate_plan, regenerate_from_today, recalculate_plan and extend_continuous_plan are wrapped. A rider
+# without saved sport targets giving a non-cycling sport a share (sport_balance.balance_targets.json)
+# runs the wrapped function exactly as before. Otherwise the cycling builder is given the cycling share of
+# goal.hours_per_week (restored afterwards, so the stored goal keeps the rider's total) and
+# multisport_plan.overlay adds companions to the weeks it returns. The cycling builder is not changed.
+_overlay_state = threading.local()
+
+
+def _companion_context() -> "dict | None":
+    """The rider's split, limiter, thresholds and injury episodes, or None when overlay is off (no
+    targets, no non-cycling share, or a profile file that cannot be read)."""
+    try:
+        import injury
+        import multisport
+        import multisport_plan
+        import sport_balance
+        from profile_manager import ProfileManager
+        home = ProfileManager.get().active_dir
+        stored = sport_balance.read_targets(home / sport_balance.FILE_NAME)
+        if not multisport_plan.overlay_on(stored["targets"]):
+            return None
+        return {"targets": stored["targets"], "limiter": stored["limiter"],
+                "thresholds": multisport.read_thresholds(home / "sport_thresholds.json"),
+                "episodes": injury.read_episodes(home / injury.FILE_NAME)}
+    except Exception:  # noqa: BLE001 — an unreadable profile file means "cycling only", never a failed plan
+        log.debug("companion context unavailable", exc_info=True)
+        return None
+
+
+def _companion_availability(goal, total_hours: float, overrides) -> dict:
+    """multisport_plan.overlay's availability: the rider's total weekly hours, per-weekday hours (0 on
+    rest days) and the per-date overrides the cycling builder was given."""
+    days = set(goal.available_days or range(7)) - set(goal.rest_days or [])
+    return {"hours_per_week": float(total_hours or 0),
+            "weekday": {wd: (float(goal.max_hours_for_day(wd)) if wd in days else 0.0) for wd in range(7)},
+            "date": {str(k): float(v) for k, v in (overrides or {}).items()}}
+
+
+def _companion_blocks(periods, episodes) -> list:
+    """Time off for companions: plan rows that are not injury episodes block every sport; each episode
+    (src/injury.py) blocks the sport it names ("all" blocks every sport, "cycling" none of them)."""
+    rows = []
+    for p in periods or []:
+        if isinstance(p, dict):
+            if not p.get("episode_id"):
+                rows.append({"start": p.get("start"), "end": p.get("end"), "sport": "all"})
+        elif isinstance(p, (tuple, list)) and len(p) == 2:
+            rows.append({"start": p[0], "end": p[1], "sport": "all"})
+    for e in episodes or []:
+        rows.append({"start": e.get("start"), "end": e.get("end"), "sport": e.get("sport") or "all"})
+    return rows
+
+
+def _companion_overlay(fn):
+    import functools
+    import inspect
+    sig = inspect.signature(fn)
+
+    @functools.wraps(fn)
+    def entry(*args, **kwargs):
+        if getattr(_overlay_state, "active", False):
+            return fn(*args, **kwargs)        # recalculate_plan -> extend_continuous_plan: once only
+        ctx = _companion_context()
+        if ctx is None:
+            return fn(*args, **kwargs)        # cycling-only rider: exactly the old path
+        import multisport_plan
+        a = sig.bind(*args, **kwargs).arguments
+        goal = a["goal"]
+        total = goal.hours_per_week
+        goal.hours_per_week = multisport_plan.scaled_cycling_hours(total, ctx["targets"])
+        _overlay_state.active = True
+        try:
+            out = fn(*args, **kwargs)
+        finally:
+            goal.hours_per_week = total
+            _overlay_state.active = False
+        weeks = out[1]
+        prior = [c for w in (a.get("old_plan_weeks") or a.get("current_plan_weeks") or [])
+                 for c in (getattr(w, "companions", None) or [])]
+        for w in weeks:                       # a rebuilt week object carries the old week's companions
+            if not w.companions:
+                w.companions = [c for c in prior if w.start <= c.day <= w.end]
+        multisport_plan.overlay(
+            weeks, targets=ctx["targets"], limiter=ctx["limiter"], thresholds=ctx["thresholds"],
+            availability=_companion_availability(goal, total, a.get("availability_overrides")),
+            unavailable_periods=_companion_blocks(a.get("unavailable_periods"), ctx["episodes"]),
+            today=clock.today())
+        return out
+    return entry
+
+
+@_companion_overlay
 def generate_plan(
     goal: Goal,
     unavailable_periods: "list[tuple[date, date]] | None" = None,
@@ -10237,6 +10348,8 @@ def _enforce_z5plus_share_ceiling(weeks: list, library: list[dict],
     the line. For a week over it, the heaviest z5+ session is swapped for a real
     endurance (or tempo) library file, the same demotion the weekly HIT cap uses
     - a hard .zwo is never relabeled. Preserved rider state is never touched.
+    Sessions of a class above its phase floor go first; the rail then sheds a
+    floor class too (the safety line wins over the floor, #11).
     """
     if not weeks or not library:
         return
@@ -10258,22 +10371,22 @@ def _enforce_z5plus_share_ceiling(weeks: list, library: list[dict],
                 and not getattr(wk.sessions[i], "user_moved", False)
                 and (today_floor is None or wk.sessions[i].day >= today_floor)
             ]
-            # A class sitting exactly on its phase floor is not shed here: the
-            # floor is a training requirement and the safety pass runs after it.
+            # #11, owner decision 2026-10-18 ("rail wins"): the ceiling beats a
+            # phase's hard-session floor. A class sitting exactly on its floor
+            # is shed LAST, only once nothing above its floor is left to shed.
             floors = _PHASE_HARD_FLOORS.get(getattr(wk, "phase", "") or "", {})
             counts: dict[str, int] = {}
             for s_ in wk.sessions:
                 c_ = _content_class_for_zwo(s_.zwo_file or "") or s_.session_type or ""
                 counts[c_] = counts.get(c_, 0) + 1
-            victims = [
-                (z5, i) for z5, i in victims
-                if not (c_ := (_content_class_for_zwo(wk.sessions[i].zwo_file or "")
-                               or wk.sessions[i].session_type or "")) in floors
-                or counts.get(c_, 0) > floors[c_]
-            ]
+
+            def _above_floor(v) -> bool:
+                c_ = (_content_class_for_zwo(wk.sessions[v[1]].zwo_file or "")
+                      or wk.sessions[v[1]].session_type or "")
+                return c_ not in floors or counts.get(c_, 0) > floors[c_]
             if not victims:
                 break
-            _z5, i = max(victims)
+            _z5, i = max(victims, key=lambda v: (_above_floor(v), v))
             slot = wk.sessions[i]
             matched = None
             if slot.duration_min >= 60:
@@ -11231,7 +11344,8 @@ def _apply_secondary_event_tapers(weeks: list, goal, library=None) -> None:
         if taper_start and ed >= taper_start:
             continue  # inside the A macro-taper span — already deloading
         wk = next((w for w in weeks if w.start <= ed <= w.end), None)
-        if wk is not None and getattr(wk, "is_stepback", False):
+        _on_stepback = wk is not None and getattr(wk, "is_stepback", False)
+        if _on_stepback:
             _demote_hit_window(weeks, ed, 1, lib,
                                desc=f"Opener before your {prio} race (easy spin).")
         else:
@@ -11244,6 +11358,66 @@ def _apply_secondary_event_tapers(weeks: list, goal, library=None) -> None:
             _place_opener(weeks, ed - timedelta(days=1), lib)
             _demote_hit_window(weeks, ed + timedelta(days=2), 1, lib,
                                desc="Easy — recover after your B race.")
+            # #111: and a smaller volume taper than the A race's (see B_TAPER_DAYS).
+            # Not on an unload week: it is already lighter (no double deload).
+            if not _on_stepback:
+                _taper_volume_before(weeks, ed, B_TAPER_DAYS, TAPER_FRACS[0])
+
+
+# #111 B-race taper: one step of the A taper's ladder, TAPER_FRACS[0] (0.60, a 40 %
+# cut, the low end of the 41-60 % Bosquet 2007 found best), over the race's last
+# 7 days, against the 7 days before them. The A race keeps the full taper
+# (TAPER_DAYS = 12 days, TAPER_FRACS 0.60 then 0.40: Bosquet L, Montpetit J, Arvisais D,
+# Mujika I. Effects of tapering on performance: a meta-analysis. Med Sci Sports
+# Exerc 2007;39(8):1358-1368 -- 8-14 days, volume cut 41-60 % progressively,
+# intensity and frequency kept; Mujika I, Padilla S. Scientific bases for
+# precompetition tapering strategies. Med Sci Sports Exerc 2003;35(7):1182-1187 --
+# progressive non-linear volume cut, intensity kept, frequency cut by no more than
+# ~20 %; their larger 60-90 % cuts are for highly trained athletes, so the planner
+# stays in Bosquet's range).
+# Neither paper studies secondary races: the 7 days and the single step are the
+# planner's heuristic for "a smaller taper", not a published number. Confidence:
+# moderate for the A taper (meta-analysis of mostly swimmers/runners, group
+# means; individual response varies), low for the B taper.
+B_TAPER_DAYS = 7
+
+
+def _taper_volume_before(weeks: list, race_day, days: int, frac: float) -> None:
+    """#111 — cut the planned volume of the ``days`` before ``race_day`` to ``frac``
+    of the ``days`` before them, keeping intensity and frequency: only easy
+    (non-HIT) pending sessions shrink, proportionally to what each can shed above
+    the ``_VOLUME_MIN_SESSION_MIN`` floor, and no day becomes rest. The same
+    TSS currency and floor as the A taper (``_enforce_weekly_volume_ceiling``).
+    Idempotent: a window already at or under its ceiling is left alone, so the
+    reforecast that runs on every sync does not cut it again. No-op when the
+    days before carry no planned load (race early in the plan: nothing to
+    measure against)."""
+    start, ref_start = race_day - timedelta(days=days), race_day - timedelta(days=2 * days)
+
+    def _load(lo, hi):
+        return [s for w in weeks for s in w.sessions
+                if s is not None and getattr(s, "day", None) is not None and lo <= s.day < hi
+                and s.session_type != "rest" and not getattr(s, "is_race", False)]
+    window = _load(start, race_day)
+    ref = sum(s.tss_estimate or 0 for s in _load(ref_start, start))
+    if ref <= 0:
+        return
+    ceiling = ref * frac
+    total = sum(s.tss_estimate or 0 for s in window)
+    if total <= ceiling * _VOLUME_CEILING_TOLERANCE:
+        return
+    easy = [s for s in window
+            if (s.duration_min or 0) > _VOLUME_MIN_SESSION_MIN and not _session_is_hit(s)
+            and not getattr(s, "is_opener", False) and not _race_shape_frozen(s)]
+    spare = sum((s.tss_estimate or 0) / s.duration_min * (s.duration_min - _VOLUME_MIN_SESSION_MIN)
+                for s in easy)
+    if spare <= 0:
+        return
+    share = min(1.0, (total - ceiling) / spare)
+    for s in easy:
+        per_min = (s.tss_estimate or 0) / s.duration_min
+        s.duration_min -= int(round((s.duration_min - _VOLUME_MIN_SESSION_MIN) * share))
+        s.tss_estimate = round(per_min * s.duration_min)
 
 
 def _estimate_race_load(km: float, climb_m: float, event_type: str) -> tuple[int, int]:
@@ -12688,7 +12862,10 @@ from dataclasses import fields as _dc_fields  # noqa: E402
 _PS_JSON_ONLY_KEYS = ("variation", "adapted_reason", "auto_moved", "ftp_test_type",
                       "pre_adapt", "tsb_eased_from")
 _SESSION_FIELDS = tuple(f.name for f in _dc_fields(PlannedSession))
-_WEEK_FIELDS = tuple(f.name for f in _dc_fields(PlannedWeek))
+# ``companions`` is written by week_to_dict only when non-empty (a cycling-only plan stays byte-identical).
+_WEEK_FIELDS = tuple(f.name for f in _dc_fields(PlannedWeek) if f.name != "companions")
+# The fields CompanionSession adds to PlannedSession; a stored dict carrying "sport" and "workout" is one.
+_COMPANION_FIELDS = tuple(f.name for f in _dc_fields(CompanionSession) if f.name not in _SESSION_FIELDS)
 _SESSION_DEFAULTS = {"session_type": "z2", "duration_min": 0, "tss_estimate": 0.0,
                      "description": ""}
 _WEEK_DEFAULTS = {"week_num": 0, "phase": "", "tss_target": 0, "is_stepback": False}
@@ -12712,12 +12889,15 @@ def session_to_dict(s) -> dict:
     for k in _PS_JSON_ONLY_KEYS:
         if hasattr(s, k):
             out[k] = getattr(s, k)
+    if isinstance(s, CompanionSession):
+        out.update({k: getattr(s, k) for k in _COMPANION_FIELDS})
     return out
 
 
 def session_from_dict(d: dict) -> "PlannedSession":
     """The inverse of session_to_dict. Raises on a missing or malformed day;
-    any other missing field takes its default."""
+    any other missing field takes its default. A companion's dict (it carries
+    ``sport`` and ``workout``) reads back as a CompanionSession."""
     day = _as_date(d["day"])
     kw = {k: d[k] for k in _SESSION_FIELDS if k in d and k != "day"}
     if not kw.get("day_name"):
@@ -12725,7 +12905,10 @@ def session_from_dict(d: dict) -> "PlannedSession":
     for k, v in _SESSION_DEFAULTS.items():
         if kw.get(k) is None:
             kw[k] = v
-    s = PlannedSession(day=day, **kw)
+    if "sport" in d and "workout" in d:
+        s = CompanionSession(day=day, **kw, **{k: d[k] for k in _COMPANION_FIELDS if k in d})
+    else:
+        s = PlannedSession(day=day, **kw)
     for k in _PS_JSON_ONLY_KEYS:
         if k in d:
             setattr(s, k, d[k])
@@ -12739,6 +12922,8 @@ def week_to_dict(w) -> dict:
         if hasattr(out[name], "isoformat"):
             out[name] = out[name].isoformat()
     out["sessions"] = [session_to_dict(s) for s in (w.sessions or [])]
+    if getattr(w, "companions", None):
+        out["companions"] = [session_to_dict(c) for c in w.companions]
     return out
 
 
@@ -12760,8 +12945,14 @@ def week_from_dict(d: dict) -> "PlannedWeek":
             sessions.append(session_from_dict(s))
         except (KeyError, TypeError, ValueError):
             log.warning("plan codec: skipped a session it could not read: %r", s)
+    companions = []
+    for c in d.get("companions") or []:
+        try:
+            companions.append(session_from_dict(c))
+        except (KeyError, TypeError, ValueError):
+            log.warning("plan codec: skipped a companion it could not read: %r", c)
     return PlannedWeek(start=_as_date(d["start"]), end=_as_date(d["end"]),
-                       sessions=sessions, **kw)
+                       sessions=sessions, companions=companions, **kw)
 
 
 def _iter_pending_unmatched(plan_dict: dict, today: date):
@@ -13327,8 +13518,13 @@ def build_recovery_ramp(
     current_ctl: float,
     absence_days: int,
     goal: "Goal",
+    skip_weeks: int = 0,
 ) -> list[PlannedWeek]:
     """Duration-dependent recovery ramp with ACWR < 1.3 guardrail (Gabbett 2016).
+
+    ``skip_weeks`` (#113) drops that many ramp weeks from the front, so a ramp
+    already under way continues from today instead of starting again. 0, the
+    default, is the ramp as it always was.
 
     1 week off  → 3 weeks at 75/85/95%
     3-4 weeks off → 5 weeks at 50/60/70/80/90%
@@ -13352,6 +13548,9 @@ def build_recovery_ramp(
     else:
         ramp_pcts = [0.40, 0.50, 0.60, 0.70, 0.80, 0.90]
         z2_only_weeks = 2
+    if skip_weeks > 0:
+        ramp_pcts = ramp_pcts[skip_weeks:]
+        z2_only_weeks = max(0, z2_only_weeks - skip_weeks)
 
     recovery_weeks = []
     start = clock.today()
@@ -13419,6 +13618,7 @@ def build_recovery_ramp(
     return recovery_weeks
 
 
+@_companion_overlay
 def regenerate_from_today(
     goal: Goal,
     old_plan_weeks: list[PlannedWeek],
@@ -13501,6 +13701,26 @@ def regenerate_from_today(
 
     # 4. Build recovery ramp if needed
     recovery_weeks = build_recovery_ramp(current_ctl, absence_days, goal)
+
+    # 4a. #113 injury/illness: a recently ended episode brings the same ramp,
+    # sized by the episode and continued if already under way (see injury.py
+    # for the sources and the "not medical advice" caveat). Only time-off rows
+    # written by injury.py carry "episode_id": every other plan skips this.
+    import injury
+    _return = injury.return_ramp(unavailable_periods, today)
+    if _return:
+        _ep_ramp = build_recovery_ramp(current_ctl, _return["absence_days"], goal,
+                                       skip_weeks=_return["weeks_done"])
+        if len(_ep_ramp) > len(recovery_weeks):
+            recovery_weeks = _ep_ramp
+    # An episode's days are rest inside the ramp too (the build weeks below
+    # already rest every unavailable day).
+    _ep_days = injury.episode_days(unavailable_periods)
+    for rw in recovery_weeks if _ep_days else ():
+        for _s in rw.sessions:
+            if _s.day in _ep_days:
+                _s.session_type, _s.duration_min, _s.tss_estimate = "rest", 0, 0
+                _s.description = "Unavailable (planned leave/injury)"
 
     # FC5d (v2.5.0, L3-6): the ramp must never plow training weeks past the
     # event — cap it at race + 2 weeks (post-race recovery riding is fine; a
@@ -13866,6 +14086,8 @@ def regenerate_from_today(
         # None (no custom split) — the write-site stamps this into plan meta.
         "phase_weeks_status": getattr(adjusted_goal, "_phase_weeks_status", None),
     }
+    if _return:
+        regen_info["injury_return"] = _return
 
     # B2 (v2.1.0): re-assert the F4 event-eve taper on this adaptation path too —
     # generate_plan applies it at first build, but regenerate/reforecast/refit
@@ -14041,6 +14263,7 @@ def compute_event_readiness(goal: Goal, current_ctl: float) -> dict:
     }
 
 
+@_companion_overlay
 def recalculate_plan(
     goal: Goal,
     current_plan_weeks: list[PlannedWeek],
@@ -14535,6 +14758,7 @@ def recalculate_plan(
 # CONTINUOUS ROLLING EXTEND (3.4.0 W1) — IP_CONTINUOUS_MODE §2, grill P2/B
 # ══════════════════════════════════════════════════════════════════════════════
 
+@_companion_overlay
 def extend_continuous_plan(
     goal: Goal,
     current_plan_weeks: list[PlannedWeek],

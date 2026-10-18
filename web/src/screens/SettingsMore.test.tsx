@@ -8,6 +8,7 @@ import { Diagnostics } from "@/screens/Diagnostics"
 import { Folders } from "@/screens/Folders"
 import { HistoryBackfill } from "@/screens/HistoryBackfill"
 import { Panel } from "@/screens/panel"
+import { ThemeProvider } from "@/components/theme-provider"
 import { Settings } from "@/screens/Settings"
 import { ZonesEditor } from "@/screens/ZonesEditor"
 
@@ -198,10 +199,23 @@ describe("Settings connection", () => {
       "/api/sync/status": () => json({ wellness_records: 0, activity_records: 0 }),
       "/api/version": () => json({ app: "shepherd", version: "1.0.0", data_dir: "/d" }),
       "/api/profile/ftp-history": () => json({ ftp_current: 250, history: [] }),
+      "/api/weather/location": () => json({ has_location: false, place: null, network_enabled: true }),
+      "/api/sports/load": () => json({ as_of: "2026-10-18", days_of_history: 0, settled: false, combined: { ctl: 0, atl: 0, tsb: 0, week_load: 0 }, sports: {}, method: "", confidence: "" }),
+      "/api/sports/thresholds": () => json({ thresholds: {} }),
+      "/api/nutrition/connection": () => json({ configured: false, base_url: "", has_key: false, last_synced_at: null }),
+      "/api/notifications/settings": () => json({ has_url: false, events: { readiness: true, missed: true, sync_failure: true, gear_due: true }, readiness_time: "" }),
+      "/api/run/zones": () => json({ pace_zones: [], hr_zones: [], method: "", confidence: "" }),
+      "/api/run/activities": () => json({ runs: [], missing: [], method: "", confidence: "" }),
+      "/api/run/predict": () => json({ window_days: 56, predictions: [], missing: [], riegel_method: "", riegel_confidence: "", cs_method: "", cs_confidence: "", long_run_rule: "" }),
+      "/api/swim/css": () => json({ css_s_per_100m: null, history: [], zones_note: "", method: "", confidence: "" }),
+      "/api/swim/activities": () => json({ swims: [], missing: [], method: "", confidence: "", stroke_note: "" }),
+      "/api/swim/open-water": () => json({ notes: [] }),
+      "/api/swim/sessions": () => json({ has_css: false, pool_m: 25, sessions: [] }),
       "/api/icu/push": () => json({ connected: true, write_ok: true, sync_enabled: false, horizon_days: 14 }),
       "/api/settings/workout-folders": () => json({ builtin: { count: 1 }, extra: null }),
+      "/api/folder-import": () => json({ folder: "", recursive: false, running: false, max_files: 200, last_scan: null }),
     })
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     expect((await screen.findByRole("link", { name: "Reconnect" })).getAttribute("href")).toBe("/oauth/icu/start?return_to=%2Fv2%2F%3Fwizard%3Dsettings")
     await userEvent.click(screen.getByRole("button", { name: "Disconnect…" }))
     expect(calls.some((c) => c.url === "/api/icu/disconnect")).toBe(false)
@@ -219,8 +233,21 @@ describe("Connect with an API key", () => {
     "/api/llm": () => json({ configured: false, provider: "", base_url: "", model: "", has_key: false }),
     "/api/version": () => json({ app: "shepherd", version: "1.0.1", data_dir: "/d" }),
     "/api/profile/ftp-history": () => json({ ftp_current: 250, history: [] }),
+    "/api/weather/location": () => json({ has_location: false, place: null, network_enabled: true }),
+    "/api/sports/load": () => json({ as_of: "2026-10-18", days_of_history: 0, settled: false, combined: { ctl: 0, atl: 0, tsb: 0, week_load: 0 }, sports: {}, method: "", confidence: "" }),
+    "/api/sports/thresholds": () => json({ thresholds: {} }),
+    "/api/nutrition/connection": () => json({ configured: false, base_url: "", has_key: false, last_synced_at: null }),
+    "/api/notifications/settings": () => json({ has_url: false, events: { readiness: true, missed: true, sync_failure: true, gear_due: true }, readiness_time: "" }),
+    "/api/run/zones": () => json({ pace_zones: [], hr_zones: [], method: "", confidence: "" }),
+    "/api/run/activities": () => json({ runs: [], missing: [], method: "", confidence: "" }),
+    "/api/run/predict": () => json({ window_days: 56, predictions: [], missing: [], riegel_method: "", riegel_confidence: "", cs_method: "", cs_confidence: "", long_run_rule: "" }),
+    "/api/swim/css": () => json({ css_s_per_100m: null, history: [], zones_note: "", method: "", confidence: "" }),
+    "/api/swim/activities": () => json({ swims: [], missing: [], method: "", confidence: "", stroke_note: "" }),
+    "/api/swim/open-water": () => json({ notes: [] }),
+    "/api/swim/sessions": () => json({ has_css: false, pool_m: 25, sessions: [] }),
     "/api/icu/push": () => json({ connected: false, write_ok: false, sync_enabled: false, horizon_days: 14 }),
     "/api/settings/workout-folders": () => json({ builtin: { count: 1 }, extra: null }),
+    "/api/folder-import": () => json({ folder: "", recursive: false, running: false, max_files: 200, last_scan: null }),
     ...extra,
   })
 
@@ -230,7 +257,7 @@ describe("Connect with an API key", () => {
       "/api/setup/test-icu": () => json({ ok: true, name: "Isaac", athlete_id: "i42" }),
       "/api/setup/save": () => ((connected = true), json({ ok: true })),
     })
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     await userEvent.click(await screen.findByRole("button", { name: "Connect with an API key" }))
     expect(screen.queryByRole("link", { name: "Connect intervals.icu" })).toBeNull()
     await userEvent.type(screen.getByLabelText("API key"), "  sekret  ")
@@ -244,7 +271,7 @@ describe("Connect with an API key", () => {
     const calls = base(() => json({ connected: false, method: "none", oauth_available: true }), {
       "/api/setup/test-icu": () => json({ ok: false, error: "Invalid API key." }),
     })
-    render(<Settings />)
+    render(<ThemeProvider><Settings /></ThemeProvider>)
     await userEvent.click(await screen.findByRole("button", { name: "Connect with an API key" }))
     await userEvent.type(screen.getByLabelText("API key"), "bad")
     await userEvent.click(screen.getByRole("button", { name: "Connect" }))

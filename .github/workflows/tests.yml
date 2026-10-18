@@ -5,17 +5,12 @@ name: Tests
 # errors and timeouts all fail the job). Linux is the fork's primary target
 # (Docker server and AppImage).
 #
-# macOS is not tested in CI: the DMG is built and notarized by hand (see the
-# release workflow), so there is no hosted-Mac job here.
+# macOS and Windows testing are retired (#26): Linux, run as the Docker image the
+# project ships, is the only supported test target.
 on:
   pull_request:
     branches: [main]
   workflow_dispatch:
-
-# A new push to a pull request cancels the run it supersedes.
-concurrency:
-  group: tests-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   linux:

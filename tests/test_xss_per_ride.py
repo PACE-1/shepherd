@@ -64,7 +64,7 @@ def _install_fake_strain_score():
     """
     fake = types.ModuleType("strain_score")
 
-    def compute_xss_components(power_series, cp, wprime_j, pmax):
+    def compute_xss_components(power_series, cp, w_prime, pmax):
         # Crude partition: anything <= CP is aerobic; anything above CP
         # is split 70/30 between glycolytic and PCr by power magnitude.
         # Per-second sum scaled to TSS-equivalent so the numbers look
@@ -221,8 +221,9 @@ class TestRideWithoutPowerTraceGraceful(_ScaffoldedTest):
         """If strain_score isn't on the path yet (cross-agent ordering), the
         helper should log + return {} rather than raising ImportError."""
         import ride_storage
-        # Remove the fake.
+        # Remove the fake, and make the real module unimportable (None in sys.modules raises ImportError).
         _uninstall_fake_strain_score()
+        sys.modules["strain_score"] = None
         try:
             out = ride_storage.compute_ride_xss(
                 power_series=[200] * 60,
@@ -232,6 +233,7 @@ class TestRideWithoutPowerTraceGraceful(_ScaffoldedTest):
             )
             self.assertEqual(out, {})
         finally:
+            sys.modules.pop("strain_score", None)
             _install_fake_strain_score()
 
 
@@ -247,9 +249,9 @@ class TestPmaxWUsedAsDefault(_ScaffoldedTest):
 
         import strain_score as _ss
 
-        def _capture(power_series, cp, wprime_j, pmax):
+        def _capture(power_series, cp, w_prime, pmax):
             captured["cp"] = cp
-            captured["wprime_j"] = wprime_j
+            captured["wprime_j"] = w_prime
             captured["pmax"] = pmax
             return {
                 "xss_total": 1.0, "xss_cp": 1.0,

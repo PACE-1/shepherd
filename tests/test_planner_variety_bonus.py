@@ -287,24 +287,61 @@ class TestBuild2PeakPhaseFloors:
             pytest.skip("no build2 phase in this plan")
         assert n >= 1, f"build2 neuromuscular={n} (≥1)"
 
-    def test_peak_phase_floors(self, plan_24w):
-        """peak phase: ≥1 anaerobic + ≥1 neuromuscular + ≥2 vo2_short."""
+    def test_peak_phase_floors(self, plan_24w, monkeypatch):
+        """peak phase: ≥1 anaerobic + ≥1 neuromuscular + ≥2 vo2_short are
+        placed by the floor pass; the z5+ ceiling may then shed one.
+
+        Owner decision 2026-10-18 ("rail wins", #11): the last-pass weekly
+        intensity ceiling (≤18 % of a week's minutes above 106 % FTP,
+        _enforce_z5plus_share_ceiling) overrides a phase's hard-session floor.
+        In this plan the peak's only anaerobic session lands in the 2-day stub
+        week before the taper, where it alone is over the line, so the rail
+        swaps it for an easy ride. So the floors are checked where the floor
+        pass leaves them (rail switched off), and the delivered plan may fall
+        short of a floor only by sessions taken out of a week that was over the
+        ceiling."""
         _, weeks = plan_24w
-        counts = {"anaerobic": 0, "neuromuscular": 0, "vo2_short": 0}
-        any_peak = False
-        for w in weeks:
-            if w.phase != "peak" or w.is_stepback:
-                continue
-            any_peak = True
-            for s in w.sessions:
-                cc = _content_class_of(s.zwo_file or "")
-                if cc in counts:
-                    counts[cc] += 1
-        if not any_peak:
+
+        def peak_counts(ws):
+            counts = {"anaerobic": 0, "neuromuscular": 0, "vo2_short": 0}
+            for w in ws:
+                if w.phase != "peak" or w.is_stepback:
+                    continue
+                for s in w.sessions:
+                    cc = _content_class_of(s.zwo_file or "")
+                    if cc in counts:
+                        counts[cc] += 1
+            return counts
+        if not any(w.phase == "peak" and not w.is_stepback for w in weeks):
             pytest.skip("no peak phase in this plan")
-        assert counts["anaerobic"] >= 1, f"peak anaerobic={counts['anaerobic']} (≥1)"
-        assert counts["neuromuscular"] >= 1, f"peak neuromuscular={counts['neuromuscular']} (≥1)"
-        assert counts["vo2_short"] >= 2, f"peak vo2_short={counts['vo2_short']} (≥2)"
+        monkeypatch.setattr(tp, "_enforce_z5plus_share_ceiling", lambda *a, **k: None)
+        goal = tp.Goal(
+            goal_type="event",
+            target_date=PLANNER_PIN_ANCHOR + timedelta(weeks=24),
+            event_type="sportive", event_km=200, hours_per_week=8.0,
+            max_weekday_hours=2.0, max_weekend_hours=4.0, plan_weeks=24,
+        )
+        _, floored = tp.generate_plan(goal, seed_salt=12345, **PLANNER_PIN_ARGS)
+        placed = peak_counts(floored)
+        assert placed["anaerobic"] >= 1, f"peak anaerobic={placed['anaerobic']} (≥1)"
+        assert placed["neuromuscular"] >= 1, f"peak neuromuscular={placed['neuromuscular']} (≥1)"
+        assert placed["vo2_short"] >= 2, f"peak vo2_short={placed['vo2_short']} (≥2)"
+
+        lib = {r["File"]: r for r in tp.load_workout_library()}
+        delivered = peak_counts(weeks)
+        for cc, want in (("anaerobic", 1), ("neuromuscular", 1), ("vo2_short", 2)):
+            if delivered[cc] >= want:
+                continue
+            shed = 0
+            for before, after in zip(floored, weeks):
+                if before.phase != "peak" or before.is_stepback:
+                    continue
+                if peak_counts([after])[cc] < peak_counts([before])[cc]:
+                    shed += peak_counts([before])[cc] - peak_counts([after])[cc]
+                    share = tp._week_z5plus_share(before, lib)[0]
+                    assert share > tp._MAX_Z5PLUS_SHARE, (cc, before.week_num, share)
+                    assert tp._week_z5plus_share(after, lib)[0] <= tp._MAX_Z5PLUS_SHARE
+            assert delivered[cc] + shed >= want, (cc, delivered[cc], shed)
 
 
 class TestSegmentCountAverage:

@@ -1,9 +1,10 @@
 name: Build release artifacts
 
 # Builds the Linux AppImage on every tag push (v*.*.*) and uploads it to the
-# matching GitHub Release. Runs also on
-# manual dispatch. Binaries live in Release assets — never in git — so the
-# repo stays lean.
+# matching GitHub Release. Runs also on manual dispatch. Binaries live in
+# Release assets — never in git — so the repo stays lean. macOS and Windows
+# builds are retired (#26); the released artifacts are the AppImage and the
+# Docker image.
 
 on:
   push:
@@ -20,19 +21,11 @@ permissions:
   contents: write  # needed to upload to releases
 
 jobs:
-  # macOS DMGs are not built here. They are built, notarized and uploaded by
-  # hand (packaging/build_dmg.sh with the Apple credentials), because a CI
-  # build without the notarization secrets produces a DMG that Gatekeeper
-  # rejects as "damaged".
-
   # ───────────────────────────────────────────────────────────────────
-  # Linux AppImage — ADDITIVE AND NON-BLOCKING
+  # Linux AppImage
   #
-  # Nothing here may cost the hand-built macOS ship, so
-  # continue-on-error keeps a red Linux build from failing the workflow run —
-  # a broken AppImage must still leave a complete macOS release. The
-  # price is that failures show as a warning rather than a red X, so every
-  # gate below emits a ::error:: annotation that survives into the summary.
+  # The AppImage is a shipped artifact (with the Docker image), so a failed
+  # build, smoke test, clean-distro check or release upload fails the run.
   #
   # runs-on is the moving `ubuntu-latest` label, but the build happens inside
   # an ubuntu:22.04 *container*: the label may roll freely while the container
@@ -45,7 +38,6 @@ jobs:
     name: Build Linux AppImage
     runs-on: ubuntu-latest
     container: ubuntu:22.04
-    continue-on-error: true
     timeout-minutes: 90
     env:
       DEBIAN_FRONTEND: noninteractive
@@ -128,7 +120,7 @@ jobs:
       - name: Trust the checkout
         run: git config --global --add safe.directory '*'
 
-      # Same reasoning as the macOS job: the OAuth client_secret lives in the
+      # The OAuth client_secret lives in the
       # gitignored .oauth.env, so a CI checkout doesn't have it and the build
       # would ship an empty secret with a broken intervals.icu token exchange.
       - name: Write OAuth client secret (.oauth.env)
@@ -394,9 +386,6 @@ jobs:
 
       - name: Attach AppImage to release
         if: (startsWith(github.ref, 'refs/tags/v') || inputs.tag != '') && env.APPIMAGE != ''
-        # Belt and braces on top of the job-level flag: a flaky asset upload
-        # must not be able to take the macOS release down with it.
-        continue-on-error: true
         uses: softprops/action-gh-release@v2
         with:
           files: ${{ env.APPIMAGE }}
@@ -417,7 +406,6 @@ jobs:
     name: Verify Linux AppImage on a clean distro
     needs: build-linux
     runs-on: ubuntu-latest
-    continue-on-error: true
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
@@ -505,7 +493,7 @@ jobs:
               fi
               echo "OK: no unresolved libraries"
 
-              # Same gate the macOS job runs: prove the OAuth secret survived
+              # Same gate as the build job: prove the OAuth secret survived
               # into the bundle rather than shipping broken sign-in.
               oauth="$(find squashfs-root -name .oauth.env -print -quit)"
               if [ -z "$oauth" ]; then

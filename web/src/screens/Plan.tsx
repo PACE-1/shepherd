@@ -15,6 +15,8 @@ import { PlanRedraw } from "@/screens/PlanRedraw"
 import { PlanRematch } from "@/screens/PlanRematch"
 import { PlanTimeOff } from "@/screens/PlanTimeOff"
 import { SessionExport } from "@/screens/SessionExport"
+import { SessionWeather } from "@/screens/WeatherSession"
+import { WeekCompanions } from "@/screens/WeekCompanions"
 import { currentWeek, dismissSession, FTP_TEST_TYPES, fmtMinutes, getPlan, isoDay, moveSession, plannedTss, revertDeload, setFtpTestType, SWAP_TYPES, swapSessionType, weekSessions, type Availability } from "@/lib/home"
 
 type Load = { state: "loading" } | { state: "ok"; plan: PlanRead } | { state: "error"; message: string }
@@ -48,7 +50,7 @@ export function Plan() {
   const [swapping, setSwapping] = useState<{ day: string; type: string; minutes: number } | null>(null)
   const today = isoDay()
 
-  const fetchPlan = useCallback(() => {
+  const load0 = useCallback(() => {
     getPlan().then(
       (plan) => setLoad({ state: "ok", plan }),
       (e: unknown) => setLoad({ state: "error", message: e instanceof Error ? e.message : String(e) }),
@@ -56,10 +58,9 @@ export function Plan() {
   }, [])
   const run = useCallback(() => {
     setLoad({ state: "loading" })
-    fetchPlan()
-  }, [fetchPlan])
-  // The state starts as "loading", so the first read only has to fetch.
-  useEffect(fetchPlan, [fetchPlan])
+    load0()
+  }, [load0])
+  useEffect(load0, [load0])
 
   // Re-read in place, without the loading flash (a drag on the calendar, an update).
   const reread = useCallback(async () => {
@@ -369,11 +370,15 @@ export function Plan() {
                           {dismissed ? "Restore" : "Dismiss"}
                         </Button>
                       )}
+                      {!dismissed && !s.status.startsWith("done") && (
+                        <SessionWeather day={s.day} onSwap={canToggle ? () => setSwapping({ day: s.day, type: s.session_type, minutes: s.duration_min }) : undefined} />
+                      )}
                     </li>
                   )
                 })}
               </ul>
             )}
+            <WeekCompanions start={week.start} />
             {actionError && (
               <p role="alert" className="text-sm">
                 Couldn’t change that session: {actionError}
@@ -403,6 +408,12 @@ export function Plan() {
           </Button>
           <Button variant="outline" size="sm" onClick={() => setTool("race")}>
             Add a race…
+          </Button>
+          <Button variant="outline" size="sm" className="max-md:min-h-11" render={<a href="#/races" />}>
+            All races
+          </Button>
+          <Button variant="outline" size="sm" className="max-md:min-h-11" render={<a href="#/injury" />}>
+            Injury and illness
           </Button>
           <Button variant="outline" size="sm" onClick={() => setTool("availability")}>
             Availability…

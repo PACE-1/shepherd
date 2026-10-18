@@ -21,7 +21,7 @@ afterEach(() => { cleanup(); vi.unstubAllGlobals() })
 describe("AI coach settings", () => {
   it("fills a preset, saves it with the key, and clears the key field", async () => {
     let saved = false
-    const calls = mock({ "/api/llm": (b) => { saved = saved || !!b; return saved ? json({ configured: true, provider: "anthropic", base_url: "https://api.anthropic.com", model: "claude-sonnet-5-5", has_key: true }) : json(NONE) } })
+    const calls = mock({ "/api/llm": (b) => (((saved = saved || !!b)) ? json({ configured: true, provider: "anthropic", base_url: "https://api.anthropic.com", model: "claude-sonnet-5-5", has_key: true }) : json(NONE)) })
     render(<AiCoachSettings />)
     await userEvent.click(await screen.findByRole("button", { name: "Anthropic" }))
     await userEvent.type(screen.getByLabelText("Provider API key"), "sk-abc")

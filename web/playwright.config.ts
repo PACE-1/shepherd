@@ -25,8 +25,6 @@ export default defineConfig({
     timeout: 120_000,
     env: {
       HOME: home,
-      // The first profile is named after the OS account; the picker test looks for "Isaac".
-      USER: "Isaac",
       SHEPHERD_HOME: join(home, "data"),
       SHEPHERD_NO_NET: "1",
       ICU_ATHLETE_ID: "",
