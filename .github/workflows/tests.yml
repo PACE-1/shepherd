@@ -1,6 +1,6 @@
 name: Tests
 
-# The pull-request gate for clean-main: the full suite on Linux with the locked
+# The pull-request gate for main: the full suite on Linux with the locked
 # headless profile, through tools/gate.sh (fail-closed: failures, collection
 # errors and timeouts all fail the job). Linux is the fork's primary target
 # (Docker server and AppImage).
@@ -11,7 +11,7 @@ name: Tests
 # does not run on every pull request.
 on:
   pull_request:
-    branches: [clean-main]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
