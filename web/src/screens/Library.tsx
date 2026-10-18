@@ -56,7 +56,7 @@ export function Library() {
         <CardContent className="space-y-3 p-4">
           <div className="flex items-center justify-between gap-2">
             <h2 className="text-sm font-semibold">Workout library</h2>
-            <Button size="sm" render={<a href="#/builder" />}>New workout</Button>
+            <Button size="sm" className="max-md:min-h-11" render={<a href="#/builder" />}>New workout</Button>
           </div>
           <div className="flex flex-wrap items-end gap-2 text-sm">
             <Label className="flex-col items-start gap-1">
