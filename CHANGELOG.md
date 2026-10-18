@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- **Added: gear tracking (#115).** Bikes, shoes and components with distance and hours, your own service thresholds, "service done" resets and best-effort intervals.icu gear matching.
+- **Added: weekly sport balance (#124).** Hours and load by sport per week and month against a target split you set, with an optional limiter marker (display only; planner emphasis not built).
+- **API: response models and a guard test for every JSON route the web UI calls (#10).**
+- **Docs: planner invariant audit by entry point with pinned invariant tests; no planner behaviour changed (#11).** See `docs/PLANNER_AUDIT.md`.
+- **Retired: macOS and Windows testing and builds (#26).** Linux (Docker and AppImage) is the only supported target; the AppImage release steps now fail the run when they break.
 - **Added: notifications (#131).** Daily readiness, missed session and sync failure notices in an in-app bell, with an optional ntfy-compatible POST; each can be switched off in Settings.
 - **Added: phone layout and installable app (#130).** Bottom tab bar and thumb-sized controls, and a web app you can install when served over HTTPS.
 - **Added: "At a glance" on Home and a guided setup (#145, #105).** Plain-language status, today's session, week progress and a next step; a guided setup walks new riders through connecting, rider numbers, goal and availability.
