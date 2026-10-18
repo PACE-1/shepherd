@@ -201,6 +201,7 @@ describe("Settings connection", () => {
       "/api/profile/ftp-history": () => json({ ftp_current: 250, history: [] }),
       "/api/sports/load": () => json({ as_of: "2026-10-18", days_of_history: 0, settled: false, combined: { ctl: 0, atl: 0, tsb: 0, week_load: 0 }, sports: {}, method: "", confidence: "" }),
       "/api/sports/thresholds": () => json({ thresholds: {} }),
+      "/api/notifications/settings": () => json({ has_url: false, events: { readiness: true, missed: true, sync_failure: true }, readiness_time: "" }),
       "/api/icu/push": () => json({ connected: true, write_ok: true, sync_enabled: false, horizon_days: 14 }),
       "/api/settings/workout-folders": () => json({ builtin: { count: 1 }, extra: null }),
     })
@@ -224,6 +225,7 @@ describe("Connect with an API key", () => {
     "/api/profile/ftp-history": () => json({ ftp_current: 250, history: [] }),
     "/api/sports/load": () => json({ as_of: "2026-10-18", days_of_history: 0, settled: false, combined: { ctl: 0, atl: 0, tsb: 0, week_load: 0 }, sports: {}, method: "", confidence: "" }),
     "/api/sports/thresholds": () => json({ thresholds: {} }),
+    "/api/notifications/settings": () => json({ has_url: false, events: { readiness: true, missed: true, sync_failure: true }, readiness_time: "" }),
     "/api/icu/push": () => json({ connected: false, write_ok: false, sync_enabled: false, horizon_days: 14 }),
     "/api/settings/workout-folders": () => json({ builtin: { count: 1 }, extra: null }),
     ...extra,

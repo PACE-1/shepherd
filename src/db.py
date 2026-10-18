@@ -33,6 +33,7 @@ for _env_candidate in [_USER_DATA / ".env", Path(__file__).parent / ".env",
 
 from training import fetch_wellness, fetch_activities, ICUCredentialsMissing
 from ride_storage import is_icu_stub  # v3.11.6 — one stub rule for every reader
+import notifications  # #131: sync-pass and sync-failure notices (hooks never raise)
 from ride_storage import wellness_value as _wv  # one empty-value rule, both wellness stores
 
 log = logging.getLogger(__name__)
@@ -1198,6 +1199,7 @@ def _sync_loop(interval_sec: int = 1800):
                     cb()
                 except Exception:
                     log.debug("post-sync callback failed", exc_info=True)
+            notifications.on_sync_pass()    # #131: never raises
         except ICUCredentialsMissing as e:
             # No credentials — no point retrying until user configures them.
             _last_sync_error = str(e)
@@ -1214,6 +1216,7 @@ def _sync_loop(interval_sec: int = 1800):
             _consecutive_failures += 1
             _last_sync_error = str(e)
             log.error("Background sync failed (#%d): %s", _consecutive_failures, e)
+            notifications.on_sync_failure(str(e))   # #131: never raises
             if _is_auth_error(e):
                 consecutive_auth_failures += 1
                 # A 401 is a dead credential — pause on the FIRST one. The

@@ -292,6 +292,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_notifications_api_notifications_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_notifications_read_api_notifications_read_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_notifications_settings_api_notifications_settings_get"];
+        put: operations["api_notifications_save_api_notifications_settings_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_notifications_test_api_notifications_test_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/picker": {
         parameters: {
             query?: never;
@@ -2743,6 +2807,98 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** NotificationEvents */
+        NotificationEvents: {
+            /**
+             * Missed
+             * @default true
+             */
+            missed: boolean;
+            /**
+             * Readiness
+             * @default true
+             */
+            readiness: boolean;
+            /**
+             * Sync Failure
+             * @default true
+             */
+            sync_failure: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /** NotificationItem */
+        NotificationItem: {
+            /** Body */
+            body: string;
+            /** Day */
+            day: string;
+            /** Event */
+            event: string;
+            /** Id */
+            id: number;
+            /**
+             * Read
+             * @default false
+             */
+            read: boolean;
+            /** Title */
+            title: string;
+            /** Ts */
+            ts: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** NotificationList */
+        NotificationList: {
+            /**
+             * Items
+             * @default []
+             */
+            items: components["schemas"]["NotificationItem"][];
+            /**
+             * Unread
+             * @default 0
+             */
+            unread: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** NotificationSettings */
+        NotificationSettings: {
+            /**
+             * @default {
+             *       "missed": true,
+             *       "readiness": true,
+             *       "sync_failure": true
+             *     }
+             */
+            events: components["schemas"]["NotificationEvents"];
+            /**
+             * Has Url
+             * @default false
+             */
+            has_url: boolean;
+            /**
+             * Readiness Time
+             * @default
+             */
+            readiness_time: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** NotificationTest */
+        NotificationTest: {
+            /**
+             * Error
+             * @default
+             */
+            error: string;
+            /** Ok */
+            ok: boolean;
+        } & {
+            [key: string]: unknown;
+        };
         /** Ok */
         Ok: {
             /**
@@ -4968,6 +5124,106 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MigrationResult"];
+                };
+            };
+        };
+    };
+    api_notifications_api_notifications_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationList"];
+                };
+            };
+        };
+    };
+    api_notifications_read_api_notifications_read_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationList"];
+                };
+            };
+        };
+    };
+    api_notifications_settings_api_notifications_settings_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationSettings"];
+                };
+            };
+        };
+    };
+    api_notifications_save_api_notifications_settings_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationSettings"];
+                };
+            };
+        };
+    };
+    api_notifications_test_api_notifications_test_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationTest"];
                 };
             };
         };
