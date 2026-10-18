@@ -1959,3 +1959,73 @@ class PlanCompanions(_Model):
 class CompanionDismissed(_Model):
     ok: bool = True
     companion: PlanCompanion
+
+
+
+# ── Strength and mobility sessions (#127): routes_strength.py ────────────────────────────────────────
+class StrengthExercise(_Model):
+    id: str
+    name: str
+    pattern: str
+    cue: str
+    per_side: bool = False
+    sets: list[int]                      # [fewest, most]
+    reps: Optional[list[int]] = None     # [fewest, most]; None for a timed hold
+    hold_s: Optional[int] = None
+    rpe: list[int]                       # CR10 effort per set, [low, high]
+    effort: str
+    rest: str
+
+
+class StrengthProgression(_Model):
+    sets: list[int]
+    reps: list[int]
+    rest: str
+    pct_1rm: str
+    verify: bool = False                 # True: ranges not checked against the paper yet
+
+
+class StrengthSession(_Model):
+    id: str
+    name: str
+    kind: str                            # strength | maintenance | mobility
+    intent: str
+    minutes: int
+    minutes_range: list[int]
+    stage: str
+    stage_label: str
+    hard: bool = False
+    exercises: list[StrengthExercise]
+    rpe_range: list[int]                 # design RPE of the whole session
+    load_au: list[float]                 # [low, high] minutes x RPE
+    load_note: str                       # "arbitrary units (session-RPE), not comparable with TSS"
+    load_method: str
+    progression: Optional[StrengthProgression] = None
+    warmup_min: int = 0
+    disclaimer: str
+    not_validated: str
+    source: str
+
+
+class StrengthStage(_Model):
+    id: str
+    label: str
+    sets: list[int]
+    reps: list[int]
+    rpe: list[int]
+    effort: str
+    rest: str
+    pct_1rm: str
+    source: str
+    verify: bool = False
+
+
+class StrengthSessions(_Model):
+    stage: str
+    stages: list[StrengthStage]
+    sessions: list[StrengthSession]
+    disclaimer: str
+    not_validated: str
+    load_note: str
+    load_method: str
+    sources: list[str]

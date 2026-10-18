@@ -9705,6 +9705,378 @@
         "title": "SportsLoad",
         "type": "object"
       },
+      "StrengthExercise": {
+        "additionalProperties": true,
+        "properties": {
+          "cue": {
+            "title": "Cue",
+            "type": "string"
+          },
+          "effort": {
+            "title": "Effort",
+            "type": "string"
+          },
+          "hold_s": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hold S"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "pattern": {
+            "title": "Pattern",
+            "type": "string"
+          },
+          "per_side": {
+            "default": false,
+            "title": "Per Side",
+            "type": "boolean"
+          },
+          "reps": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reps"
+          },
+          "rest": {
+            "title": "Rest",
+            "type": "string"
+          },
+          "rpe": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Rpe",
+            "type": "array"
+          },
+          "sets": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Sets",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "pattern",
+          "cue",
+          "sets",
+          "rpe",
+          "effort",
+          "rest"
+        ],
+        "title": "StrengthExercise",
+        "type": "object"
+      },
+      "StrengthProgression": {
+        "additionalProperties": true,
+        "properties": {
+          "pct_1rm": {
+            "title": "Pct 1Rm",
+            "type": "string"
+          },
+          "reps": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Reps",
+            "type": "array"
+          },
+          "rest": {
+            "title": "Rest",
+            "type": "string"
+          },
+          "sets": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Sets",
+            "type": "array"
+          },
+          "verify": {
+            "default": false,
+            "title": "Verify",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "sets",
+          "reps",
+          "rest",
+          "pct_1rm"
+        ],
+        "title": "StrengthProgression",
+        "type": "object"
+      },
+      "StrengthSession": {
+        "additionalProperties": true,
+        "properties": {
+          "disclaimer": {
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "exercises": {
+            "items": {
+              "$ref": "#/components/schemas/StrengthExercise"
+            },
+            "title": "Exercises",
+            "type": "array"
+          },
+          "hard": {
+            "default": false,
+            "title": "Hard",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "intent": {
+            "title": "Intent",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "load_au": {
+            "items": {
+              "type": "number"
+            },
+            "title": "Load Au",
+            "type": "array"
+          },
+          "load_method": {
+            "title": "Load Method",
+            "type": "string"
+          },
+          "load_note": {
+            "title": "Load Note",
+            "type": "string"
+          },
+          "minutes": {
+            "title": "Minutes",
+            "type": "integer"
+          },
+          "minutes_range": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Minutes Range",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "not_validated": {
+            "title": "Not Validated",
+            "type": "string"
+          },
+          "progression": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StrengthProgression"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rpe_range": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Rpe Range",
+            "type": "array"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "stage": {
+            "title": "Stage",
+            "type": "string"
+          },
+          "stage_label": {
+            "title": "Stage Label",
+            "type": "string"
+          },
+          "warmup_min": {
+            "default": 0,
+            "title": "Warmup Min",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "intent",
+          "minutes",
+          "minutes_range",
+          "stage",
+          "stage_label",
+          "exercises",
+          "rpe_range",
+          "load_au",
+          "load_note",
+          "load_method",
+          "disclaimer",
+          "not_validated",
+          "source"
+        ],
+        "title": "StrengthSession",
+        "type": "object"
+      },
+      "StrengthSessions": {
+        "additionalProperties": true,
+        "properties": {
+          "disclaimer": {
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "load_method": {
+            "title": "Load Method",
+            "type": "string"
+          },
+          "load_note": {
+            "title": "Load Note",
+            "type": "string"
+          },
+          "not_validated": {
+            "title": "Not Validated",
+            "type": "string"
+          },
+          "sessions": {
+            "items": {
+              "$ref": "#/components/schemas/StrengthSession"
+            },
+            "title": "Sessions",
+            "type": "array"
+          },
+          "sources": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Sources",
+            "type": "array"
+          },
+          "stage": {
+            "title": "Stage",
+            "type": "string"
+          },
+          "stages": {
+            "items": {
+              "$ref": "#/components/schemas/StrengthStage"
+            },
+            "title": "Stages",
+            "type": "array"
+          }
+        },
+        "required": [
+          "stage",
+          "stages",
+          "sessions",
+          "disclaimer",
+          "not_validated",
+          "load_note",
+          "load_method",
+          "sources"
+        ],
+        "title": "StrengthSessions",
+        "type": "object"
+      },
+      "StrengthStage": {
+        "additionalProperties": true,
+        "properties": {
+          "effort": {
+            "title": "Effort",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "pct_1rm": {
+            "title": "Pct 1Rm",
+            "type": "string"
+          },
+          "reps": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Reps",
+            "type": "array"
+          },
+          "rest": {
+            "title": "Rest",
+            "type": "string"
+          },
+          "rpe": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Rpe",
+            "type": "array"
+          },
+          "sets": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Sets",
+            "type": "array"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "verify": {
+            "default": false,
+            "title": "Verify",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "sets",
+          "reps",
+          "rpe",
+          "effort",
+          "rest",
+          "pct_1rm",
+          "source"
+        ],
+        "title": "StrengthStage",
+        "type": "object"
+      },
       "SwimActivities": {
         "additionalProperties": true,
         "properties": {
@@ -14077,6 +14449,23 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SportThresholds"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/strength/sessions": {
+      "get": {
+        "operationId": "strength_sessions_api_strength_sessions_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StrengthSessions"
                 }
               }
             },

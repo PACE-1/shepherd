@@ -2020,6 +2020,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/strength/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["strength_sessions_api_strength_sessions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/swim/activities": {
         parameters: {
             query?: never;
@@ -6649,6 +6665,151 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** StrengthExercise */
+        StrengthExercise: {
+            /** Cue */
+            cue: string;
+            /** Effort */
+            effort: string;
+            /** Hold S */
+            hold_s?: number | null;
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Pattern */
+            pattern: string;
+            /**
+             * Per Side
+             * @default false
+             */
+            per_side: boolean;
+            /** Reps */
+            reps?: number[] | null;
+            /** Rest */
+            rest: string;
+            /** Rpe */
+            rpe: number[];
+            /** Sets */
+            sets: number[];
+        } & {
+            [key: string]: unknown;
+        };
+        /** StrengthProgression */
+        StrengthProgression: {
+            /** Pct 1Rm */
+            pct_1rm: string;
+            /** Reps */
+            reps: number[];
+            /** Rest */
+            rest: string;
+            /** Sets */
+            sets: number[];
+            /**
+             * Verify
+             * @default false
+             */
+            verify: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /** StrengthSession */
+        StrengthSession: {
+            /** Disclaimer */
+            disclaimer: string;
+            /** Exercises */
+            exercises: components["schemas"]["StrengthExercise"][];
+            /**
+             * Hard
+             * @default false
+             */
+            hard: boolean;
+            /** Id */
+            id: string;
+            /** Intent */
+            intent: string;
+            /** Kind */
+            kind: string;
+            /** Load Au */
+            load_au: number[];
+            /** Load Method */
+            load_method: string;
+            /** Load Note */
+            load_note: string;
+            /** Minutes */
+            minutes: number;
+            /** Minutes Range */
+            minutes_range: number[];
+            /** Name */
+            name: string;
+            /** Not Validated */
+            not_validated: string;
+            progression?: components["schemas"]["StrengthProgression"] | null;
+            /** Rpe Range */
+            rpe_range: number[];
+            /** Source */
+            source: string;
+            /** Stage */
+            stage: string;
+            /** Stage Label */
+            stage_label: string;
+            /**
+             * Warmup Min
+             * @default 0
+             */
+            warmup_min: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** StrengthSessions */
+        StrengthSessions: {
+            /** Disclaimer */
+            disclaimer: string;
+            /** Load Method */
+            load_method: string;
+            /** Load Note */
+            load_note: string;
+            /** Not Validated */
+            not_validated: string;
+            /** Sessions */
+            sessions: components["schemas"]["StrengthSession"][];
+            /** Sources */
+            sources: string[];
+            /** Stage */
+            stage: string;
+            /** Stages */
+            stages: components["schemas"]["StrengthStage"][];
+        } & {
+            [key: string]: unknown;
+        };
+        /** StrengthStage */
+        StrengthStage: {
+            /** Effort */
+            effort: string;
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+            /** Pct 1Rm */
+            pct_1rm: string;
+            /** Reps */
+            reps: number[];
+            /** Rest */
+            rest: string;
+            /** Rpe */
+            rpe: number[];
+            /** Sets */
+            sets: number[];
+            /** Source */
+            source: string;
+            /**
+             * Verify
+             * @default false
+             */
+            verify: boolean;
+        } & {
+            [key: string]: unknown;
+        };
         /** SwimActivities */
         SwimActivities: {
             /** Confidence */
@@ -10355,6 +10516,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SportThresholds"];
+                };
+            };
+        };
+    };
+    strength_sessions_api_strength_sessions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StrengthSessions"];
                 };
             };
         };
