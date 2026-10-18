@@ -24,6 +24,7 @@ EXEMPT = {
     ("get", "/api/programme/summary/png"): "image",
     ("get", "/api/rides/{ride_id}/fit"): "file download (FIT)",
     ("get", "/api/swim/sessions/{session_id}/text"): "file download (plain text)",
+    ("get", "/api/run/sessions/{session_id}/download"): "file download (FIT or plain text)",
 }
 
 _QUOTE = re.compile(r"(?<![\w/])([\"'`])(/api/)")

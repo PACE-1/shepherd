@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { getTags, listWorkouts, PAGE, SORTS, suitsGravel, TYPES, type Outdoor, type WorkoutQuery } from "@/lib/library"
 import { WorkoutCard } from "@/screens/WorkoutCard"
+import { RunWorkouts } from "@/screens/RunWorkouts"
 
 type Load = { state: "loading" } | { state: "ok"; rows: WorkoutRow[]; total: number | null } | { state: "error"; message: string }
 
@@ -52,6 +53,7 @@ export function Library() {
 
   return (
     <div className="space-y-4">
+      <RunWorkouts />
       <Card>
         <CardContent className="space-y-3 p-4">
           <div className="flex items-center justify-between gap-2">

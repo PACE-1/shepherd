@@ -1812,6 +1812,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/run/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["run_sessions_api_run_sessions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/run/sessions/{session_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["run_session_api_run_sessions__session_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/run/zones": {
         parameters: {
             query?: never;
@@ -6382,6 +6414,76 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** RunProfilePoint */
+        RunProfilePoint: {
+            /** X */
+            x: number;
+            /** Y */
+            y: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RunSession */
+        RunSession: {
+            /** Daniels */
+            daniels: string;
+            /** Hard */
+            hard: boolean;
+            /** Id */
+            id: string;
+            /** Intent */
+            intent: string;
+            /** Kind */
+            kind: string;
+            /** Max Minutes */
+            max_minutes: number;
+            /** Min Minutes */
+            min_minutes: number;
+            /** Minutes */
+            minutes: number;
+            /** Name */
+            name: string;
+            /**
+             * Profile
+             * @default []
+             */
+            profile: components["schemas"]["RunProfilePoint"][];
+            /** Rtss Estimate */
+            rtss_estimate: number;
+            /** Session Type */
+            session_type: string;
+            /**
+             * Source
+             * @default
+             */
+            source: string;
+            /** Stimulus */
+            stimulus: string;
+            /** Workout */
+            workout: {
+                [key: string]: unknown;
+            };
+        } & {
+            [key: string]: unknown;
+        };
+        /** RunSessions */
+        RunSessions: {
+            /** Method */
+            method: string;
+            /** Note */
+            note: string;
+            /**
+             * Sessions
+             * @default []
+             */
+            sessions: components["schemas"]["RunSession"][];
+            /** Targets */
+            targets: string;
+            /** Threshold Pace S Per Km */
+            threshold_pace_s_per_km?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
         /** RunZones */
         RunZones: {
             /** Confidence */
@@ -10285,6 +10387,46 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RacePredictor"];
+                };
+            };
+        };
+    };
+    run_sessions_api_run_sessions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunSessions"];
+                };
+            };
+        };
+    };
+    run_session_api_run_sessions__session_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunSession"];
                 };
             };
         };

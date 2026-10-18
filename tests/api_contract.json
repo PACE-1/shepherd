@@ -8992,6 +8992,156 @@
         "title": "RunPaceZone",
         "type": "object"
       },
+      "RunProfilePoint": {
+        "additionalProperties": true,
+        "properties": {
+          "x": {
+            "title": "X",
+            "type": "number"
+          },
+          "y": {
+            "title": "Y",
+            "type": "number"
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ],
+        "title": "RunProfilePoint",
+        "type": "object"
+      },
+      "RunSession": {
+        "additionalProperties": true,
+        "properties": {
+          "daniels": {
+            "title": "Daniels",
+            "type": "string"
+          },
+          "hard": {
+            "title": "Hard",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "intent": {
+            "title": "Intent",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "max_minutes": {
+            "title": "Max Minutes",
+            "type": "integer"
+          },
+          "min_minutes": {
+            "title": "Min Minutes",
+            "type": "integer"
+          },
+          "minutes": {
+            "title": "Minutes",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "profile": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/RunProfilePoint"
+            },
+            "title": "Profile",
+            "type": "array"
+          },
+          "rtss_estimate": {
+            "title": "Rtss Estimate",
+            "type": "number"
+          },
+          "session_type": {
+            "title": "Session Type",
+            "type": "string"
+          },
+          "source": {
+            "default": "",
+            "title": "Source",
+            "type": "string"
+          },
+          "stimulus": {
+            "title": "Stimulus",
+            "type": "string"
+          },
+          "workout": {
+            "additionalProperties": true,
+            "title": "Workout",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "session_type",
+          "stimulus",
+          "daniels",
+          "intent",
+          "hard",
+          "min_minutes",
+          "max_minutes",
+          "minutes",
+          "workout",
+          "rtss_estimate"
+        ],
+        "title": "RunSession",
+        "type": "object"
+      },
+      "RunSessions": {
+        "additionalProperties": true,
+        "properties": {
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "sessions": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/RunSession"
+            },
+            "title": "Sessions",
+            "type": "array"
+          },
+          "targets": {
+            "title": "Targets",
+            "type": "string"
+          },
+          "threshold_pace_s_per_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold Pace S Per Km"
+          }
+        },
+        "required": [
+          "targets",
+          "note",
+          "method"
+        ],
+        "title": "RunSessions",
+        "type": "object"
+      },
       "RunZones": {
         "additionalProperties": true,
         "properties": {
@@ -14301,6 +14451,40 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/RacePredictor"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/run/sessions": {
+      "get": {
+        "operationId": "run_sessions_api_run_sessions_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunSessions"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/run/sessions/{session_id}": {
+      "get": {
+        "operationId": "run_session_api_run_sessions__session_id__get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunSession"
                 }
               }
             },
