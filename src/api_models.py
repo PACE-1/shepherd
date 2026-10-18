@@ -649,6 +649,7 @@ class RideDetail(RideSummary):
     is_race: Optional[bool] = None
     activity_id: Optional[str] = None     # key of the race flag; None when the ride has no activity row
     time_in_zone: Optional[dict] = None   # {"z1": seconds, … "z7"}
+    hr_time_in_zone: Optional[dict] = None  # same shape, by heart-rate zone; None when the activity has no HR zones
     intervals: list[dict] = []
     efforts: list[dict] = []
     prs: list[dict] = []
