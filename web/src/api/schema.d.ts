@@ -4,6 +4,54 @@
  */
 
 export interface paths {
+    "/api/analytics/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["compare_api_analytics_compare_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/analytics/power-model": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["power_model_api_analytics_power_model_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/analytics/weight-trend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["weight_trend_api_analytics_weight_trend_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/builder/preview": {
         parameters: {
             query?: never;
@@ -1994,6 +2042,19 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** BestEffortDelta */
+        BestEffortDelta: {
+            /** A W */
+            a_w: number;
+            /** B W */
+            b_w: number;
+            /** Delta W */
+            delta_w: number;
+            /** Duration S */
+            duration_s: number;
+        } & {
+            [key: string]: unknown;
+        };
         /** BuilderLoaded */
         BuilderLoaded: {
             /** File */
@@ -2267,6 +2328,131 @@ export interface components {
              * @default true
              */
             reverted: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /** CompareSide */
+        CompareSide: {
+            /**
+             * End S
+             * @default 0
+             */
+            end_s: number;
+            /**
+             * Hr Bpm
+             * @default []
+             */
+            hr_bpm: (number | null)[];
+            /**
+             * Name
+             * @default Ride
+             */
+            name: string;
+            /**
+             * Power W
+             * @default []
+             */
+            power_w: (number | null)[];
+            /** Ride Id */
+            ride_id?: string | null;
+            /**
+             * Start S
+             * @default 0
+             */
+            start_s: number;
+            /** Started At */
+            started_at?: string | null;
+            summary: components["schemas"]["CompareSummary"];
+            /**
+             * Whole
+             * @default true
+             */
+            whole: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /** CompareSummary */
+        CompareSummary: {
+            /** Avg Hr */
+            avg_hr?: number | null;
+            /** Avg Power W */
+            avg_power_w?: number | null;
+            /** Distance Km */
+            distance_km?: number | null;
+            /** Duration S */
+            duration_s?: number | null;
+            /** If Pct */
+            if_pct?: number | null;
+            /** Np W */
+            np_w?: number | null;
+            /** Tss */
+            tss?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** CpFit */
+        CpFit: {
+            /** Cp Ci95 W */
+            cp_ci95_w?: number[] | null;
+            /** Cp Se W */
+            cp_se_w?: number | null;
+            /** Cp W */
+            cp_w?: number | null;
+            /**
+             * N Points
+             * @default 0
+             */
+            n_points: number;
+            /**
+             * Points
+             * @default []
+             */
+            points: components["schemas"]["CpFitPoint"][];
+            /** R2 */
+            r2?: number | null;
+            /**
+             * Reason
+             * @default
+             */
+            reason: string;
+            /** See J */
+            see_j?: number | null;
+            /** Status */
+            status: string;
+            /** Wprime Ci95 J */
+            wprime_ci95_j?: number[] | null;
+            /** Wprime J */
+            wprime_j?: number | null;
+            /** Wprime Se J */
+            wprime_se_j?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** CpFitPoint */
+        CpFitPoint: {
+            /** Duration S */
+            duration_s: number;
+            /** Watts */
+            watts: number;
+            /** Work J */
+            work_j: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** CpHistoryPoint */
+        CpHistoryPoint: {
+            /** Cp Ci95 W */
+            cp_ci95_w?: number[] | null;
+            /** Cp W */
+            cp_w?: number | null;
+            /** End Date */
+            end_date: string;
+            /** Pmax W */
+            pmax_w?: number | null;
+            /** Status */
+            status: string;
+            /** Wprime J */
+            wprime_j?: number | null;
         } & {
             [key: string]: unknown;
         };
@@ -3811,6 +3997,31 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** PowerModel */
+        PowerModel: {
+            /** Caveat */
+            caveat: string;
+            /** Cp W Per Kg */
+            cp_w_per_kg?: number | null;
+            fit: components["schemas"]["CpFit"];
+            /**
+             * History
+             * @default []
+             */
+            history: components["schemas"]["CpHistoryPoint"][];
+            /** Method */
+            method: string;
+            /** N Rides */
+            n_rides: number;
+            /** Pmax W */
+            pmax_w?: number | null;
+            /** Weight Kg */
+            weight_kg?: number | null;
+            /** Window Days */
+            window_days: number;
+        } & {
+            [key: string]: unknown;
+        };
         /** PrToastQueue */
         PrToastQueue: {
             /**
@@ -4159,6 +4370,23 @@ export interface components {
             ok: boolean;
             /** Until */
             until?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RideCompare */
+        RideCompare: {
+            a: components["schemas"]["CompareSide"];
+            b: components["schemas"]["CompareSide"];
+            /**
+             * Best Efforts
+             * @default []
+             */
+            best_efforts: components["schemas"]["BestEffortDelta"][];
+            /** Bin S */
+            bin_s: number;
+            delta: components["schemas"]["CompareSummary"];
+            /** Min Best Effort S */
+            min_best_effort_s: number;
         } & {
             [key: string]: unknown;
         };
@@ -5139,6 +5367,47 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** WeightPoint */
+        WeightPoint: {
+            /** Date */
+            date: string;
+            /**
+             * Source
+             * @default manual
+             */
+            source: string;
+            /** Trend Kg */
+            trend_kg: number;
+            /** Weight Kg */
+            weight_kg: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** WeightTrend */
+        WeightTrend: {
+            /** Change 28D Kg */
+            change_28d_kg?: number | null;
+            /** Latest Trend Kg */
+            latest_trend_kg?: number | null;
+            /** Latest W Per Kg */
+            latest_w_per_kg?: number | null;
+            /** Method */
+            method: string;
+            /**
+             * Points
+             * @default []
+             */
+            points: components["schemas"]["WeightPoint"][];
+            /** Tau Days */
+            tau_days: number;
+            /**
+             * Wkg
+             * @default []
+             */
+            wkg: components["schemas"]["WkgPoint"][];
+        } & {
+            [key: string]: unknown;
+        };
         /** WellnessDay */
         WellnessDay: {
             /** Atl */
@@ -5163,6 +5432,19 @@ export interface components {
             tsb?: number | null;
             /** W Prime Fitness */
             w_prime_fitness?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** WkgPoint */
+        WkgPoint: {
+            /** Date */
+            date: string;
+            /** Ftp W */
+            ftp_w: number;
+            /** W Per Kg */
+            w_per_kg: number;
+            /** Weight Kg */
+            weight_kg: number;
         } & {
             [key: string]: unknown;
         };
@@ -5341,6 +5623,66 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    compare_api_analytics_compare_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RideCompare"];
+                };
+            };
+        };
+    };
+    power_model_api_analytics_power_model_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PowerModel"];
+                };
+            };
+        };
+    };
+    weight_trend_api_analytics_weight_trend_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeightTrend"];
+                };
+            };
+        };
+    };
     builder_preview_api_builder_preview_post: {
         parameters: {
             query?: never;

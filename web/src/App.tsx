@@ -10,6 +10,7 @@ import { Onboarding } from "@/screens/Onboarding"
 import { Plan } from "@/screens/Plan"
 import { ProfilePicker } from "@/screens/ProfilePicker"
 import { ProfileSetup } from "@/screens/ProfileSetup"
+import { RideCompare } from "@/screens/RideCompare"
 import { RideDetail } from "@/screens/RideDetail"
 import { Setup } from "@/screens/Setup"
 import { Settings } from "@/screens/Settings"
@@ -46,6 +47,7 @@ export function App() {
       </AppShell>
     )
   if (head === "injury") return <AppShell tab="plan"><Injury /></AppShell>
+  if (head === "compare" && rest.length) return <AppShell tab="analysis"><RideCompare key={route} a={decodeURIComponent(rest[0])} b={rest[1] ? decodeURIComponent(rest[1]) : undefined} /></AppShell>
   const tab = isTab(route) ? route : "home"
   return (
     <AppShell tab={tab}>

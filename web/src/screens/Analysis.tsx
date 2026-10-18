@@ -8,6 +8,8 @@ import { LineChart } from "@/screens/Chart"
 import { EnergySystems } from "@/screens/EnergySystems"
 import { HistoryBackfill } from "@/screens/HistoryBackfill"
 import { Panel, useLoad } from "@/screens/panel"
+import { PowerModel } from "@/screens/PowerModel"
+import { WeightTrend } from "@/screens/WeightTrend"
 import { Label } from "@/components/ui/label"
 import { NativeSelect } from "@/components/ui/native-select"
 import { RideTools } from "@/screens/RideTools"
@@ -157,6 +159,7 @@ export function Analysis() {
       <FatigueCard />
       <TauFitsCard />
       <BanisterCard />
+      <WeightTrend /><PowerModel />
       <div className="lg:col-span-2">
         <Rides />
       </div>
