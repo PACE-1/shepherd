@@ -1,4 +1,4 @@
-import type { IcuConnection, LlmConnection, PlanRead, SettingsRead } from "@/api/types"
+import type { IcuConnection, LlmConnection, PlanRead, SettingsRead, WeatherLocation } from "@/api/types"
 import type { RiderForm } from "@/lib/settings"
 
 // Guided onboarding: the steps, the progress the browser remembers, and the checks that gate "Continue".
@@ -35,6 +35,12 @@ export const STEPS: StepInfo[] = [
     id: "folders",
     title: "Workout folders",
     why: "Shepherd has a built-in workout library. Add a folder if you have your own .zwo workout files.",
+    optional: true,
+  },
+  {
+    id: "location",
+    title: "Where do you ride?",
+    why: "For the weather forecast next to your outdoor sessions, so a stormy day can be swapped for an indoor one. Optional: without a location the forecast simply stays off.",
     optional: true,
   },
   {
@@ -110,7 +116,8 @@ export const icuCheck = (c: IcuConnection) => (c.connected ? null : "intervals.i
 export const riderCheck = (s: SettingsRead) =>
   s.lthr_is_set ? null : "Save your rider numbers first (heart-rate threshold included), or skip this step."
 export const aiCheck = (c: LlmConnection) => (c.configured ? null : "No AI provider is connected yet. Connect one, or skip this step.")
-export const goalCheck = (p: PlanRead) => (p.plan_json?.weeks?.length ? null : "Create a training plan first, or skip this step.")
+export const locationCheck = (l: WeatherLocation) => (l.has_location ? null : "No place picked yet. Search for one, or skip this step.")
+export const goalCheck =(p: PlanRead) => (p.plan_json?.weeks?.length ? null : "Create a training plan first, or skip this step.")
 
 /** Every number is sent, not only the changed ones: saving is the rider confirming them. */
 export const riderPayload = (f: RiderForm): Record<string, number | string> => ({

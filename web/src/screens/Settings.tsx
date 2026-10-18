@@ -22,6 +22,7 @@ import { RacePredictor } from "@/screens/RacePredictor"
 import { YourData } from "@/screens/YourData"
 import { Panel, Row, useLoad } from "@/screens/panel"
 import { ZonesEditor } from "@/screens/ZonesEditor"
+import { LocationCard } from "@/screens/WeatherLocation"
 
 const Zones = ({ title, zones, unit }: { title: string; zones: ZoneBand[]; unit: string }) => (
   <div>
@@ -273,6 +274,7 @@ export function Settings() {
       <NotificationsSettings />
       <CalendarPush />
       <Folders />
+      <LocationCard />
       <About />
       <YourData />
       <div className="lg:col-span-2">

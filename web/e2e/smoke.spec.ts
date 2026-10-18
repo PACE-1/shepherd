@@ -635,3 +635,26 @@ test("Nutrition: Settings keeps the SparkyFitness key write-only, and Fueling sh
   await expect(page.getByRole("heading", { name: "Carbohydrate for the day" })).toBeVisible()
   await expect(page.getByText(/Not medical advice/)).toBeVisible()
 })
+
+test("Weather location: place search degrades without a network, and 'no location' can be saved", async ({ page, request }) => {
+  await page.goto("#/settings")
+  const card = page.locator("div", { has: page.getByRole("heading", { name: "Weather location" }) }).last()
+  await expect(card.getByText(/only the location rounded to about 1 km/)).toBeVisible()
+  await card.getByLabel("Place name").fill("Berlin")
+  await card.getByRole("button", { name: "Search" }).click()
+  await expect(card.getByRole("status")).toContainText("Place search is unavailable right now")
+  await expect(card.getByRole("alert")).toHaveCount(0)
+  // No location: the forecast is simply off.
+  expect((await (await request.get(BASE + "/api/weather/forecast")).json()).status).toBe("no_location")
+  // A saved location can be removed again ("no location"); the stored coordinates are rounded.
+  const put = await request.put(BASE + "/api/weather/location", { data: { name: "Berlin", region: "Berlin", country: "Germany", latitude: 52.52437, longitude: 13.41053 } })
+  expect((await put.json()).place.latitude).toBe(52.52)
+  const forecast = await (await request.get(BASE + "/api/weather/forecast")).json()
+  expect(forecast.status).toBe("unavailable") // SHEPHERD_NO_NET: degraded, not an error
+  expect(forecast.attribution.text).toBe("Weather data by Open-Meteo.com")
+  await page.reload()
+  await expect(card.getByText("Berlin, Berlin, Germany")).toBeVisible()
+  await card.getByRole("button", { name: "Use no location" }).click()
+  await expect(card.getByText(/Location removed/)).toBeVisible()
+  expect((await (await request.get(BASE + "/api/weather/location")).json()).has_location).toBe(false)
+})

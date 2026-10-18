@@ -87,7 +87,7 @@ describe("Onboarding", () => {
 
   it("finishing the tour marks the whole setup finished", async () => {
     mockApi({ connected: true, lthrSet: true, llm: false, weeks: 4 })
-    localStorage.setItem("shepherd_onboarding:", JSON.stringify({ done: ["icu", "rider", "goal"], skipped: ["ai", "folders"], finished: false }))
+    localStorage.setItem("shepherd_onboarding:", JSON.stringify({ done: ["icu", "rider", "goal"], skipped: ["ai", "folders", "location"], finished: false }))
     render(<Onboarding />)
     expect(await screen.findByRole("heading", { name: "A short tour" })).toBeTruthy()
     for (const name of ["Home", "Training Plan", "Workout Library", "Analysis", "Settings"]) expect(screen.getAllByRole("link", { name })[0]).toBeTruthy()

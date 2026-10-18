@@ -15,6 +15,7 @@ import { PlanRedraw } from "@/screens/PlanRedraw"
 import { PlanRematch } from "@/screens/PlanRematch"
 import { PlanTimeOff } from "@/screens/PlanTimeOff"
 import { SessionExport } from "@/screens/SessionExport"
+import { SessionWeather } from "@/screens/WeatherSession"
 import { currentWeek, dismissSession, FTP_TEST_TYPES, fmtMinutes, getPlan, isoDay, moveSession, plannedTss, revertDeload, setFtpTestType, SWAP_TYPES, swapSessionType, weekSessions, type Availability } from "@/lib/home"
 
 type Load = { state: "loading" } | { state: "ok"; plan: PlanRead } | { state: "error"; message: string }
@@ -367,6 +368,9 @@ export function Plan() {
                         >
                           {dismissed ? "Restore" : "Dismiss"}
                         </Button>
+                      )}
+                      {!dismissed && !s.status.startsWith("done") && (
+                        <SessionWeather day={s.day} onSwap={canToggle ? () => setSwapping({ day: s.day, type: s.session_type, minutes: s.duration_min }) : undefined} />
                       )}
                     </li>
                   )

@@ -1545,3 +1545,50 @@ class Fueling(_Model):
     daily_method: str
     energy_method: str
     note: str
+# ── Weather forecast for planned outdoor sessions (#117) ──────────────────────────────────────────────
+class WeatherPlace(_Model):
+    name: str
+    region: str = ""
+    country: str = ""
+    latitude: float                          # rounded to 2 decimals (~1 km)
+    longitude: float
+
+
+class WeatherLocation(_Model):
+    has_location: bool
+    place: Optional[WeatherPlace] = None
+    network_enabled: bool = True             # False when SHEPHERD_NO_NET=1
+
+
+class WeatherSearch(_Model):
+    available: bool
+    message: str = ""
+    results: list[WeatherPlace] = []
+
+
+class WeatherDay(_Model):
+    date: str
+    rating: str                              # good | marginal | poor (heuristic defaults)
+    reasons: list[str] = []
+    suggest_indoor: bool = False
+    summary: str = ""
+    temp_min_c: Optional[int] = None
+    temp_max_c: Optional[int] = None
+    feels_min_c: Optional[int] = None
+    feels_max_c: Optional[int] = None
+    rain_pct_max: Optional[int] = None
+    rain_mm: float = 0
+    gust_max_kmh: Optional[int] = None
+    wind_max_kmh: Optional[int] = None
+
+
+class WeatherAttribution(_Model):
+    text: str
+    url: str
+
+
+class WeatherForecast(_Model):
+    status: str                              # ok | no_location | unavailable
+    days: list[WeatherDay] = []
+    attribution: WeatherAttribution
+    message: str = ""

@@ -7,7 +7,9 @@ import { Label } from "@/components/ui/label"
 import { NativeSelect } from "@/components/ui/native-select"
 import { getLlm } from "@/lib/coach"
 import { currentWeek, getPlan, isoDay, type Availability } from "@/lib/home"
-import { aiCheck, goalCheck, icuCheck, riderCheck, riderPayload, TOUR } from "@/lib/onboarding"
+import { aiCheck, goalCheck, icuCheck, locationCheck, riderCheck, riderPayload, TOUR } from "@/lib/onboarding"
+import { getLocation } from "@/lib/weather"
+import { LocationCard } from "@/screens/WeatherLocation"
 import { diff, formFrom, getSettings, saveSettings, type RiderForm } from "@/lib/settings"
 import { getIcuConnection, getLimits, type Limits } from "@/lib/setup"
 import { ApiKeyConnect } from "@/screens/ApiKeyConnect"
@@ -168,6 +170,7 @@ export const BODIES: Record<string, ComponentType> = {
   rider: RiderStep,
   ai: AiCoachSettings,
   folders: Folders,
+  location: () => <LocationCard title="Your location" />,
   goal: GoalStep,
   tour: TourStep,
 }
@@ -177,5 +180,6 @@ export const CHECKS: Record<string, () => Promise<string | null>> = {
   icu: async () => icuCheck(await getIcuConnection()),
   rider: async () => riderCheck(await getSettings()),
   ai: async () => aiCheck(await getLlm()),
+  location: async () => locationCheck(await getLocation()),
   goal: async () => goalCheck(await getPlan()),
 }

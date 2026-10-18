@@ -8510,6 +8510,265 @@
         "title": "VersionInfo",
         "type": "object"
       },
+      "WeatherAttribution": {
+        "additionalProperties": true,
+        "properties": {
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text",
+          "url"
+        ],
+        "title": "WeatherAttribution",
+        "type": "object"
+      },
+      "WeatherDay": {
+        "additionalProperties": true,
+        "properties": {
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "feels_max_c": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Feels Max C"
+          },
+          "feels_min_c": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Feels Min C"
+          },
+          "gust_max_kmh": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gust Max Kmh"
+          },
+          "rain_mm": {
+            "default": 0,
+            "title": "Rain Mm",
+            "type": "number"
+          },
+          "rain_pct_max": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rain Pct Max"
+          },
+          "rating": {
+            "title": "Rating",
+            "type": "string"
+          },
+          "reasons": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "suggest_indoor": {
+            "default": false,
+            "title": "Suggest Indoor",
+            "type": "boolean"
+          },
+          "summary": {
+            "default": "",
+            "title": "Summary",
+            "type": "string"
+          },
+          "temp_max_c": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Temp Max C"
+          },
+          "temp_min_c": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Temp Min C"
+          },
+          "wind_max_kmh": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wind Max Kmh"
+          }
+        },
+        "required": [
+          "date",
+          "rating"
+        ],
+        "title": "WeatherDay",
+        "type": "object"
+      },
+      "WeatherForecast": {
+        "additionalProperties": true,
+        "properties": {
+          "attribution": {
+            "$ref": "#/components/schemas/WeatherAttribution"
+          },
+          "days": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/WeatherDay"
+            },
+            "title": "Days",
+            "type": "array"
+          },
+          "message": {
+            "default": "",
+            "title": "Message",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "attribution"
+        ],
+        "title": "WeatherForecast",
+        "type": "object"
+      },
+      "WeatherLocation": {
+        "additionalProperties": true,
+        "properties": {
+          "has_location": {
+            "title": "Has Location",
+            "type": "boolean"
+          },
+          "network_enabled": {
+            "default": true,
+            "title": "Network Enabled",
+            "type": "boolean"
+          },
+          "place": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WeatherPlace"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "has_location"
+        ],
+        "title": "WeatherLocation",
+        "type": "object"
+      },
+      "WeatherPlace": {
+        "additionalProperties": true,
+        "properties": {
+          "country": {
+            "default": "",
+            "title": "Country",
+            "type": "string"
+          },
+          "latitude": {
+            "title": "Latitude",
+            "type": "number"
+          },
+          "longitude": {
+            "title": "Longitude",
+            "type": "number"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "region": {
+            "default": "",
+            "title": "Region",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "latitude",
+          "longitude"
+        ],
+        "title": "WeatherPlace",
+        "type": "object"
+      },
+      "WeatherSearch": {
+        "additionalProperties": true,
+        "properties": {
+          "available": {
+            "title": "Available",
+            "type": "boolean"
+          },
+          "message": {
+            "default": "",
+            "title": "Message",
+            "type": "string"
+          },
+          "results": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/WeatherPlace"
+            },
+            "title": "Results",
+            "type": "array"
+          }
+        },
+        "required": [
+          "available"
+        ],
+        "title": "WeatherSearch",
+        "type": "object"
+      },
       "WeekSummary": {
         "additionalProperties": true,
         "properties": {
@@ -11282,6 +11541,87 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/VersionInfo"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/weather/forecast": {
+      "get": {
+        "operationId": "weather_forecast_api_weather_forecast_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherForecast"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/weather/location": {
+      "delete": {
+        "operationId": "weather_location_clear_api_weather_location_delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherLocation"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "operationId": "weather_location_api_weather_location_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherLocation"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "operationId": "weather_location_set_api_weather_location_put",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherLocation"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/weather/search": {
+      "get": {
+        "operationId": "weather_search_api_weather_search_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherSearch"
                 }
               }
             },
