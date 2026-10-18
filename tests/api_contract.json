@@ -467,6 +467,35 @@
         "title": "BanisterValidation",
         "type": "object"
       },
+      "BestEffortDelta": {
+        "additionalProperties": true,
+        "properties": {
+          "a_w": {
+            "title": "A W",
+            "type": "integer"
+          },
+          "b_w": {
+            "title": "B W",
+            "type": "integer"
+          },
+          "delta_w": {
+            "title": "Delta W",
+            "type": "integer"
+          },
+          "duration_s": {
+            "title": "Duration S",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "duration_s",
+          "a_w",
+          "b_w",
+          "delta_w"
+        ],
+        "title": "BestEffortDelta",
+        "type": "object"
+      },
       "CalendarDay": {
         "additionalProperties": true,
         "properties": {
@@ -774,6 +803,391 @@
           }
         },
         "title": "CapReverted",
+        "type": "object"
+      },
+      "CompareSide": {
+        "additionalProperties": true,
+        "properties": {
+          "end_s": {
+            "default": 0,
+            "title": "End S",
+            "type": "integer"
+          },
+          "hr_bpm": {
+            "default": [],
+            "items": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Hr Bpm",
+            "type": "array"
+          },
+          "name": {
+            "default": "Ride",
+            "title": "Name",
+            "type": "string"
+          },
+          "power_w": {
+            "default": [],
+            "items": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Power W",
+            "type": "array"
+          },
+          "ride_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ride Id"
+          },
+          "start_s": {
+            "default": 0,
+            "title": "Start S",
+            "type": "integer"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/CompareSummary"
+          },
+          "whole": {
+            "default": true,
+            "title": "Whole",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "summary"
+        ],
+        "title": "CompareSide",
+        "type": "object"
+      },
+      "CompareSummary": {
+        "additionalProperties": true,
+        "properties": {
+          "avg_hr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Hr"
+          },
+          "avg_power_w": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Power W"
+          },
+          "distance_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance Km"
+          },
+          "duration_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration S"
+          },
+          "if_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "If Pct"
+          },
+          "np_w": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Np W"
+          },
+          "tss": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tss"
+          }
+        },
+        "title": "CompareSummary",
+        "type": "object"
+      },
+      "CpFit": {
+        "additionalProperties": true,
+        "properties": {
+          "cp_ci95_w": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cp Ci95 W"
+          },
+          "cp_se_w": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cp Se W"
+          },
+          "cp_w": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cp W"
+          },
+          "n_points": {
+            "default": 0,
+            "title": "N Points",
+            "type": "integer"
+          },
+          "points": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/CpFitPoint"
+            },
+            "title": "Points",
+            "type": "array"
+          },
+          "r2": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "R2"
+          },
+          "reason": {
+            "default": "",
+            "title": "Reason",
+            "type": "string"
+          },
+          "see_j": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "See J"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "wprime_ci95_j": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wprime Ci95 J"
+          },
+          "wprime_j": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wprime J"
+          },
+          "wprime_se_j": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wprime Se J"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "CpFit",
+        "type": "object"
+      },
+      "CpFitPoint": {
+        "additionalProperties": true,
+        "properties": {
+          "duration_s": {
+            "title": "Duration S",
+            "type": "integer"
+          },
+          "watts": {
+            "title": "Watts",
+            "type": "integer"
+          },
+          "work_j": {
+            "title": "Work J",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "duration_s",
+          "watts",
+          "work_j"
+        ],
+        "title": "CpFitPoint",
+        "type": "object"
+      },
+      "CpHistoryPoint": {
+        "additionalProperties": true,
+        "properties": {
+          "cp_ci95_w": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cp Ci95 W"
+          },
+          "cp_w": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cp W"
+          },
+          "end_date": {
+            "title": "End Date",
+            "type": "string"
+          },
+          "pmax_w": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pmax W"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "wprime_j": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wprime J"
+          }
+        },
+        "required": [
+          "end_date",
+          "status"
+        ],
+        "title": "CpHistoryPoint",
         "type": "object"
       },
       "DailyAdapt": {
@@ -3646,6 +4060,80 @@
         "title": "PowerCurvePoint",
         "type": "object"
       },
+      "PowerModel": {
+        "additionalProperties": true,
+        "properties": {
+          "caveat": {
+            "title": "Caveat",
+            "type": "string"
+          },
+          "cp_w_per_kg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cp W Per Kg"
+          },
+          "fit": {
+            "$ref": "#/components/schemas/CpFit"
+          },
+          "history": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/CpHistoryPoint"
+            },
+            "title": "History",
+            "type": "array"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "n_rides": {
+            "title": "N Rides",
+            "type": "integer"
+          },
+          "pmax_w": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pmax W"
+          },
+          "weight_kg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight Kg"
+          },
+          "window_days": {
+            "title": "Window Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "window_days",
+          "n_rides",
+          "method",
+          "caveat",
+          "fit"
+        ],
+        "title": "PowerModel",
+        "type": "object"
+      },
       "PrToastQueue": {
         "additionalProperties": true,
         "properties": {
@@ -4392,6 +4880,45 @@
           }
         },
         "title": "RetestSnoozed",
+        "type": "object"
+      },
+      "RideCompare": {
+        "additionalProperties": true,
+        "properties": {
+          "a": {
+            "$ref": "#/components/schemas/CompareSide"
+          },
+          "b": {
+            "$ref": "#/components/schemas/CompareSide"
+          },
+          "best_efforts": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/BestEffortDelta"
+            },
+            "title": "Best Efforts",
+            "type": "array"
+          },
+          "bin_s": {
+            "title": "Bin S",
+            "type": "integer"
+          },
+          "delta": {
+            "$ref": "#/components/schemas/CompareSummary"
+          },
+          "min_best_effort_s": {
+            "title": "Min Best Effort S",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "bin_s",
+          "min_best_effort_s",
+          "a",
+          "b",
+          "delta"
+        ],
+        "title": "RideCompare",
         "type": "object"
       },
       "RideDetail": {
@@ -6320,6 +6847,103 @@
         "title": "WeekSummary",
         "type": "object"
       },
+      "WeightPoint": {
+        "additionalProperties": true,
+        "properties": {
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "source": {
+            "default": "manual",
+            "title": "Source",
+            "type": "string"
+          },
+          "trend_kg": {
+            "title": "Trend Kg",
+            "type": "number"
+          },
+          "weight_kg": {
+            "title": "Weight Kg",
+            "type": "number"
+          }
+        },
+        "required": [
+          "date",
+          "weight_kg",
+          "trend_kg"
+        ],
+        "title": "WeightPoint",
+        "type": "object"
+      },
+      "WeightTrend": {
+        "additionalProperties": true,
+        "properties": {
+          "change_28d_kg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Change 28D Kg"
+          },
+          "latest_trend_kg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Trend Kg"
+          },
+          "latest_w_per_kg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest W Per Kg"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "points": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/WeightPoint"
+            },
+            "title": "Points",
+            "type": "array"
+          },
+          "tau_days": {
+            "title": "Tau Days",
+            "type": "number"
+          },
+          "wkg": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/WkgPoint"
+            },
+            "title": "Wkg",
+            "type": "array"
+          }
+        },
+        "required": [
+          "method",
+          "tau_days"
+        ],
+        "title": "WeightTrend",
+        "type": "object"
+      },
       "WellnessDay": {
         "additionalProperties": true,
         "properties": {
@@ -6442,6 +7066,35 @@
           "date"
         ],
         "title": "WellnessDay",
+        "type": "object"
+      },
+      "WkgPoint": {
+        "additionalProperties": true,
+        "properties": {
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "ftp_w": {
+            "title": "Ftp W",
+            "type": "integer"
+          },
+          "w_per_kg": {
+            "title": "W Per Kg",
+            "type": "number"
+          },
+          "weight_kg": {
+            "title": "Weight Kg",
+            "type": "number"
+          }
+        },
+        "required": [
+          "date",
+          "ftp_w",
+          "weight_kg",
+          "w_per_kg"
+        ],
+        "title": "WkgPoint",
         "type": "object"
       },
       "WorkoutDetail": {
@@ -6798,6 +7451,57 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/analytics/compare": {
+      "get": {
+        "operationId": "compare_api_analytics_compare_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RideCompare"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/analytics/power-model": {
+      "get": {
+        "operationId": "power_model_api_analytics_power_model_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PowerModel"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/analytics/weight-trend": {
+      "get": {
+        "operationId": "weight_trend_api_analytics_weight_trend_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeightTrend"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/calendar": {
       "get": {
         "operationId": "api_calendar_api_calendar_get",

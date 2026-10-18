@@ -27,6 +27,8 @@ function mock(over: Record<string, () => Response> = {}) {
     if (url.startsWith("/api/profile/power-curve")) return json(CURVE)
     if (url.startsWith("/api/profile/tau-fits") || url.startsWith("/api/profile/fatigue-resistance")) return json({ fit_status: "insufficient_data" })
     if (url.startsWith("/api/rides")) return json(RIDES)
+    if (url.startsWith("/api/analytics/weight-trend")) return json({ method: "", tau_days: 7, points: [], wkg: [] })
+    if (url.startsWith("/api/analytics/power-model")) return json({ window_days: 90, n_rides: 0, method: "", caveat: "", fit: { status: "insufficient", reason: "none", points: [] }, history: [] })
     return json({}, 404)
   }))
   return urls

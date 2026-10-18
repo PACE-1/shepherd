@@ -1117,3 +1117,108 @@ class LlmConnection(_Model):
 class Insight(_Model):
     text: str
     model: str = ""
+
+
+# ── analytics: weight trend, power-duration model, ride comparison (#114, #116) ──
+class WeightPoint(_Model):
+    date: str
+    weight_kg: float
+    source: str = "manual"
+    trend_kg: float
+
+
+class WkgPoint(_Model):
+    date: str
+    ftp_w: int
+    weight_kg: float
+    w_per_kg: float
+
+
+class WeightTrend(_Model):
+    method: str
+    tau_days: float
+    points: list[WeightPoint] = []
+    latest_trend_kg: Optional[float] = None
+    change_28d_kg: Optional[float] = None
+    wkg: list[WkgPoint] = []
+    latest_w_per_kg: Optional[float] = None
+
+
+class CpFitPoint(_Model):
+    duration_s: int
+    watts: int
+    work_j: int
+
+
+class CpFit(_Model):
+    status: str                               # ok | insufficient | out_of_range
+    reason: str = ""
+    n_points: int = 0
+    points: list[CpFitPoint] = []
+    cp_w: Optional[float] = None
+    wprime_j: Optional[int] = None
+    cp_se_w: Optional[float] = None
+    wprime_se_j: Optional[int] = None
+    cp_ci95_w: Optional[list[float]] = None
+    wprime_ci95_j: Optional[list[int]] = None
+    r2: Optional[float] = None
+    see_j: Optional[int] = None
+
+
+class CpHistoryPoint(_Model):
+    end_date: str
+    status: str
+    cp_w: Optional[float] = None
+    wprime_j: Optional[int] = None
+    cp_ci95_w: Optional[list[float]] = None
+    pmax_w: Optional[int] = None
+
+
+class PowerModel(_Model):
+    window_days: int
+    n_rides: int
+    method: str
+    caveat: str
+    fit: CpFit
+    pmax_w: Optional[int] = None
+    weight_kg: Optional[float] = None
+    cp_w_per_kg: Optional[float] = None
+    history: list[CpHistoryPoint] = []
+
+
+class CompareSummary(_Model):
+    duration_s: Optional[float] = None
+    distance_km: Optional[float] = None
+    np_w: Optional[float] = None
+    if_pct: Optional[float] = None
+    tss: Optional[float] = None
+    avg_hr: Optional[float] = None
+    avg_power_w: Optional[float] = None
+
+
+class CompareSide(_Model):
+    ride_id: Optional[str] = None
+    name: str = "Ride"
+    started_at: Optional[str] = None
+    whole: bool = True                       # False: an effort (start_s..end_s) of the ride
+    start_s: int = 0
+    end_s: int = 0
+    summary: CompareSummary
+    power_w: list[Optional[float]] = []      # one value per bin_s seconds from the side's start
+    hr_bpm: list[Optional[float]] = []
+
+
+class BestEffortDelta(_Model):
+    duration_s: int
+    a_w: int
+    b_w: int
+    delta_w: int                             # b - a
+
+
+class RideCompare(_Model):
+    bin_s: int
+    min_best_effort_s: int
+    a: CompareSide
+    b: CompareSide
+    delta: CompareSummary                    # b - a per summary field
+    best_efforts: list[BestEffortDelta] = []

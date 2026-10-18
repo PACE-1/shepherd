@@ -27,7 +27,10 @@ def test_every_documented_route_still_exists_with_its_method():
     import os, tempfile
     os.environ.setdefault("SHEPHERD_HOME", tempfile.mkdtemp(prefix="domestique-contract-"))
     import app as app_module
-    live = {(r.path, m.lower()) for r in app_module.app.routes
+    # FastAPI 0.139 keeps an included router (src/routes_*.py) as one entry; list its routes too (no prefixes are used).
+    routes = [s for r in app_module.app.routes
+              for s in (r.original_router.routes if hasattr(r, "original_router") else [r])]
+    live = {(r.path, m.lower()) for r in routes
             for m in getattr(r, "methods", set()) or ()}
     for path, ops in snap["paths"].items():
         for method in ops:
