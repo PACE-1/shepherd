@@ -134,11 +134,12 @@ function StepEditor({ i, n, s, problems, onChange, onMove, onDelete }: {
 }
 
 /** Build a structured cycling workout, see its intensity profile, save it to the Library, and send it to the intervals.icu calendar. */
-export function WorkoutBuilder({ file: editing }: { file?: string }) {
+export function WorkoutBuilder({ file: editing, copy = false }: { file?: string; copy?: boolean }) {
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const [steps, setSteps] = useState<UiStep[]>(startingSteps)
-  const [file, setFile] = useState(editing)
+  // A copy starts from the loaded model but saves as a new file.
+  const [file, setFile] = useState(copy ? undefined : editing)
   const [date, setDate] = useState(tomorrow)
   const [prev, setPrev] = useState<BuilderPreview | null>(null)
   const [prevError, setPrevError] = useState("")
@@ -153,14 +154,14 @@ export function WorkoutBuilder({ file: editing }: { file?: string }) {
       (r) => {
         if (!live) return
         const w = r.workout as { name?: string; description?: string; steps?: Step[] }
-        setName(w.name ?? "")
+        setName(copy ? `${w.name ?? ""} (copy)` : (w.name ?? ""))
         setDescription(w.description ?? "")
         setSteps((w.steps ?? []).map(withUid))
       },
       (e: unknown) => live && setLoadError(errMsg(e)),
     )
     return () => { live = false }
-  }, [editing])
+  }, [editing, copy])
 
   // The preview follows the edits after a short pause; a slower answer to an older edit is dropped.
   const seq = useRef(0)
