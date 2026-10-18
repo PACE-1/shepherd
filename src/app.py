@@ -777,6 +777,7 @@ app = FastAPI(title="Shepherd", version=_VERSION, lifespan=lifespan)
 # Global exception handler — catches unhandled errors and logs them
 from starlette.requests import Request as StarletteRequest
 from starlette.responses import JSONResponse as StarletteJSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 @app.exception_handler(Exception)
 async def generic_exception_handler(request: StarletteRequest, exc: Exception):
@@ -785,6 +786,16 @@ async def generic_exception_handler(request: StarletteRequest, exc: Exception):
         status_code=500,
         content={"error": "Internal server error", "detail": "see server logs"},
     )
+
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: StarletteRequest, exc: StarletteHTTPException):
+    # One error shape (docs/API.md): a refused request carries its sentence in
+    # both `error` and `detail`, so every client reads the same key.
+    body = {"detail": exc.detail}
+    if isinstance(exc.detail, str):
+        body["error"] = exc.detail
+    return StarletteJSONResponse(body, status_code=exc.status_code, headers=getattr(exc, "headers", None))
 
 
 # ── Shared JSON body helper ──────────────────────────────────────────────────
