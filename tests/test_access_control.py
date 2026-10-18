@@ -5,7 +5,14 @@ from fastapi.testclient import TestClient
 import access
 import app as app_module
 
-TOKEN = "s3cret-token"
+TOKEN = "s3cret-token-0123456789abcdef"
+
+
+@pytest.fixture(autouse=True)
+def _fresh_throttle():
+    access._failures.clear()
+    yield
+    access._failures.clear()
 
 
 @pytest.fixture
@@ -94,3 +101,66 @@ def test_server_mode_with_a_token_starts(monkeypatch):
     monkeypatch.setenv("SHEPHERD_ACCESS_TOKEN", TOKEN)
     with TestClient(app_module.app) as c:
         assert c.get("/healthz").status_code == 200
+
+
+def test_server_mode_refuses_a_short_token(monkeypatch):
+    monkeypatch.setenv("SHEPHERD_SERVER_MODE", "1")
+    monkeypatch.setenv("SHEPHERD_ACCESS_TOKEN", "short")
+    with pytest.raises(RuntimeError, match="shorter than"):
+        with TestClient(app_module.app):
+            pass
+
+
+def test_repeated_wrong_logins_are_throttled(served):
+    for _ in range(access.MAX_FAILURES):
+        assert served.post("/login", data={"token": "nope"}).status_code == 401
+    r = served.post("/login", data={"token": "nope"})
+    assert r.status_code == 429 and int(r.headers["retry-after"]) > 0
+    # even the right token waits out the lockout
+    assert served.post("/login", data={"token": TOKEN}).status_code == 429
+
+
+def test_repeated_wrong_bearer_tokens_are_throttled(served):
+    bad = {"Authorization": "Bearer nope"}
+    for _ in range(access.MAX_FAILURES):
+        assert served.get("/api/version", headers=bad).status_code == 401
+    assert served.get("/api/version", headers=bad).status_code == 429
+
+
+def test_throttle_lifts_after_the_window():
+    for _ in range(access.MAX_FAILURES):
+        access.record_failure("c", now=100.0)
+    assert access.retry_after("c", now=101.0) > 0
+    assert access.retry_after("c", now=100.0 + access.FAILURE_WINDOW + 1) == 0
+
+
+def test_a_good_login_clears_the_failures(served):
+    for _ in range(access.MAX_FAILURES - 1):
+        served.post("/login", data={"token": "nope"})
+    assert served.post("/login", data={"token": TOKEN}).status_code == 303
+    assert not access._failures
+
+
+def test_an_expired_cookie_is_rejected(served):
+    import time
+    old = access.session_value(TOKEN, issued_at=time.time() - access.SESSION_MAX_AGE - 5)
+    served.cookies.set("shepherd_session", old)
+    assert served.get("/api/version").status_code == 401
+
+
+def test_a_forged_or_old_format_cookie_is_rejected(served):
+    for bad in ("x", "1.0.deadbeef", access.session_value(TOKEN).split(".")[0] + ".00"):
+        served.cookies.set("shepherd_session", bad)
+        assert served.get("/api/version").status_code == 401
+
+
+def test_sign_out_everywhere_revokes_old_cookies(served):
+    old = access.session_value(TOKEN)
+    served.cookies.set("shepherd_session", old)
+    assert served.get("/api/version").status_code == 200
+    assert served.post("/api/logout-everywhere").status_code == 200
+    assert served.get("/api/version").status_code == 401           # the copied cookie is dead
+    fresh = served.post("/login", data={"token": TOKEN})
+    assert fresh.status_code == 303
+    served.cookies.set("shepherd_session", access.session_value(TOKEN))
+    assert served.get("/api/version").status_code == 200

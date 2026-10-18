@@ -5,8 +5,11 @@ web/src whose route has no `responses={200: {"model": ...}}` fails here until it
 src/api_models.py or an entry in EXEMPT below. Literals that match no route (URLs built by a
 helper such as `one(id)`) are ignored, so the check can miss a route but cannot fail on a typo.
 """
+import json
 import os
 import re
+import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -56,9 +59,14 @@ def _literals():
 
 
 def _openapi():
-    os.environ.setdefault("SHEPHERD_HOME", tempfile.mkdtemp(prefix="domestique-inventory-"))
-    import app as app_module
-    return app_module.app.openapi()["paths"]
+    # Subprocess with a throwaway SHEPHERD_HOME: importing `app` in-process leaks state into later tests (#164).
+    with tempfile.TemporaryDirectory(prefix="domestique-inventory-") as home:
+        out = subprocess.run(
+            [sys.executable, "-I", "-c",
+             "import json, sys; sys.path.insert(0, 'src'); import app; print(json.dumps(app.app.openapi()['paths']))"],
+            capture_output=True, text=True, timeout=120, cwd=str(ROOT), env={**os.environ, "SHEPHERD_HOME": home})
+    assert out.returncode == 0, out.stderr[-800:]
+    return json.loads(out.stdout.splitlines()[-1])
 
 
 def _has_model(op: dict) -> bool:

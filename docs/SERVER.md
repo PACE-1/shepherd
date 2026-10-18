@@ -82,9 +82,15 @@ without a login.
   `Authorization: Bearer <token>` or the session cookie from `POST /login`.
   The check does not look at the peer address or at `X-Forwarded-*` headers, so
   a reverse proxy or an apparent loopback peer cannot bypass it.
+- **Token length:** server mode refuses to start with a token shorter than 24
+  characters. `openssl rand -hex 32` is fine.
+- **Throttling:** 5 wrong tokens (login form or bearer header) from one address
+  within a minute earn `429` with `Retry-After` until the minute is up. It is
+  in memory, so a restart clears it. Behind a reverse proxy all riders share the
+  proxy's address.
 - **Cookie:** `HttpOnly`, `SameSite=Strict`, `Secure` over HTTPS (including
   `X-Forwarded-Proto: https`). Its value is derived from the token, never the
-  token itself. Rotate the token to invalidate every session.
+  token itself. It carries a signed issue time: the server rejects cookies older than 30 days, and `POST /api/logout-everywhere` invalidates every cookie issued so far. Rotating the token also does.
 - **Scope:** one shared secret for a personal server. There is no registration,
   no per-user accounts and no multi-tenant isolation.
 
