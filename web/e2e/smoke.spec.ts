@@ -597,3 +597,10 @@ test("Compare opens from a ride, compares two efforts of it, and says when a rid
   await page.goto("#/compare/fit_nope_a/fit_nope_b")
   await expect(page.getByRole("alert").filter({ hasText: /fit_nope_a not found/ })).toBeVisible()
 })
+
+test("Readiness shows the last 7 days of training load by sport", async ({ page }) => {
+  await page.goto("#/home")
+  await expect(page.getByRole("heading", { name: "Readiness" })).toBeVisible()
+  await expect(page.getByText("Training load, last 7 days")).toBeVisible()
+  await expect(page.getByText("No training load recorded in the last 7 days.")).toBeVisible()
+})

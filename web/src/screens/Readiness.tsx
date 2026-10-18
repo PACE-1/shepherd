@@ -1,8 +1,10 @@
 import { useState } from "react"
 
-import type { AutoAdjustResult, Readiness as ReadinessRead, TodaySession } from "@/api/types"
+import type { AutoAdjustResult, Readiness as ReadinessRead, SportsLoad, TodaySession } from "@/api/types"
 import { Button } from "@/components/ui/button"
 import { acceptAdjusted, autoAdjust, easeToday, fmtMinutes, getReadiness, getTodaySession, rideOriginal } from "@/lib/home"
+import { readinessDrivers, recentLoadByType } from "@/lib/readinessDrivers"
+import { getSportsLoad } from "@/lib/sports"
 import { Panel, useLoad } from "@/screens/panel"
 import { RetestNudge, type Nudge } from "@/screens/RetestNudge"
 
@@ -128,15 +130,37 @@ function Actions({ r, t, reload }: { r: ReadinessRead; t: TodaySession | null; r
   )
 }
 
+/** What is driving fatigue: the last 7 days of training load, split by sport. */
+function RecentLoad({ data }: { data: SportsLoad }) {
+  const { rows, total } = recentLoadByType(data)
+  return (
+    <div className="space-y-1 text-sm">
+      <p className="font-medium">Training load, last 7 days</p>
+      {rows.length === 0 ? (
+        <p className="text-muted-foreground">No training load recorded in the last 7 days.</p>
+      ) : (
+        <ul>
+          {rows.map((x) => (
+            <li key={x.sport}>{x.name}: {x.load}</li>
+          ))}
+          <li className="text-muted-foreground">All sports: {total}</li>
+        </ul>
+      )}
+    </div>
+  )
+}
+
 export function Readiness() {
   const [readiness, retryReadiness] = useLoad<ReadinessRead>(getReadiness)
   const [today, retryToday] = useLoad<TodaySession>(getTodaySession)
+  const [sports] = useLoad<SportsLoad>(getSportsLoad)
   const reload = () => { retryReadiness(); retryToday() }
 
   return (
     <Panel title="Readiness" load={readiness} retry={retryReadiness}>
       {(r) => {
         const reason = r.severity_reasons[0] || r.readiness?.advice || ""
+        const drivers = readinessDrivers(r)
         return (
           <div className="space-y-2">
             <p className="text-sm">
@@ -144,6 +168,8 @@ export function Readiness() {
               {r.score_0_100 != null && <span className="text-muted-foreground"> · {Math.round(r.score_0_100)}/100</span>}
             </p>
             {reason && <p className="text-sm text-muted-foreground">{reason}</p>}
+            {drivers && <p className="text-sm text-muted-foreground">{drivers}</p>}
+            {sports.state === "ok" && <RecentLoad data={sports.data} />}
             <Actions r={r} t={today.state === "ok" ? today.data : null} reload={reload} />
             {today.state === "ok" && today.data.retest_nudge && <RetestNudge n={today.data.retest_nudge as Nudge} />}
           </div>
