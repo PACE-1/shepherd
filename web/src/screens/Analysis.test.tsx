@@ -17,6 +17,9 @@ const CURVE = {
 }
 const RIDES = [{ ride_id: "icu_1", source: "icu", name: "Morning ride", started_at: "2026-10-10T07:30:00", duration_s: 5400, distance_km: 41.23, np_w: 210, avg_power_w: 190, tss: 78.4 }]
 
+const Z = { cycling: 0, running: 0, swimming: 0, other: 0 }
+const EMPTY_BUCKET = { key: "2026-W42", label: "Week", start: "2026-10-12", end: "2026-10-18", hours: Z, load: Z, total_hours: 0, total_load: 0, hours_share: Z, load_share: Z, gap_pp: null }
+
 function mock(over: Record<string, () => Response> = {}) {
   const urls: string[] = []
   vi.stubGlobal("fetch", vi.fn(async (url: string) => {
@@ -29,6 +32,7 @@ function mock(over: Record<string, () => Response> = {}) {
     if (url.startsWith("/api/rides")) return json(RIDES)
     if (url.startsWith("/api/analytics/weight-trend")) return json({ method: "", tau_days: 7, points: [], wkg: [] })
     if (url.startsWith("/api/analytics/power-model")) return json({ window_days: 90, n_rides: 0, method: "", caveat: "", fit: { status: "insufficient", reason: "none", points: [] }, history: [] })
+    if (url.startsWith("/api/balance")) return json({ as_of: "2026-10-18", weeks: [EMPTY_BUCKET], months: [EMPTY_BUCKET], sports_present: [], single_sport: null, has_history: false, has_targets: false, targets: null, limiter: null, limiter_note: "", method: "" })
     return json({}, 404)
   }))
   return urls
