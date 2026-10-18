@@ -228,6 +228,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/gear": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["gear_overview_api_gear_get"];
+        put?: never;
+        post: operations["gear_add_api_gear_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/gear/assignment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["gear_assign_api_gear_assignment_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/gear/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["gear_delete_api_gear__item_id__delete"];
+        options?: never;
+        head?: never;
+        patch: operations["gear_edit_api_gear__item_id__patch"];
+        trace?: never;
+    };
+    "/api/gear/{item_id}/service": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["gear_service_api_gear__item_id__service_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/icu/connection": {
         parameters: {
             query?: never;
@@ -3397,6 +3461,120 @@ export interface components {
             duration_min: number;
             /** Session Type */
             session_type: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** GearItem */
+        GearItem: {
+            /**
+             * Hours
+             * @default 0
+             */
+            hours: number;
+            /** Hours Pct */
+            hours_pct?: number | null;
+            /** Icu Name */
+            icu_name?: string | null;
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /**
+             * Km
+             * @default 0
+             */
+            km: number;
+            /** Km Pct */
+            km_pct?: number | null;
+            /** Last Service */
+            last_service?: string | null;
+            /** Name */
+            name: string;
+            /** Parent Id */
+            parent_id?: string | null;
+            /**
+             * Retired
+             * @default false
+             */
+            retired: boolean;
+            /** Service Every Hours */
+            service_every_hours?: number | null;
+            /** Service Every Km */
+            service_every_km?: number | null;
+            /**
+             * Services
+             * @default []
+             */
+            services: components["schemas"]["GearService"][];
+            /** Started On */
+            started_on?: string | null;
+            /** State */
+            state: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** GearOverview */
+        GearOverview: {
+            /**
+             * Items
+             * @default []
+             */
+            items: components["schemas"]["GearItem"][];
+            /**
+             * Method
+             * @default
+             */
+            method: string;
+            /**
+             * Recent
+             * @default []
+             */
+            recent: components["schemas"]["GearRide"][];
+            /**
+             * Suggestions
+             * @default []
+             */
+            suggestions: components["schemas"]["GearSuggestion"][];
+        } & {
+            [key: string]: unknown;
+        };
+        /** GearRide */
+        GearRide: {
+            /** Date */
+            date: string;
+            /** Distance Km */
+            distance_km?: number | null;
+            /** Gear Id */
+            gear_id?: string | null;
+            /** Id */
+            id: string;
+            /** Name */
+            name?: string | null;
+            /** Source */
+            source: string;
+            /** Sport */
+            sport?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** GearService */
+        GearService: {
+            /** Date */
+            date: string;
+            /**
+             * Note
+             * @default
+             */
+            note: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** GearSuggestion */
+        GearSuggestion: {
+            /** Icu Name */
+            icu_name: string;
+            /** Rides */
+            rides: number;
         } & {
             [key: string]: unknown;
         };
@@ -6883,6 +7061,126 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Fueling"];
+                };
+            };
+        };
+    };
+    gear_overview_api_gear_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GearOverview"];
+                };
+            };
+        };
+    };
+    gear_add_api_gear_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GearOverview"];
+                };
+            };
+        };
+    };
+    gear_assign_api_gear_assignment_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GearOverview"];
+                };
+            };
+        };
+    };
+    gear_delete_api_gear__item_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GearOverview"];
+                };
+            };
+        };
+    };
+    gear_edit_api_gear__item_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GearOverview"];
+                };
+            };
+        };
+    };
+    gear_service_api_gear__item_id__service_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GearOverview"];
                 };
             };
         };

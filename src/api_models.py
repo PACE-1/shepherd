@@ -1727,3 +1727,50 @@ class RaceDayPlan(_Model):
     expected_duration_h: Optional[float] = None
     power: RacePower
     fueling: str
+
+
+# ── Gear (#115) ─────────────────────────────────────────────────────────────────────────────────────
+class GearService(_Model):
+    date: str
+    note: str = ""
+
+
+class GearItem(_Model):
+    id: str
+    name: str
+    kind: str                            # bike | shoes | component
+    parent_id: Optional[str] = None      # a component's bike
+    retired: bool = False
+    started_on: Optional[str] = None
+    icu_name: Optional[str] = None       # the intervals.icu gear name that maps rides to this item
+    service_every_km: Optional[float] = None
+    service_every_hours: Optional[float] = None
+    km: float = 0                        # since the counter start (started_on or the last service day)
+    hours: float = 0
+    km_pct: Optional[float] = None       # km / service_every_km
+    hours_pct: Optional[float] = None
+    state: str                           # ok | due_soon | due | no_threshold | retired
+    last_service: Optional[str] = None
+    services: list[GearService] = []
+
+
+class GearSuggestion(_Model):
+    icu_name: str
+    rides: int
+
+
+class GearRide(_Model):
+    id: str
+    date: str
+    name: Optional[str] = None
+    sport: Optional[str] = None
+    distance_km: Optional[float] = None
+    gear_id: Optional[str] = None
+    source: str                          # manual | auto | none
+
+
+class GearOverview(_Model):
+    items: list[GearItem] = []
+    suggestions: list[GearSuggestion] = []
+    recent: list[GearRide] = []
+    method: str = ""

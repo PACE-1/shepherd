@@ -3080,6 +3080,288 @@
         "title": "FuelingSession",
         "type": "object"
       },
+      "GearItem": {
+        "additionalProperties": true,
+        "properties": {
+          "hours": {
+            "default": 0,
+            "title": "Hours",
+            "type": "number"
+          },
+          "hours_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hours Pct"
+          },
+          "icu_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Icu Name"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "km": {
+            "default": 0,
+            "title": "Km",
+            "type": "number"
+          },
+          "km_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Km Pct"
+          },
+          "last_service": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Service"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "parent_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Id"
+          },
+          "retired": {
+            "default": false,
+            "title": "Retired",
+            "type": "boolean"
+          },
+          "service_every_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Service Every Hours"
+          },
+          "service_every_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Service Every Km"
+          },
+          "services": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GearService"
+            },
+            "title": "Services",
+            "type": "array"
+          },
+          "started_on": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started On"
+          },
+          "state": {
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "state"
+        ],
+        "title": "GearItem",
+        "type": "object"
+      },
+      "GearOverview": {
+        "additionalProperties": true,
+        "properties": {
+          "items": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GearItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "method": {
+            "default": "",
+            "title": "Method",
+            "type": "string"
+          },
+          "recent": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GearRide"
+            },
+            "title": "Recent",
+            "type": "array"
+          },
+          "suggestions": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GearSuggestion"
+            },
+            "title": "Suggestions",
+            "type": "array"
+          }
+        },
+        "title": "GearOverview",
+        "type": "object"
+      },
+      "GearRide": {
+        "additionalProperties": true,
+        "properties": {
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "distance_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance Km"
+          },
+          "gear_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gear Id"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "sport": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sport"
+          }
+        },
+        "required": [
+          "id",
+          "date",
+          "source"
+        ],
+        "title": "GearRide",
+        "type": "object"
+      },
+      "GearService": {
+        "additionalProperties": true,
+        "properties": {
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "note": {
+            "default": "",
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "date"
+        ],
+        "title": "GearService",
+        "type": "object"
+      },
+      "GearSuggestion": {
+        "additionalProperties": true,
+        "properties": {
+          "icu_name": {
+            "title": "Icu Name",
+            "type": "string"
+          },
+          "rides": {
+            "title": "Rides",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "icu_name",
+          "rides"
+        ],
+        "title": "GearSuggestion",
+        "type": "object"
+      },
       "HrvImported": {
         "additionalProperties": true,
         "properties": {
@@ -10606,6 +10888,104 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Fueling"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/gear": {
+      "get": {
+        "operationId": "gear_overview_api_gear_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GearOverview"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "operationId": "gear_add_api_gear_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GearOverview"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/gear/assignment": {
+      "put": {
+        "operationId": "gear_assign_api_gear_assignment_put",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GearOverview"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/gear/{item_id}": {
+      "delete": {
+        "operationId": "gear_delete_api_gear__item_id__delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GearOverview"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "gear_edit_api_gear__item_id__patch",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GearOverview"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/gear/{item_id}/service": {
+      "post": {
+        "operationId": "gear_service_api_gear__item_id__service_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GearOverview"
                 }
               }
             },
