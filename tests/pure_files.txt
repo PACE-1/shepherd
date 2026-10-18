@@ -34,7 +34,6 @@ test_fs1_planner_modes.py
 test_gate_script.py
 test_hr_bias_matching.py
 test_hr_targets.py
-test_icu_prune_deleted.py
 test_issue3_tier_down.py
 test_issue7_race_calendar.py
 test_jobs.py
