@@ -98,6 +98,11 @@ def register(template: SessionTemplate) -> SessionTemplate:
     return template
 
 
+def unregister(template_id: str) -> bool:
+    """Removes a template by id (a library retiring the placeholder it replaces). True when it existed."""
+    return _REGISTRY.pop(template_id, None) is not None
+
+
 def templates_for(sport: str, kind: str | None = None,
                   library: Iterable[SessionTemplate] | None = None) -> list[SessionTemplate]:
     """The templates of ``sport`` (and ``kind``, when given), in registration order."""
@@ -355,3 +360,20 @@ def reconcile_week(week: dict, activities: list[dict], today: date) -> int:
             else:
                 week.pop("companions", None)
     return changed
+
+
+def _load_libraries() -> None:
+    """Imports every src/sessions_*.py (the run, swim and strength libraries). Each registers its templates
+    on import and may retire the placeholder it replaces. A library that fails to import is logged and
+    skipped, so one broken library cannot stop plans from being built."""
+    import importlib
+    import logging
+    from pathlib import Path
+    for path in sorted(Path(__file__).resolve().parent.glob("sessions_*.py")):
+        try:
+            importlib.import_module(path.stem)
+        except Exception:  # noqa: BLE001
+            logging.getLogger("shepherd.plan").exception("session library %s failed to load", path.stem)
+
+
+_load_libraries()

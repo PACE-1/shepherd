@@ -371,3 +371,23 @@ def test_cycling_weeks_without_companions_are_untouched():
     before = json.dumps(wk)
     assert mp.reconcile_week(wk, [{"id": "a", "date": "2026-09-15", "sport": "Run", "duration_sec": 1}], TODAY) == 0
     assert json.dumps(wk) == before
+
+
+def test_a_library_module_registers_on_import_and_can_retire_its_placeholder(tmp_path, monkeypatch):
+    import sys
+    import multisport_plan as mp
+    src = tmp_path / "sessions_zzdemo.py"
+    src.write_text(
+        "from multisport_plan import SessionTemplate, register, unregister\n"
+        "unregister('placeholder-run-easy')\n"
+        "register(SessionTemplate(id='demo-run', sport='running', kind='easy', session_type='run_easy',\n"
+        "    intent='demo', minutes=(20, 40), hard=False, builder=lambda th, m: {'steps': []}))\n")
+    monkeypatch.syspath_prepend(str(tmp_path))
+    saved = dict(mp._REGISTRY)
+    try:
+        mod = __import__("sessions_zzdemo")
+        assert [t.id for t in mp.templates_for("running", "easy")] == ["demo-run"]
+        assert mp.unregister("demo-run") is True and mp.unregister("demo-run") is False
+    finally:
+        sys.modules.pop("sessions_zzdemo", None)
+        mp._REGISTRY.clear(); mp._REGISTRY.update(saved)
