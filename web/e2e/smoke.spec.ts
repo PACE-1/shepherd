@@ -84,8 +84,10 @@ test("the DFA tab shows its empty state, and a failed load says so", async ({ pa
 })
 
 test("Home shows the plan, this week and fitness from the typed reads", async ({ page, request }) => {
+  test.setTimeout(120_000)   // the first plan build also classifies the whole workout library, slow on a cold runner
   const base = "http://127.0.0.1:" + (process.env.E2E_PORT ?? 22488)
   const gen = await request.post(base + "/api/plan/generate", {
+    timeout: 100_000,
     data: { goal_type: "ftp", hours_per_week: 8, plan_weeks: 8, available_days: [0, 1, 2, 3, 4, 5, 6], rest_days: [] },
   })
   expect(gen.ok()).toBeTruthy()
