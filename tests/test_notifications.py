@@ -177,7 +177,7 @@ def c():
 
 def test_endpoints_round_trip_without_echoing_the_url(c, monkeypatch):
     s = c.get("/api/notifications/settings").json()
-    assert s == {"has_url": False, "events": {"readiness": True, "missed": True, "sync_failure": True}, "readiness_time": ""}
+    assert s == {"has_url": False, "events": {"readiness": True, "missed": True, "sync_failure": True, "gear_due": True}, "readiness_time": ""}
     r = c.put("/api/notifications/settings", json={"ntfy_url": SECRET, "events": {"missed": False}, "readiness_time": "07:30"})
     assert r.status_code == 200 and r.json()["has_url"] is True and r.json()["events"]["missed"] is False
     assert "s3cret" not in r.text and "s3cret" not in c.get("/api/notifications/settings").text
@@ -211,3 +211,43 @@ def test_the_sync_hooks_use_the_active_profile_and_never_raise(c):
     with mock.patch.object(n, "_active", side_effect=RuntimeError("boom")):
         n.on_sync_pass()
         n.on_sync_failure("x")
+
+
+def _item(i="b1", name="Road bike", state="due", last=None, km=105.0, hours=4.0):
+    return {"id": i, "name": name, "state": state, "last_service": last, "km": km, "hours": hours}
+
+
+def test_gear_due_is_announced_once_per_item_per_crossing(tmp_path, inline_spawn):
+    n.save_settings(tmp_path, SECRET)
+    assert n.check_gear_due(tmp_path, TODAY, NOON, lambda: [_item(state="due_soon")]) == 0   # only a due item
+    items = [_item(), _item("s1", "Shoes", km=800)]
+    assert n.check_gear_due(tmp_path, TODAY, NOON, lambda: items) == 2                       # one per item
+    assert n.check_gear_due(tmp_path, date(2026, 10, 19), datetime(2026, 10, 19, 9), lambda: items) == 0
+    assert [i["event"] for i in n.listing(tmp_path)["items"]] == ["gear_due", "gear_due"]
+    assert len(inline_spawn) == 2 and any("Road bike" in t for _u, t, _b in inline_spawn)
+    # serviced (no longer due), then due again after the service: announced again
+    assert n.check_gear_due(tmp_path, date(2026, 10, 20), NOON, lambda: [_item(state="ok", last="2026-10-19")]) == 0
+    assert n.check_gear_due(tmp_path, date(2026, 11, 20), NOON, lambda: [_item(last="2026-10-19")]) == 1
+
+
+def test_gear_due_respects_its_toggle(tmp_path):
+    n.save_settings(tmp_path, events={"gear_due": False})
+    assert n.check_gear_due(tmp_path, TODAY, NOON, lambda: [_item()]) == 0
+    assert n.listing(tmp_path)["items"] == []
+    n.save_settings(tmp_path, events={"gear_due": True})
+    assert n.check_gear_due(tmp_path, TODAY, NOON, lambda: [_item()]) == 1
+
+
+def test_a_due_bike_raises_the_bell_notice_from_the_real_gear_file(tmp_path, monkeypatch):
+    import gear
+    import routes_gear
+    path = tmp_path / gear.FILE_NAME
+    gear.add_item(path, name="Road bike", kind="bike", service_every_km=100)
+    bike = gear.read(path)["items"][0]["id"]
+    gear.assign(path, "1", bike)
+    rows = [{"id": "1", "date": "2026-10-10", "name": "r", "sport": "Ride", "duration_sec": 3600,
+             "distance_km": 120.0, "icu_gear": None}]
+    monkeypatch.setattr(routes_gear, "_rows", lambda sql_tail="": rows)
+    assert n.check_gear_due(tmp_path, TODAY, NOON, lambda: n._gear_items(tmp_path)) == 1
+    item = n.listing(tmp_path)["items"][0]
+    assert item["event"] == "gear_due" and "Road bike" in item["title"]

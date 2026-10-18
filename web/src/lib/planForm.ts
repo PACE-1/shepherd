@@ -92,11 +92,8 @@ export function applyAdvanced(base: GenerateRequest, a: Advanced, recommended: R
     r.event_date = a.endDate
   }
   const bc: RaceEvent[] = a.races.map((x) => ({ date: x.date, priority: x.priority, name: x.name }))
-  if (bc.length && base.goal !== "continuous") {
-    r.events = base.goal === "event" && base.event_date
-      ? [{ date: base.event_date, priority: "A", name: base.event_name ?? "", event_km: num(a.eventKm) ?? 0, event_climb_m: num(a.eventClimb) ?? 0, event_type: a.eventType }, ...bc]
-      : bc
-  }
+  // The A race travels in the goal fields (event_*); the server refuses an A inside events.
+  if (bc.length && base.goal !== "continuous") r.events = bc
   if (a.phaseWeeks && recommended) {
     const edited = Object.fromEntries(Object.entries(a.phaseWeeks).map(([k, v]) => [k, Number(v)]))
     const same = Object.keys({ ...recommended, ...edited }).every((k) => (recommended[k] ?? 0) === (edited[k] ?? 0))

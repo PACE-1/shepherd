@@ -1140,6 +1140,7 @@ class NotificationEvents(_Model):
     readiness: bool = True
     missed: bool = True
     sync_failure: bool = True
+    gear_due: bool = True
 
 
 class NotificationSettings(_Model):

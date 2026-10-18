@@ -753,3 +753,15 @@ test("Gear: add a bike with a service threshold, then mark service done", async 
   await page.getByRole("button", { name: "Delete Road bike" }).click()
   await expect(page.getByText(/No gear yet/)).toBeVisible()
 })
+
+test("Races, Injury and Gear are linked from the Plan and Settings", async ({ page }) => {
+  await page.goto("#/plan")
+  await page.getByRole("link", { name: "Injury and illness" }).click()
+  await expect(page.getByRole("heading", { name: "Injury & illness" })).toBeVisible()
+  await page.goto("#/plan")
+  await page.getByRole("link", { name: "All races" }).click()
+  await expect(page.getByRole("heading", { name: "Races", exact: true })).toBeVisible()
+  await page.goto("#/settings")
+  await page.getByRole("link", { name: "Gear and service reminders" }).click()
+  await expect(page.getByRole("heading", { name: "Gear", exact: true })).toBeVisible()
+})

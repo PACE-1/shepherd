@@ -7,7 +7,7 @@ import { NotificationsSettings } from "@/screens/Notifications"
 import { NotificationsBell } from "@/screens/NotificationsBell"
 
 const json = (b: unknown, status = 200) => new Response(JSON.stringify(b), { status })
-const SETTINGS = { has_url: false, events: { readiness: true, missed: true, sync_failure: true }, readiness_time: "" }
+const SETTINGS = { has_url: false, events: { readiness: true, missed: true, sync_failure: true, gear_due: true }, readiness_time: "" }
 const ITEM = { id: 1, event: "missed", day: "2026-10-17", title: "Shepherd: missed session", body: "Yesterday's z2 has no activity.", ts: "2026-10-18T07:00:00", read: false }
 
 function mock(routes: Record<string, (body: unknown, method?: string) => Response>) {

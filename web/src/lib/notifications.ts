@@ -1,7 +1,7 @@
 import type { NotificationList, NotificationSettings, NotificationTest } from "@/api/types"
 import { api } from "@/lib/api"
 
-export type EventKey = "readiness" | "missed" | "sync_failure"
+export type EventKey = "readiness" | "missed" | "sync_failure" | "gear_due"
 
 export const getNotifications = () => api<NotificationList>("/api/notifications")
 export const markNotificationsRead = () => api<NotificationList>("/api/notifications/read", { method: "POST" })
@@ -21,6 +21,7 @@ export const EVENTS: { key: EventKey; label: string; hint: string }[] = [
   { key: "readiness", label: "Daily readiness", hint: "Today's readiness score and planned session, once a day." },
   { key: "missed", label: "Missed session", hint: "Yesterday's planned session had no activity." },
   { key: "sync_failure", label: "Sync failure", hint: "The intervals.icu sync is failing. Sent once until it recovers." },
+  { key: "gear_due", label: "Gear service due", hint: "A bike, shoes or component reached the service threshold you set. Once per item until you mark service done." },
 ]
 
 /** "07:30" -> true; "" (first sync of the day) -> true; anything else -> false. */
