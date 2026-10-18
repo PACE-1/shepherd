@@ -1069,7 +1069,7 @@ SETUP_LIMITS: dict[str, list[float]] = {
 }
 
 
-@app.get("/api/setup/limits")
+@app.get("/api/setup/limits", responses={200: {"model": api_models.SetupLimits}})
 def setup_limits():
     return SETUP_LIMITS
 
@@ -1091,7 +1091,7 @@ def setup_defaults():
     }
 
 
-@app.post("/api/setup/test-icu")
+@app.post("/api/setup/test-icu", responses={200: {"model": api_models.IcuKeyCheck}})
 def setup_test_icu(body: dict):
     """Test Intervals.icu credentials and return athlete info.
 
@@ -1157,7 +1157,7 @@ def setup_test_icu(body: dict):
         return {"ok": False, "error": str(e)}
 
 
-@app.post("/api/setup/check-activities")
+@app.post("/api/setup/check-activities", responses={200: {"model": api_models.ActivitiesCheck}})
 def setup_check_activities(body: dict):
     """v1.8.25 — verify, during onboarding, that activities are actually flowing
     into Intervals.icu (i.e. the Garmin Connect sync the user just enabled is
@@ -1263,7 +1263,7 @@ def _pick_folder_webview():
         return None
 
 
-@app.get("/api/setup/pick-folder")
+@app.get("/api/setup/pick-folder", responses={200: {"model": api_models.PickedFolder}})
 def setup_pick_folder():
     """Open a native OS folder picker dialog and return the selected path.
 
@@ -1451,7 +1451,7 @@ def setup_ensure_profile():
     return {"ok": True, "id": pid}
 
 
-@app.post("/api/setup/save")
+@app.post("/api/setup/save", responses={200: {"model": api_models.SetupSaved}})
 def setup_save(body: dict):
     """Save all wizard settings — writes to active profile's athlete.json + .env.
 
@@ -2744,7 +2744,7 @@ def api_profile_dfa_backfill_status(task_id: str = Query(...)):
     return entry
 
 
-@app.post("/api/profile/dfa-backfill/cancel")
+@app.post("/api/profile/dfa-backfill/cancel", responses={200: {"model": api_models.DfaBackfillCancelRequested}})
 def api_profile_dfa_backfill_cancel(task_id: str = Query(...)):
     """v1.8.10 — request cancellation of a running DFA backfill.
 
@@ -7974,7 +7974,7 @@ def api_icu_races():
         return {"error": f"internal:{type(e).__name__}"}
 
 
-@app.get("/api/icu/athlete-numbers")
+@app.get("/api/icu/athlete-numbers", responses={200: {"model": api_models.AthleteNumbers}})
 def api_icu_athlete_numbers():
     """Pull FTP / weight / LTHR / max-HR from the linked intervals.icu athlete so
     the setup wizard can prefill 'Athlete Numbers'. Best-effort: any field ICU
@@ -8585,7 +8585,7 @@ def update_custom_zones(body: dict):
 # SYNC APIs
 # ═══════════════════════════════════════════════════════════════════════════════
 
-@app.post("/api/sync")
+@app.post("/api/sync", responses={200: {"model": api_models.SyncResult}})
 def api_sync():
     """Manually trigger a sync from Intervals.icu.
 
@@ -19440,7 +19440,7 @@ async def api_ride_ftp_test_review(ride_id: str, request: Request):
     return {"ok": True, "persisted": True}
 
 
-@app.delete("/api/rides/{ride_id}")
+@app.delete("/api/rides/{ride_id}", responses={200: {"model": api_models.Ok}})
 def api_ride_delete(ride_id: str):
     """Delete a saved ride (FIT import or legacy JSON)."""
     safe_id = re.sub(r'[^\w.\-]', '_', ride_id)
@@ -19649,7 +19649,7 @@ def api_diag_recent_errors(
     return {"count": len(items), "items": items}
 
 
-@app.post("/api/diag/frontend-error")
+@app.post("/api/diag/frontend-error", responses={200: {"model": api_models.FrontendErrorLogged}})
 async def api_diag_frontend_error(request: Request):
     """v1.6.0 — accept structured error reports from the dashboard JS.
 

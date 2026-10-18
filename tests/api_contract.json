@@ -1,6 +1,122 @@
 {
   "components": {
     "schemas": {
+      "ActivitiesCheck": {
+        "additionalProperties": true,
+        "description": "POST /api/setup/check-activities: HTTP 200 either way; ``ok`` false carries ``error``.",
+        "properties": {
+          "count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Count"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "garmin_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Garmin Count"
+          },
+          "latest_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Date"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "title": "ActivitiesCheck",
+        "type": "object"
+      },
+      "AthleteNumbers": {
+        "additionalProperties": true,
+        "description": "GET /api/icu/athlete-numbers: null for any value intervals.icu does not hold.",
+        "properties": {
+          "ftp": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ftp"
+          },
+          "lthr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lthr"
+          },
+          "max_hr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Hr"
+          },
+          "ok": {
+            "default": false,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "weight": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight"
+          }
+        },
+        "title": "AthleteNumbers",
+        "type": "object"
+      },
       "AutoAdjustResult": {
         "additionalProperties": true,
         "properties": {
@@ -1768,6 +1884,25 @@
         "title": "DfaAggregate",
         "type": "object"
       },
+      "DfaBackfillCancelRequested": {
+        "additionalProperties": true,
+        "properties": {
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "task_id": {
+            "title": "Task Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "task_id"
+        ],
+        "title": "DfaBackfillCancelRequested",
+        "type": "object"
+      },
       "DfaRide": {
         "additionalProperties": true,
         "properties": {
@@ -2608,6 +2743,26 @@
         "title": "FolderCount",
         "type": "object"
       },
+      "FrontendErrorLogged": {
+        "additionalProperties": true,
+        "description": "POST /api/diag/frontend-error: ``code`` is the code that was logged (unknown codes become E_FRONTEND_GENERIC).",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "title": "FrontendErrorLogged",
+        "type": "object"
+      },
       "FtpHistory": {
         "additionalProperties": true,
         "properties": {
@@ -3229,6 +3384,76 @@
           }
         },
         "title": "IcuConnection",
+        "type": "object"
+      },
+      "IcuKeyCheck": {
+        "additionalProperties": true,
+        "description": "POST /api/setup/test-icu: HTTP 200 either way; ``ok`` false carries ``error``.",
+        "properties": {
+          "athlete_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Athlete Id"
+          },
+          "eftp": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Eftp"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "weight": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight"
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "title": "IcuKeyCheck",
         "type": "object"
       },
       "IcuPushResult": {
@@ -4155,6 +4380,19 @@
           }
         },
         "title": "OpenWaterNotes",
+        "type": "object"
+      },
+      "PickedFolder": {
+        "additionalProperties": true,
+        "description": "GET /api/setup/pick-folder: \"\" when the dialog was cancelled or unavailable.",
+        "properties": {
+          "path": {
+            "default": "",
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "title": "PickedFolder",
         "type": "object"
       },
       "PickerResult": {
@@ -8258,6 +8496,183 @@
         "title": "SetupDefaults",
         "type": "object"
       },
+      "SetupLimits": {
+        "additionalProperties": true,
+        "description": "GET /api/setup/limits: [min, max] per setup field.",
+        "properties": {
+          "age": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Age"
+          },
+          "cp": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cp"
+          },
+          "ftp": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ftp"
+          },
+          "hours_per_week": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hours Per Week"
+          },
+          "lthr": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lthr"
+          },
+          "max_hr": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Hr"
+          },
+          "weight": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight"
+          },
+          "wprime_j": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wprime J"
+          }
+        },
+        "title": "SetupLimits",
+        "type": "object"
+      },
+      "SetupSaved": {
+        "additionalProperties": true,
+        "description": "POST /api/setup/save. The optional keys appear only when they apply.",
+        "properties": {
+          "athlete_id_detected": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Athlete Id Detected"
+          },
+          "athlete_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Athlete Name"
+          },
+          "creds_test": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Creds Test"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "warning": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Warning"
+          }
+        },
+        "title": "SetupSaved",
+        "type": "object"
+      },
       "SportLoadLine": {
         "additionalProperties": true,
         "properties": {
@@ -8776,6 +9191,47 @@
           }
         },
         "title": "SyncProgress",
+        "type": "object"
+      },
+      "SyncResult": {
+        "additionalProperties": true,
+        "description": "POST /api/sync. ``status`` is \"skipped\" when no credentials are configured.",
+        "properties": {
+          "activities": {
+            "default": 0,
+            "title": "Activities",
+            "type": "integer"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "timestamp": {
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "wellness": {
+            "default": 0,
+            "title": "Wellness",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "timestamp"
+        ],
+        "title": "SyncResult",
         "type": "object"
       },
       "SyncStatus": {
@@ -10546,6 +11002,23 @@
         }
       }
     },
+    "/api/diag/frontend-error": {
+      "post": {
+        "operationId": "api_diag_frontend_error_api_diag_frontend_error_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FrontendErrorLogged"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/diag/health": {
       "get": {
         "operationId": "api_diag_health_api_diag_health_get",
@@ -10606,6 +11079,23 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Fueling"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/icu/athlete-numbers": {
+      "get": {
+        "operationId": "api_icu_athlete_numbers_api_icu_athlete_numbers_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AthleteNumbers"
                 }
               }
             },
@@ -11575,6 +12065,23 @@
         }
       }
     },
+    "/api/profile/dfa-backfill/cancel": {
+      "post": {
+        "operationId": "api_profile_dfa_backfill_cancel_api_profile_dfa_backfill_cancel_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DfaBackfillCancelRequested"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/profile/dfa-backfill/status": {
       "get": {
         "operationId": "api_profile_dfa_backfill_status_api_profile_dfa_backfill_status_get",
@@ -12134,6 +12641,23 @@
         }
       }
     },
+    "/api/rides/{ride_id}": {
+      "delete": {
+        "operationId": "api_ride_delete_api_rides__ride_id__delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/run/activities": {
       "get": {
         "operationId": "run_activities_api_run_activities_get",
@@ -12300,6 +12824,23 @@
         }
       }
     },
+    "/api/setup/check-activities": {
+      "post": {
+        "operationId": "setup_check_activities_api_setup_check_activities_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivitiesCheck"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/setup/defaults": {
       "get": {
         "operationId": "setup_defaults_api_setup_defaults_get",
@@ -12326,6 +12867,74 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EnsureProfile"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/setup/limits": {
+      "get": {
+        "operationId": "setup_limits_api_setup_limits_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetupLimits"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/setup/pick-folder": {
+      "get": {
+        "operationId": "setup_pick_folder_api_setup_pick_folder_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PickedFolder"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/setup/save": {
+      "post": {
+        "operationId": "setup_save_api_setup_save_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetupSaved"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/setup/test-icu": {
+      "post": {
+        "operationId": "setup_test_icu_api_setup_test_icu_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IcuKeyCheck"
                 }
               }
             },
@@ -12490,6 +13099,23 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OpenWaterNote"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/sync": {
+      "post": {
+        "operationId": "api_sync_api_sync_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncResult"
                 }
               }
             },
