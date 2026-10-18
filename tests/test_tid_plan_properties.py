@@ -122,20 +122,18 @@ class PlanProperties(unittest.TestCase):
             self.assertNotIsInstance(val, Exception, f"{key}: {val}")
             self.assertGreater(len(val), 4, key)
 
-    @unittest.expectedFailure
     def test_no_week_breaches_the_intensity_ceiling(self):
         """No full week carries more than 18% of its minutes above 106% FTP.
 
-        Still an expectedFailure, but narrower. On 2026-10-16 4 of 576 weeks
-        breached (all the 6 h rider). The last pass of every entry point,
-        _enforce_z5plus_share_ceiling, swaps the heaviest z5+ session of an
-        over-line week for a real endurance file, but never a class sitting on
-        its phase floor. That leaves ONE week: 6 h threshold, build2 wk10 at
-        18.4%, where the floors (vo2_short and neuromuscular) are exactly what
-        carries the z5+ minutes. Floor or rail has to give there; that is an
-        owner decision, not a cleanup. Making the budget a build-time
-        constraint (notes/overhaul-plan.md, hard_share) is the real fix and is
-        still open."""
+        An expectedFailure until 2026-10-18. This seed then breached on 2
+        weeks (6 h pyramidal build2 wk9 at 20.7%, 6 h threshold build2 wk10 at
+        18.4%), 7 of 864 over seeds 1-8 (docs/PLANNER_AUDIT.md): the phase-floor
+        pass put the phase's whole vo2_short floor in one week, and the
+        last-pass rail, _enforce_z5plus_share_ceiling, never shed a class on
+        its floor. The owner chose 'rail wins' (#11): the rail now sheds a
+        floor class when nothing else is left to shed. Making the budget a
+        build-time constraint (notes/overhaul-plan.md, hard_share) is still the
+        real fix and is still open."""
         bad = []
         for key, weeks in self.plans.items():
             for w in self._full_weeks(weeks):

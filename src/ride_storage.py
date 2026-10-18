@@ -974,6 +974,28 @@ def _fit_load_sidecar_path(fit_path: Path) -> Path:
     return fit_path.with_name(f"{fit_path.stem}.load.json")
 
 
+def normalized_power(power: list) -> float:
+    """NP of a 1 Hz power series: 30-s rolling 4th-power mean (full windows
+    only; under 30 samples, the plain average). 0.0 for an empty series."""
+    series = [float(p or 0) for p in power or []]
+    n = len(series)
+    if n == 0:
+        return 0.0
+    if n < 30:
+        return sum(series) / n
+    from collections import deque
+    win: deque = deque(maxlen=30)
+    p4_sum = 0.0
+    count = 0
+    for p in series:
+        win.append(p)
+        if len(win) == 30:
+            avg30 = sum(win) / 30.0
+            p4_sum += avg30 ** 4
+            count += 1
+    return (p4_sum / count) ** 0.25 if count else 0.0
+
+
 def compute_power_tss(
     power: list,
     ftp: int,
@@ -992,25 +1014,11 @@ def compute_power_tss(
     """
     if not power or not ftp or int(ftp) <= 0:
         return None
-    series = [float(p or 0) for p in power]
-    n = len(series)
+    n = len(power)
     dur_s = int(duration_s) if duration_s and int(duration_s) > 0 else n
     if dur_s <= 0:
         return None
-    if n < 30:
-        np_w = sum(series) / n
-    else:
-        from collections import deque
-        win: deque = deque(maxlen=30)
-        p4_sum = 0.0
-        count = 0
-        for p in series:
-            win.append(p)
-            if len(win) == 30:
-                avg30 = sum(win) / 30.0
-                p4_sum += avg30 ** 4
-                count += 1
-        np_w = (p4_sum / count) ** 0.25 if count else 0.0
+    np_w = normalized_power(power)
     if np_w <= 0:
         return None
     if_ = np_w / float(int(ftp))
@@ -1316,7 +1324,7 @@ def compute_ride_xss(
     try:
         import strain_score
         components = strain_score.compute_xss_components(
-            power_series, cp=cp, wprime_j=wprime_j, pmax=pmax,
+            power_series, cp=cp, w_prime=wprime_j, pmax=pmax,
         )
     except ImportError:
         # IMPL-3D-MODEL hasn't landed in this run — graceful no-op.

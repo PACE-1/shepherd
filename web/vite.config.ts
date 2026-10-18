@@ -6,7 +6,7 @@ import { defineConfig } from "vitest/config"
 // https://vite.dev/config/
 export default defineConfig({
   base: "/v2/",
-  test: { environment: "jsdom", globals: false, exclude: ["e2e/**", "node_modules/**"] },
+  test: { environment: "jsdom", globals: false, setupFiles: ["./src/test-setup.ts"], exclude: ["e2e/**", "node_modules/**"] },
   // Dev container: proxy the backend routes to the API container (see docker-compose.dev.yml).
   server: process.env.API_TARGET
     ? {

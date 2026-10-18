@@ -66,6 +66,15 @@ python -m backup restore backup.tar.gz [--home DIR] [--force]
 - For a snapshot that is consistent across files, stop the app first. A running
   app gives per-file and per-database consistency, not a global one.
 
+### From Settings
+
+Settings > Your data downloads the activities, wellness and check-in tables as CSV
+and a full backup (`/api/export/backup`). The download omits each profile's `.env`
+and `llm.json` (intervals.icu and AI keys) because the server may be reachable by
+others; the manifest records `secrets_excluded`. Restoring stays a stop-the-app
+command (`python -m backup restore`), since replacing files under a running
+database is not safe.
+
 ### Docker
 
 ```sh
@@ -94,6 +103,21 @@ these rules keep what is already stored:
 - **Rides:** sync only adds and updates. A ride intervals.icu stops listing stays
   on the calendar and in the database; upstream deletions do not propagate, so a
   deleted duplicate upload has to be removed by hand.
-- **Not done:** treating a withheld ride as a ride, telling affected riders, and
-  the device or folder importer. They depend on what the API actually returns once
-  the block lands, and on the new UI.
+- **Withheld rides count:** an activity intervals.icu lists with a sport and a
+  length but nothing computed from the recording (no load, intensity, power or
+  heart rate) marks the planned session done when it covers the planned length
+  (`app._rematch_week`). A stub with no sport or length still counts for nothing.
+- **Telling affected riders:** after a sync, one in-app notice per episode
+  (`notifications.check_sync_health`) when, in the last 14 days, intervals.icu
+  listed at least two activities without their data, or rides imported on at
+  least two days have nothing on intervals.icu. Riders who have not ridden have
+  neither and are never told. The sync-failure switch turns it off.
+- **Folder import:** Settings > Folder import takes one folder per profile and
+  imports new `.fit` files through the FIT upload code (`folder_import.py`):
+  regular files only, subfolders only when asked, symlinks never followed, at
+  most 200 new files per scan, files never changed or deleted. A file is a
+  duplicate when a stored ride started within 60 s of it and is within 5 % of
+  its length. Scans run on "Scan now" and after each background sync. In
+  Docker the folder must be inside a mounted volume.
+- **Not verified:** none of this has run against a real intervals.icu block; the
+  shape of a withheld Garmin activity is assumed, not observed.

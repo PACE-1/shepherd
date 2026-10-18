@@ -1,0 +1,83 @@
+name: Bug report
+description: Something does not work, or gives a wrong or confusing result
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. **Do not paste API keys, access tokens, your ntfy address or your location.** Remove them from anything you attach.
+        Known gaps are listed in the [roadmap](https://github.com/PACE-1/shepherd/blob/main/docs/ROADMAP.md).
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What you saw, and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to Plan
+        2. Click ...
+        3. See ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Shepherd version
+      description: Settings > About.
+      placeholder: "1.0.1"
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: How are you running it?
+      options:
+        - Docker
+        - Linux AppImage
+        - From source
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where does it happen?
+      multiple: true
+      options:
+        - Plan or planner output
+        - Library or workout builder
+        - Analysis or load numbers
+        - Running or swimming
+        - Setup, onboarding or Settings
+        - intervals.icu sync or push
+        - Weather, nutrition or other integration
+        - Import, export or backup
+        - Phone layout or installed app
+        - Install, update or Docker
+        - Something else
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      description: For screen problems.
+      placeholder: "Firefox 130 on Linux, or Safari on iPhone"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or error text
+      description: Settings > Diagnostics shows recent errors. Paste only what is needed, with secrets removed.
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and the roadmap's known gaps.
+          required: true
+        - label: I removed keys, tokens, addresses and location from everything I attached.
+          required: true

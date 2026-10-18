@@ -162,6 +162,13 @@ describe("Plan tools in the screen", () => {
     await userEvent.click(screen.getByRole("button", { name: "Match rides…" }))
     expect(screen.getByRole("button", { name: "Check this week against my rides" })).toBeTruthy()
   })
+
+  it("links to the races and injury screens", async () => {
+    mock({ "/api/plan": () => json(planWith()) })
+    render(<Plan />)
+    expect((await screen.findByRole("link", { name: "All races" })).getAttribute("href")).toBe("#/races")
+    expect(screen.getByRole("link", { name: "Injury and illness" }).getAttribute("href")).toBe("#/injury")
+  })
 })
 
 

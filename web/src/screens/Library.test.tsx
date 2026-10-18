@@ -38,8 +38,10 @@ describe("Library", () => {
     await screen.findByText("Sweet Spot 1")
     await userEvent.selectOptions(screen.getByLabelText("Type"), "threshold")
     await userEvent.click(await screen.findByRole("button", { name: "outdoor" }))
-    await waitFor(() => expect(urls.at(-1)).toContain("content_class=threshold"))
-    expect(urls.at(-1)).toContain("tags=outdoor")
+    await waitFor(() => {
+      expect(urls.at(-1)).toContain("content_class=threshold")
+      expect(urls.at(-1)).toContain("tags=outdoor")
+    })
     await userEvent.click(screen.getByRole("checkbox", { name: "Suits gravel and cobbles" }))
     await waitFor(() => expect(screen.queryByText("Sweet Spot 1")).toBeNull())
     expect(screen.getByText("Sweet Spot 2")).toBeTruthy()

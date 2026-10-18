@@ -4,6 +4,150 @@
  */
 
 export interface paths {
+    "/api/analytics/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["compare_api_analytics_compare_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/analytics/power-model": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["power_model_api_analytics_power_model_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/analytics/weight-trend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["weight_trend_api_analytics_weight_trend_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/balance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_balance_api_balance_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/balance/targets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["put_balance_targets_api_balance_targets_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/builder/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["builder_preview_api_builder_preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/builder/save": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["builder_save_api_builder_save_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/builder/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["builder_send_api_builder_send_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/builder/workout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["builder_load_api_builder_workout_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/calendar": {
         parameters: {
             query?: never;
@@ -52,6 +196,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/diag/frontend-error": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_diag_frontend_error_api_diag_frontend_error_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/diag/health": {
         parameters: {
             query?: never;
@@ -92,6 +252,134 @@ export interface paths {
             cookie?: never;
         };
         get: operations["api_event_projection_api_event_projection_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/folder-import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["folder_import_state_api_folder_import_get"];
+        put: operations["folder_import_save_api_folder_import_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/folder-import/scan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["folder_import_scan_api_folder_import_scan_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/fueling": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["fueling_today_api_fueling_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/gear": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["gear_overview_api_gear_get"];
+        put?: never;
+        post: operations["gear_add_api_gear_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/gear/assignment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["gear_assign_api_gear_assignment_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/gear/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["gear_delete_api_gear__item_id__delete"];
+        options?: never;
+        head?: never;
+        patch: operations["gear_edit_api_gear__item_id__patch"];
+        trace?: never;
+    };
+    "/api/gear/{item_id}/service": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["gear_service_api_gear__item_id__service_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/icu/athlete-numbers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_icu_athlete_numbers_api_icu_athlete_numbers_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -156,6 +444,86 @@ export interface paths {
             cookie?: never;
         };
         get: operations["api_icu_races_api_icu_races_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/injury": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["injury_status_api_injury_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/injury/episodes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["injury_add_api_injury_episodes_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/injury/episodes/{episode_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["injury_delete_api_injury_episodes__episode_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/injury/episodes/{episode_id}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["injury_resolve_api_injury_episodes__episode_id__resolve_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/injury/ramp-rate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["injury_ramp_rate_api_injury_ramp_rate_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -292,6 +660,118 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_notifications_api_notifications_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_notifications_read_api_notifications_read_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_notifications_settings_api_notifications_settings_get"];
+        put: operations["api_notifications_save_api_notifications_settings_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_notifications_test_api_notifications_test_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/nutrition/connection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["nutrition_connection_api_nutrition_connection_get"];
+        put?: never;
+        post: operations["nutrition_connection_save_api_nutrition_connection_post"];
+        delete: operations["nutrition_connection_delete_api_nutrition_connection_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/nutrition/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["nutrition_sync_api_nutrition_sync_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/nutrition/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["nutrition_test_api_nutrition_test_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/picker": {
         parameters: {
             query?: never;
@@ -382,6 +862,70 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["api_plan_auto_recalc_api_plan_auto_recalc_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plan/bricks/transition": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["plan_brick_transition_api_plan_bricks_transition_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plan/companions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["plan_companions_api_plan_companions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plan/companions/{companion_id}/brick-note": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["plan_brick_note_api_plan_companions__companion_id__brick_note_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plan/companions/{companion_id}/dismiss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["plan_companion_dismiss_api_plan_companions__companion_id__dismiss_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -724,6 +1268,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/profile/dfa-backfill/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_profile_dfa_backfill_cancel_api_profile_dfa_backfill_cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/profile/dfa-backfill/status": {
         parameters: {
             query?: never;
@@ -924,6 +1484,70 @@ export interface paths {
             cookie?: never;
         };
         get: operations["api_programme_summary_api_programme_summary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/races": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["races_status_api_races_get"];
+        put?: never;
+        post: operations["races_add_api_races_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/races/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["races_sync_api_races_sync_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/races/{race_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["races_update_api_races__race_id__put"];
+        post?: never;
+        delete: operations["races_delete_api_races__race_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/races/{race_id}/race-day": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["race_day_api_races__race_id__race_day_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1140,6 +1764,134 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/rides/{ride_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["api_ride_delete_api_rides__ride_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/run/activities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["run_activities_api_run_activities_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/run/critical-speed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["run_critical_speed_api_run_critical_speed_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/run/gap": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["run_gap_api_run_gap_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/run/predict": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["run_predict_api_run_predict_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/run/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["run_sessions_api_run_sessions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/run/sessions/{session_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["run_session_api_run_sessions__session_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/run/zones": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["run_zones_api_run_zones_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/settings": {
         parameters: {
             query?: never;
@@ -1188,6 +1940,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/setup/check-activities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["setup_check_activities_api_setup_check_activities_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/setup/defaults": {
         parameters: {
             query?: never;
@@ -1214,6 +1982,230 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["setup_ensure_profile_api_setup_ensure_profile_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/setup/limits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["setup_limits_api_setup_limits_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/setup/pick-folder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["setup_pick_folder_api_setup_pick_folder_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/setup/save": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["setup_save_api_setup_save_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/setup/test-icu": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["setup_test_icu_api_setup_test_icu_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sports/load": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_sports_load_api_sports_load_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sports/thresholds": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_sports_thresholds_api_sports_thresholds_get"];
+        put?: never;
+        post: operations["api_sports_set_threshold_api_sports_thresholds_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/strength/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["strength_sessions_api_strength_sessions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/swim/activities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["swim_activities_api_swim_activities_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/swim/css": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["swim_css_api_swim_css_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/swim/css-test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["swim_css_test_api_swim_css_test_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/swim/open-water": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["open_water_list_api_swim_open_water_get"];
+        put?: never;
+        post: operations["open_water_add_api_swim_open_water_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/swim/open-water/{note_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["open_water_edit_api_swim_open_water__note_id__put"];
+        post?: never;
+        delete: operations["open_water_delete_api_swim_open_water__note_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/swim/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["swim_sessions_api_swim_sessions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_sync_api_sync_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1308,6 +2300,54 @@ export interface paths {
             cookie?: never;
         };
         get: operations["api_version_api_version_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/weather/forecast": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["weather_forecast_api_weather_forecast_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/weather/location": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["weather_location_api_weather_location_get"];
+        put: operations["weather_location_set_api_weather_location_put"];
+        post?: never;
+        delete: operations["weather_location_clear_api_weather_location_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/weather/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["weather_search_api_weather_search_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1496,6 +2536,45 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * ActivitiesCheck
+         * @description POST /api/setup/check-activities: HTTP 200 either way; ``ok`` false carries ``error``.
+         */
+        ActivitiesCheck: {
+            /** Count */
+            count?: number | null;
+            /** Error */
+            error?: string | null;
+            /** Garmin Count */
+            garmin_count?: number | null;
+            /** Latest Date */
+            latest_date?: string | null;
+            /** Ok */
+            ok: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /**
+         * AthleteNumbers
+         * @description GET /api/icu/athlete-numbers: null for any value intervals.icu does not hold.
+         */
+        AthleteNumbers: {
+            /** Ftp */
+            ftp?: number | null;
+            /** Lthr */
+            lthr?: number | null;
+            /** Max Hr */
+            max_hr?: number | null;
+            /**
+             * Ok
+             * @default false
+             */
+            ok: boolean;
+            /** Weight */
+            weight?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
         /** AutoAdjustResult */
         AutoAdjustResult: {
             /**
@@ -1654,6 +2733,114 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** Balance */
+        Balance: {
+            /** As Of */
+            as_of: string;
+            /**
+             * Has History
+             * @default false
+             */
+            has_history: boolean;
+            /**
+             * Has Targets
+             * @default false
+             */
+            has_targets: boolean;
+            /** Limiter */
+            limiter?: string | null;
+            /**
+             * Limiter Note
+             * @default
+             */
+            limiter_note: string;
+            /**
+             * Method
+             * @default
+             */
+            method: string;
+            /**
+             * Months
+             * @default []
+             */
+            months: components["schemas"]["BalanceBucket"][];
+            /** Single Sport */
+            single_sport?: string | null;
+            /**
+             * Sports Present
+             * @default []
+             */
+            sports_present: string[];
+            /** Targets */
+            targets?: {
+                [key: string]: number;
+            } | null;
+            /**
+             * Weeks
+             * @default []
+             */
+            weeks: components["schemas"]["BalanceBucket"][];
+        } & {
+            [key: string]: unknown;
+        };
+        /** BalanceBucket */
+        BalanceBucket: {
+            /** End */
+            end: string;
+            /** Gap Pp */
+            gap_pp?: {
+                [key: string]: number;
+            } | null;
+            /** Hours */
+            hours: {
+                [key: string]: number;
+            };
+            /** Hours Share */
+            hours_share: {
+                [key: string]: number | null;
+            };
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /** Load */
+            load: {
+                [key: string]: number;
+            };
+            /** Load Share */
+            load_share: {
+                [key: string]: number | null;
+            };
+            /** Start */
+            start: string;
+            /** Total Hours */
+            total_hours: number;
+            /** Total Load */
+            total_load: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** BalanceTargets */
+        BalanceTargets: {
+            /**
+             * Has Targets
+             * @default false
+             */
+            has_targets: boolean;
+            /** Limiter */
+            limiter?: string | null;
+            /**
+             * Limiter Note
+             * @default
+             */
+            limiter_note: string;
+            /** Targets */
+            targets?: {
+                [key: string]: number;
+            } | null;
+        } & {
+            [key: string]: unknown;
+        };
         /** BanisterValidation */
         BanisterValidation: {
             /** Comparison */
@@ -1687,6 +2874,140 @@ export interface components {
             tau_fits_used?: {
                 [key: string]: unknown;
             } | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** BestEffortDelta */
+        BestEffortDelta: {
+            /** A W */
+            a_w: number;
+            /** B W */
+            b_w: number;
+            /** Delta W */
+            delta_w: number;
+            /** Duration S */
+            duration_s: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** BrickTransition */
+        BrickTransition: {
+            /**
+             * Ok
+             * @default true
+             */
+            ok: boolean;
+            /** Transition Target S */
+            transition_target_s?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** BuilderLoaded */
+        BuilderLoaded: {
+            /** File */
+            file: string;
+            /**
+             * Ok
+             * @default true
+             */
+            ok: boolean;
+            /** Workout */
+            workout: {
+                [key: string]: unknown;
+            };
+        } & {
+            [key: string]: unknown;
+        };
+        /** BuilderPoint */
+        BuilderPoint: {
+            /** X */
+            x: number;
+            /** Y */
+            y: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** BuilderPreview */
+        BuilderPreview: {
+            /**
+             * Duration S
+             * @default 0
+             */
+            duration_s: number;
+            /**
+             * Errors
+             * @default []
+             */
+            errors: components["schemas"]["BuilderProblem"][];
+            /** Intensity Factor */
+            intensity_factor?: number | null;
+            /**
+             * Ok
+             * @default false
+             */
+            ok: boolean;
+            /**
+             * Profile
+             * @default []
+             */
+            profile: components["schemas"]["BuilderPoint"][];
+            /** Tss */
+            tss?: number | null;
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: string[];
+        } & {
+            [key: string]: unknown;
+        };
+        /** BuilderProblem */
+        BuilderProblem: {
+            /**
+             * Message
+             * @default
+             */
+            message: string;
+            /**
+             * Path
+             * @default
+             */
+            path: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** BuilderPush */
+        BuilderPush: {
+            /** Error */
+            error?: string | null;
+            /** Event Date */
+            event_date?: string | null;
+            /** Needs Lthr */
+            needs_lthr?: boolean | null;
+            /** Needs Reconnect */
+            needs_reconnect?: boolean | null;
+            /** Ok */
+            ok?: boolean | null;
+            /** Pushed */
+            pushed?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** BuilderSaved */
+        BuilderSaved: {
+            /**
+             * Created
+             * @default true
+             */
+            created: boolean;
+            /** File */
+            file: string;
+            /**
+             * Ok
+             * @default true
+             */
+            ok: boolean;
+            push?: components["schemas"]["BuilderPush"] | null;
         } & {
             [key: string]: unknown;
         };
@@ -1857,6 +3178,171 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** CompanionDismissed */
+        CompanionDismissed: {
+            companion: components["schemas"]["PlanCompanion"];
+            /**
+             * Ok
+             * @default true
+             */
+            ok: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /** CompareSide */
+        CompareSide: {
+            /**
+             * End S
+             * @default 0
+             */
+            end_s: number;
+            /**
+             * Hr Bpm
+             * @default []
+             */
+            hr_bpm: (number | null)[];
+            /**
+             * Name
+             * @default Ride
+             */
+            name: string;
+            /**
+             * Power W
+             * @default []
+             */
+            power_w: (number | null)[];
+            /** Ride Id */
+            ride_id?: string | null;
+            /**
+             * Start S
+             * @default 0
+             */
+            start_s: number;
+            /** Started At */
+            started_at?: string | null;
+            summary: components["schemas"]["CompareSummary"];
+            /**
+             * Whole
+             * @default true
+             */
+            whole: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /** CompareSummary */
+        CompareSummary: {
+            /** Avg Hr */
+            avg_hr?: number | null;
+            /** Avg Power W */
+            avg_power_w?: number | null;
+            /** Distance Km */
+            distance_km?: number | null;
+            /** Duration S */
+            duration_s?: number | null;
+            /** If Pct */
+            if_pct?: number | null;
+            /** Np W */
+            np_w?: number | null;
+            /** Tss */
+            tss?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** CpFit */
+        CpFit: {
+            /** Cp Ci95 W */
+            cp_ci95_w?: number[] | null;
+            /** Cp Se W */
+            cp_se_w?: number | null;
+            /** Cp W */
+            cp_w?: number | null;
+            /**
+             * N Points
+             * @default 0
+             */
+            n_points: number;
+            /**
+             * Points
+             * @default []
+             */
+            points: components["schemas"]["CpFitPoint"][];
+            /** R2 */
+            r2?: number | null;
+            /**
+             * Reason
+             * @default
+             */
+            reason: string;
+            /** See J */
+            see_j?: number | null;
+            /** Status */
+            status: string;
+            /** Wprime Ci95 J */
+            wprime_ci95_j?: number[] | null;
+            /** Wprime J */
+            wprime_j?: number | null;
+            /** Wprime Se J */
+            wprime_se_j?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** CpFitPoint */
+        CpFitPoint: {
+            /** Duration S */
+            duration_s: number;
+            /** Watts */
+            watts: number;
+            /** Work J */
+            work_j: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** CpHistoryPoint */
+        CpHistoryPoint: {
+            /** Cp Ci95 W */
+            cp_ci95_w?: number[] | null;
+            /** Cp W */
+            cp_w?: number | null;
+            /** End Date */
+            end_date: string;
+            /** Pmax W */
+            pmax_w?: number | null;
+            /** Status */
+            status: string;
+            /** Wprime J */
+            wprime_j?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** CriticalSpeed */
+        CriticalSpeed: {
+            /** Confidence */
+            confidence: string;
+            /** Cs M Per S */
+            cs_m_per_s: number;
+            /** Cs Pace S Per Km */
+            cs_pace_s_per_km: number;
+            /** D Prime M */
+            d_prime_m: number;
+            /** Method */
+            method: string;
+            /** N Trials */
+            n_trials: number;
+            /** R2 */
+            r2?: number | null;
+            /**
+             * Saved
+             * @default false
+             */
+            saved: boolean;
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: string[];
+        } & {
+            [key: string]: unknown;
+        };
         /** DailyAdapt */
         DailyAdapt: {
             /** Action */
@@ -1944,6 +3430,15 @@ export interface components {
             n_excluded_decoupling?: number | null;
             /** N Window */
             n_window?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** DfaBackfillCancelRequested */
+        DfaBackfillCancelRequested: {
+            /** Status */
+            status: string;
+            /** Task Id */
+            task_id: string;
         } & {
             [key: string]: unknown;
         };
@@ -2274,6 +3769,114 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** FolderImportFailure */
+        FolderImportFailure: {
+            /** File */
+            file: string;
+            /** Reason */
+            reason: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** FolderImportScan */
+        FolderImportScan: {
+            /**
+             * Aborted
+             * @default false
+             */
+            aborted: boolean;
+            /**
+             * Already Imported
+             * @default 0
+             */
+            already_imported: number;
+            /**
+             * Duplicate
+             * @default 0
+             */
+            duplicate: number;
+            /**
+             * Error
+             * @default
+             */
+            error: string;
+            /**
+             * Failed
+             * @default 0
+             */
+            failed: number;
+            /**
+             * Failures
+             * @default []
+             */
+            failures: components["schemas"]["FolderImportFailure"][];
+            /**
+             * Finished At
+             * @default
+             */
+            finished_at: string;
+            /**
+             * Imported
+             * @default 0
+             */
+            imported: number;
+            /**
+             * Remaining
+             * @default 0
+             */
+            remaining: number;
+            /** Started At */
+            started_at: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** FolderImportStarted */
+        FolderImportStarted: {
+            /** Running */
+            running: boolean;
+            /** Started */
+            started: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /** FolderImportState */
+        FolderImportState: {
+            /**
+             * Folder
+             * @default
+             */
+            folder: string;
+            last_scan?: components["schemas"]["FolderImportScan"] | null;
+            /** Max Files */
+            max_files: number;
+            /**
+             * Recursive
+             * @default false
+             */
+            recursive: boolean;
+            /**
+             * Running
+             * @default false
+             */
+            running: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /**
+         * FrontendErrorLogged
+         * @description POST /api/diag/frontend-error: ``code`` is the code that was logged (unknown codes become E_FRONTEND_GENERIC).
+         */
+        FrontendErrorLogged: {
+            /** Code */
+            code: string;
+            /**
+             * Ok
+             * @default true
+             */
+            ok: boolean;
+        } & {
+            [key: string]: unknown;
+        };
         /** FtpHistory */
         FtpHistory: {
             /** Ftp Current */
@@ -2431,6 +4034,189 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** Fueling */
+        Fueling: {
+            /**
+             * Connected
+             * @default false
+             */
+            connected: boolean;
+            /** Daily Method */
+            daily_method: string;
+            /** Date */
+            date: string;
+            day?: components["schemas"]["FuelingDay"] | null;
+            during?: components["schemas"]["FuelingDuring"] | null;
+            /** Energy Method */
+            energy_method: string;
+            /** Hourly Method */
+            hourly_method: string;
+            logged?: components["schemas"]["NutritionDay"] | null;
+            /** Note */
+            note: string;
+            /** Ride Kcal Approx */
+            ride_kcal_approx?: number | null;
+            session?: components["schemas"]["FuelingSession"] | null;
+            /** Weight Kg */
+            weight_kg?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** FuelingDay */
+        FuelingDay: {
+            /** High G */
+            high_g: number;
+            /** High G Per Kg */
+            high_g_per_kg: number;
+            /** Load */
+            load: string;
+            /** Low G */
+            low_g: number;
+            /** Low G Per Kg */
+            low_g_per_kg: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** FuelingDuring */
+        FuelingDuring: {
+            /** Band */
+            band: string;
+            /** High G */
+            high_g: number;
+            /** High G Per H */
+            high_g_per_h: number;
+            /** Low G */
+            low_g: number;
+            /** Low G Per H */
+            low_g_per_h: number;
+            /** Note */
+            note: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** FuelingSession */
+        FuelingSession: {
+            /** Duration Min */
+            duration_min: number;
+            /** Session Type */
+            session_type: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** GearItem */
+        GearItem: {
+            /**
+             * Hours
+             * @default 0
+             */
+            hours: number;
+            /** Hours Pct */
+            hours_pct?: number | null;
+            /** Icu Name */
+            icu_name?: string | null;
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /**
+             * Km
+             * @default 0
+             */
+            km: number;
+            /** Km Pct */
+            km_pct?: number | null;
+            /** Last Service */
+            last_service?: string | null;
+            /** Name */
+            name: string;
+            /** Parent Id */
+            parent_id?: string | null;
+            /**
+             * Retired
+             * @default false
+             */
+            retired: boolean;
+            /** Service Every Hours */
+            service_every_hours?: number | null;
+            /** Service Every Km */
+            service_every_km?: number | null;
+            /**
+             * Services
+             * @default []
+             */
+            services: components["schemas"]["GearService"][];
+            /** Started On */
+            started_on?: string | null;
+            /** State */
+            state: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** GearOverview */
+        GearOverview: {
+            /**
+             * Items
+             * @default []
+             */
+            items: components["schemas"]["GearItem"][];
+            /**
+             * Method
+             * @default
+             */
+            method: string;
+            /**
+             * Recent
+             * @default []
+             */
+            recent: components["schemas"]["GearRide"][];
+            /**
+             * Suggestions
+             * @default []
+             */
+            suggestions: components["schemas"]["GearSuggestion"][];
+        } & {
+            [key: string]: unknown;
+        };
+        /** GearRide */
+        GearRide: {
+            /** Date */
+            date: string;
+            /** Distance Km */
+            distance_km?: number | null;
+            /** Gear Id */
+            gear_id?: string | null;
+            /** Id */
+            id: string;
+            /** Name */
+            name?: string | null;
+            /** Source */
+            source: string;
+            /** Sport */
+            sport?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** GearService */
+        GearService: {
+            /** Date */
+            date: string;
+            /**
+             * Note
+             * @default
+             */
+            note: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** GearSuggestion */
+        GearSuggestion: {
+            /** Icu Name */
+            icu_name: string;
+            /** Rides */
+            rides: number;
+        } & {
+            [key: string]: unknown;
+        };
         /** HrvImported */
         HrvImported: {
             /**
@@ -2541,6 +4327,26 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /**
+         * IcuKeyCheck
+         * @description POST /api/setup/test-icu: HTTP 200 either way; ``ok`` false carries ``error``.
+         */
+        IcuKeyCheck: {
+            /** Athlete Id */
+            athlete_id?: string | null;
+            /** Eftp */
+            eftp?: number | null;
+            /** Error */
+            error?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Ok */
+            ok: boolean;
+            /** Weight */
+            weight?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
         /** IcuPushResult */
         IcuPushResult: {
             /** Deleted */
@@ -2610,6 +4416,117 @@ export interface components {
             races: {
                 [key: string]: unknown;
             }[];
+        } & {
+            [key: string]: unknown;
+        };
+        /** InjuryEpisode */
+        InjuryEpisode: {
+            /**
+             * Body Area
+             * @default
+             */
+            body_area: string;
+            /** End */
+            end?: string | null;
+            /** Id */
+            id: string;
+            /**
+             * Note
+             * @default
+             */
+            note: string;
+            /**
+             * Sport
+             * @default all
+             */
+            sport: string;
+            /** Start */
+            start: string;
+            /** Type */
+            type: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** InjuryRampWeek */
+        InjuryRampWeek: {
+            /**
+             * Easy Only
+             * @default false
+             */
+            easy_only: boolean;
+            /** End */
+            end: string;
+            /** Phase */
+            phase: string;
+            /** Start */
+            start: string;
+            /**
+             * Tss Target
+             * @default 0
+             */
+            tss_target: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** InjuryReturn */
+        InjuryReturn: {
+            /** Absence Days */
+            absence_days: number;
+            /** End */
+            end: string;
+            /** Episode Days */
+            episode_days: number;
+            /** Episode Id */
+            episode_id: string;
+            /** Start */
+            start: string;
+            /** Type */
+            type: string;
+            /** Weeks Done */
+            weeks_done: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** InjuryShortBreak */
+        InjuryShortBreak: {
+            /** End */
+            end: string;
+            /** Episode Days */
+            episode_days: number;
+            /** Type */
+            type: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** InjuryStatus */
+        InjuryStatus: {
+            active?: components["schemas"]["InjuryEpisode"] | null;
+            /**
+             * Episodes
+             * @default []
+             */
+            episodes: components["schemas"]["InjuryEpisode"][];
+            /**
+             * Has Plan
+             * @default false
+             */
+            has_plan: boolean;
+            /** Method */
+            method: string;
+            /** Note */
+            note: string;
+            /**
+             * Plan Synced
+             * @default false
+             */
+            plan_synced: boolean;
+            /**
+             * Ramp Weeks
+             * @default []
+             */
+            ramp_weeks: components["schemas"]["InjuryRampWeek"][];
+            return_ramp?: components["schemas"]["InjuryReturn"] | null;
+            short_break?: components["schemas"]["InjuryShortBreak"] | null;
         } & {
             [key: string]: unknown;
         };
@@ -2711,6 +4628,169 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** NotificationEvents */
+        NotificationEvents: {
+            /**
+             * Gear Due
+             * @default true
+             */
+            gear_due: boolean;
+            /**
+             * Missed
+             * @default true
+             */
+            missed: boolean;
+            /**
+             * Readiness
+             * @default true
+             */
+            readiness: boolean;
+            /**
+             * Sync Failure
+             * @default true
+             */
+            sync_failure: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /** NotificationItem */
+        NotificationItem: {
+            /** Body */
+            body: string;
+            /** Day */
+            day: string;
+            /** Event */
+            event: string;
+            /** Id */
+            id: number;
+            /**
+             * Read
+             * @default false
+             */
+            read: boolean;
+            /** Title */
+            title: string;
+            /** Ts */
+            ts: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** NotificationList */
+        NotificationList: {
+            /**
+             * Items
+             * @default []
+             */
+            items: components["schemas"]["NotificationItem"][];
+            /**
+             * Unread
+             * @default 0
+             */
+            unread: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** NotificationSettings */
+        NotificationSettings: {
+            /**
+             * @default {
+             *       "gear_due": true,
+             *       "missed": true,
+             *       "readiness": true,
+             *       "sync_failure": true
+             *     }
+             */
+            events: components["schemas"]["NotificationEvents"];
+            /**
+             * Has Url
+             * @default false
+             */
+            has_url: boolean;
+            /**
+             * Readiness Time
+             * @default
+             */
+            readiness_time: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** NotificationTest */
+        NotificationTest: {
+            /**
+             * Error
+             * @default
+             */
+            error: string;
+            /** Ok */
+            ok: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /** NutritionConnection */
+        NutritionConnection: {
+            /**
+             * Base Url
+             * @default
+             */
+            base_url: string;
+            /**
+             * Configured
+             * @default false
+             */
+            configured: boolean;
+            /**
+             * Has Key
+             * @default false
+             */
+            has_key: boolean;
+            /** Last Synced At */
+            last_synced_at?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** NutritionDay */
+        NutritionDay: {
+            /** Carbs G */
+            carbs_g?: number | null;
+            /** Date */
+            date: string;
+            /** Fat G */
+            fat_g?: number | null;
+            /** Kcal */
+            kcal?: number | null;
+            /** Protein G */
+            protein_g?: number | null;
+            /** Source */
+            source: string;
+            /** Synced At */
+            synced_at?: string | null;
+            /** Water Ml */
+            water_ml?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** NutritionSync */
+        NutritionSync: {
+            /** Days With Data */
+            days_with_data: number;
+            /** End */
+            end: string;
+            /** Start */
+            start: string;
+            /** Synced At */
+            synced_at: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** NutritionTest */
+        NutritionTest: {
+            /** Message */
+            message: string;
+            /** Ok */
+            ok: boolean;
+        } & {
+            [key: string]: unknown;
+        };
         /** Ok */
         Ok: {
             /**
@@ -2718,6 +4798,64 @@ export interface components {
              * @default true
              */
             ok: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /** OpenWaterNote */
+        OpenWaterNote: {
+            /** Activity Id */
+            activity_id?: string | null;
+            /**
+             * Conditions
+             * @default
+             */
+            conditions: string;
+            /**
+             * Course
+             * @default
+             */
+            course: string;
+            /** Date */
+            date: string;
+            /** Id */
+            id: string;
+            /**
+             * Note
+             * @default
+             */
+            note: string;
+            /**
+             * Sighting
+             * @default
+             */
+            sighting: string;
+            /** Water Temp C */
+            water_temp_c?: number | null;
+            /** Wetsuit */
+            wetsuit?: boolean | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** OpenWaterNotes */
+        OpenWaterNotes: {
+            /**
+             * Notes
+             * @default []
+             */
+            notes: components["schemas"]["OpenWaterNote"][];
+        } & {
+            [key: string]: unknown;
+        };
+        /**
+         * PickedFolder
+         * @description GET /api/setup/pick-folder: "" when the dialog was cancelled or unavailable.
+         */
+        PickedFolder: {
+            /**
+             * Path
+             * @default
+             */
+            path: string;
         } & {
             [key: string]: unknown;
         };
@@ -2759,6 +4897,114 @@ export interface components {
             plan_json?: components["schemas"]["PlanJson"] | null;
             /** Weeks Regenerated */
             weeks_regenerated?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** PlanCompanion */
+        PlanCompanion: {
+            /** Brick Note */
+            brick_note?: string | null;
+            /** Brick Of */
+            brick_of?: string | null;
+            /** Completion Matches */
+            completion_matches?: unknown[] | null;
+            /** Day */
+            day: string;
+            /**
+             * Day Name
+             * @default
+             */
+            day_name: string;
+            /**
+             * Description
+             * @default
+             */
+            description: string;
+            /**
+             * Dismissed At
+             * @default
+             */
+            dismissed_at: string;
+            /**
+             * Duration Min
+             * @default 0
+             */
+            duration_min: number;
+            /**
+             * Hard
+             * @default false
+             */
+            hard: boolean;
+            /** Id */
+            id: string;
+            /** Limiter */
+            limiter?: string | null;
+            /** Session Type */
+            session_type: string;
+            /** Sport */
+            sport: string;
+            /**
+             * Status
+             * @default pending
+             */
+            status: string;
+            /**
+             * Template Id
+             * @default
+             */
+            template_id: string;
+            /** Workout */
+            workout?: {
+                [key: string]: unknown;
+            } | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** PlanCompanionWeek */
+        PlanCompanionWeek: {
+            /**
+             * Companions
+             * @default []
+             */
+            companions: components["schemas"]["PlanCompanion"][];
+            /** End */
+            end: string;
+            /** Start */
+            start: string;
+            /** Week Num */
+            week_num?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** PlanCompanions */
+        PlanCompanions: {
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Has Plan
+             * @default false
+             */
+            has_plan: boolean;
+            /**
+             * Note
+             * @default
+             */
+            note: string;
+            /**
+             * Today
+             * @default []
+             */
+            today: components["schemas"]["PlanCompanion"][];
+            /** Transition Target S */
+            transition_target_s?: number | null;
+            /**
+             * Weeks
+             * @default []
+             */
+            weeks: components["schemas"]["PlanCompanionWeek"][];
         } & {
             [key: string]: unknown;
         };
@@ -3178,6 +5424,31 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** PowerModel */
+        PowerModel: {
+            /** Caveat */
+            caveat: string;
+            /** Cp W Per Kg */
+            cp_w_per_kg?: number | null;
+            fit: components["schemas"]["CpFit"];
+            /**
+             * History
+             * @default []
+             */
+            history: components["schemas"]["CpHistoryPoint"][];
+            /** Method */
+            method: string;
+            /** N Rides */
+            n_rides: number;
+            /** Pmax W */
+            pmax_w?: number | null;
+            /** Weight Kg */
+            weight_kg?: number | null;
+            /** Window Days */
+            window_days: number;
+        } & {
+            [key: string]: unknown;
+        };
         /** PrToastQueue */
         PrToastQueue: {
             /**
@@ -3348,6 +5619,61 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** Race */
+        Race: {
+            /** Arrive Time */
+            arrive_time?: string | null;
+            /** Date */
+            date: string;
+            /**
+             * Days To Go
+             * @default 0
+             */
+            days_to_go: number;
+            /**
+             * Discipline
+             * @default cycling
+             */
+            discipline: string;
+            /** Distance */
+            distance?: string | null;
+            /**
+             * Event Climb M
+             * @default 0
+             */
+            event_climb_m: number;
+            /**
+             * Event Km
+             * @default 0
+             */
+            event_km: number;
+            /**
+             * Event Type
+             * @default granfondo
+             */
+            event_type: string;
+            /** Expected Duration H */
+            expected_duration_h?: number | null;
+            /** Id */
+            id: string;
+            /**
+             * In Plan
+             * @default false
+             */
+            in_plan: boolean;
+            /**
+             * Name
+             * @default
+             */
+            name: string;
+            /** Priority */
+            priority: string;
+            /** Start Time */
+            start_time?: string | null;
+            taper: components["schemas"]["RaceTaper"];
+        } & {
+            [key: string]: unknown;
+        };
         /** RaceAdded */
         RaceAdded: {
             /** Added */
@@ -3364,6 +5690,280 @@ export interface components {
             regen_info?: {
                 [key: string]: unknown;
             } | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RaceDayPlan */
+        RaceDayPlan: {
+            /** Expected Duration H */
+            expected_duration_h?: number | null;
+            /** Fueling */
+            fueling: string;
+            power: components["schemas"]["RacePower"];
+            race: components["schemas"]["Race"];
+            /**
+             * Timeline
+             * @default []
+             */
+            timeline: components["schemas"]["RaceTimelineRow"][];
+            /** Warmup Min */
+            warmup_min: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RaceInputCs */
+        RaceInputCs: {
+            /** Cs M Per S */
+            cs_m_per_s: number;
+            /** D Prime M */
+            d_prime_m: number;
+            /** Date */
+            date?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RaceInputRun */
+        RaceInputRun: {
+            /** Date */
+            date?: string | null;
+            /** Distance M */
+            distance_m: number;
+            /** Id */
+            id: string;
+            /**
+             * Name
+             * @default
+             */
+            name: string;
+            /** Pace S Per Km */
+            pace_s_per_km: number;
+            /** Time S */
+            time_s: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RacePower */
+        RacePower: {
+            /** Available */
+            available: boolean;
+            /** Confidence */
+            confidence?: string | null;
+            /** Ftp */
+            ftp?: number | null;
+            /** If High */
+            if_high?: number | null;
+            /** If Low */
+            if_low?: number | null;
+            /** Method */
+            method?: string | null;
+            /** Np High */
+            np_high?: number | null;
+            /** Np Low */
+            np_low?: number | null;
+            /** Predicted If */
+            predicted_if?: number | null;
+            /** Predicted Np */
+            predicted_np?: number | null;
+            /** Predicted Tss */
+            predicted_tss?: number | null;
+            /** Projected Duration H */
+            projected_duration_h?: number | null;
+            /** Reason */
+            reason?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RacePrediction */
+        RacePrediction: {
+            /** Distance M */
+            distance_m: number;
+            /** Label */
+            label: string;
+            /** Model */
+            model: string;
+            /**
+             * Notes
+             * @default []
+             */
+            notes: string[];
+            /** Pace S Per Km */
+            pace_s_per_km?: number | null;
+            /** Race */
+            race: string;
+            /** Range Text */
+            range_text?: string | null;
+            /** Status */
+            status: string;
+            /** Time S */
+            time_s?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RacePredictor */
+        RacePredictor: {
+            best_run?: components["schemas"]["RaceInputRun"] | null;
+            critical_speed?: components["schemas"]["RaceInputCs"] | null;
+            /** Cs Confidence */
+            cs_confidence: string;
+            /** Cs Method */
+            cs_method: string;
+            /** Long Run Rule */
+            long_run_rule: string;
+            /** Longest Run M */
+            longest_run_m?: number | null;
+            /**
+             * Missing
+             * @default []
+             */
+            missing: string[];
+            /**
+             * Predictions
+             * @default []
+             */
+            predictions: components["schemas"]["RacePrediction"][];
+            /** Riegel Confidence */
+            riegel_confidence: string;
+            /** Riegel Method */
+            riegel_method: string;
+            /** Window Days */
+            window_days: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RaceTaper */
+        RaceTaper: {
+            /** Before Tss */
+            before_tss?: number | null;
+            /** End */
+            end?: string | null;
+            /** Kind */
+            kind: string;
+            /** Planned Tss */
+            planned_tss?: number | null;
+            /** Start */
+            start?: string | null;
+            /**
+             * Text
+             * @default
+             */
+            text: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RaceTaperWeek */
+        RaceTaperWeek: {
+            /** End */
+            end: string;
+            /**
+             * Planned Tss
+             * @default 0
+             */
+            planned_tss: number;
+            /** Start */
+            start: string;
+            /**
+             * Tss Target
+             * @default 0
+             */
+            tss_target: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RaceTimelineRow */
+        RaceTimelineRow: {
+            /** Label */
+            label: string;
+            /** Time */
+            time: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RacesStatus */
+        RacesStatus: {
+            /**
+             * Confidence
+             * @default
+             */
+            confidence: string;
+            /**
+             * Has Plan
+             * @default false
+             */
+            has_plan: boolean;
+            /**
+             * Method
+             * @default
+             */
+            method: string;
+            /** Plan A Date */
+            plan_a_date?: string | null;
+            /**
+             * Plan Synced
+             * @default false
+             */
+            plan_synced: boolean;
+            /**
+             * Races
+             * @default []
+             */
+            races: components["schemas"]["Race"][];
+            /**
+             * Stored
+             * @default false
+             */
+            stored: boolean;
+            /**
+             * Taper Weeks
+             * @default []
+             */
+            taper_weeks: components["schemas"]["RaceTaperWeek"][];
+        } & {
+            [key: string]: unknown;
+        };
+        /** RampRate */
+        RampRate: {
+            /** As Of */
+            as_of: string;
+            combined: components["schemas"]["RampRateLine"];
+            /** Confidence */
+            confidence: string;
+            /** High */
+            high: number;
+            /** Method */
+            method: string;
+            /** Note */
+            note: string;
+            /**
+             * Sports
+             * @default {}
+             */
+            sports: {
+                [key: string]: components["schemas"]["RampRateLine"];
+            };
+            /** Threshold */
+            threshold: number;
+            /** Warn */
+            warn: boolean;
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: string[];
+        } & {
+            [key: string]: unknown;
+        };
+        /** RampRateLine */
+        RampRateLine: {
+            /** Change Pct */
+            change_pct?: number | null;
+            /** Level */
+            level: string;
+            /** Prev 4Wk Avg */
+            prev_4wk_avg: number;
+            /** Ratio */
+            ratio?: number | null;
+            /** Week Load */
+            week_load: number;
         } & {
             [key: string]: unknown;
         };
@@ -3479,6 +6079,23 @@ export interface components {
             ok: boolean;
             /** Until */
             until?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RideCompare */
+        RideCompare: {
+            a: components["schemas"]["CompareSide"];
+            b: components["schemas"]["CompareSide"];
+            /**
+             * Best Efforts
+             * @default []
+             */
+            best_efforts: components["schemas"]["BestEffortDelta"][];
+            /** Bin S */
+            bin_s: number;
+            delta: components["schemas"]["CompareSummary"];
+            /** Min Best Effort S */
+            min_best_effort_s: number;
         } & {
             [key: string]: unknown;
         };
@@ -3718,6 +6335,237 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** RunActivities */
+        RunActivities: {
+            /** Confidence */
+            confidence: string;
+            /** Max Hr */
+            max_hr?: number | null;
+            /** Max Hr Source */
+            max_hr_source?: string | null;
+            /** Method */
+            method: string;
+            /**
+             * Missing
+             * @default []
+             */
+            missing: string[];
+            /** Rest Hr */
+            rest_hr?: number | null;
+            /**
+             * Runs
+             * @default []
+             */
+            runs: components["schemas"]["RunActivity"][];
+            /** Sex */
+            sex?: string | null;
+            /** Threshold Hr */
+            threshold_hr?: number | null;
+            /** Threshold Pace S Per Km */
+            threshold_pace_s_per_km?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RunActivity */
+        RunActivity: {
+            /** Avg Hr */
+            avg_hr?: number | null;
+            /**
+             * Cadence Doubled
+             * @default false
+             */
+            cadence_doubled: boolean;
+            /** Cadence Spm */
+            cadence_spm?: number | null;
+            /** Date */
+            date?: string | null;
+            /** Distance Km */
+            distance_km?: number | null;
+            /**
+             * Duration S
+             * @default 0
+             */
+            duration_s: number;
+            /** Hrtss */
+            hrtss?: number | null;
+            /** Icu Load */
+            icu_load?: number | null;
+            /** Id */
+            id: string;
+            /** Intensity */
+            intensity?: number | null;
+            /**
+             * Name
+             * @default
+             */
+            name: string;
+            /** Pace S Per Km */
+            pace_s_per_km?: number | null;
+            /** Rtss */
+            rtss?: number | null;
+            /** Step Length M */
+            step_length_m?: number | null;
+            /** Stride Length M */
+            stride_length_m?: number | null;
+            /**
+             * Type
+             * @default
+             */
+            type: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RunGap */
+        RunGap: {
+            /** Confidence */
+            confidence: string;
+            /** Cost J Per Kg M */
+            cost_j_per_kg_m: number;
+            /** Flat Cost J Per Kg M */
+            flat_cost_j_per_kg_m: number;
+            /** Gap S Per Km */
+            gap_s_per_km: number;
+            /** Grade Pct */
+            grade_pct: number;
+            /** Method */
+            method: string;
+            /** Pace S Per Km */
+            pace_s_per_km: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RunHrZone */
+        RunHrZone: {
+            /** High Bpm */
+            high_bpm?: number | null;
+            /** High Pct */
+            high_pct?: number | null;
+            /** Low Bpm */
+            low_bpm?: number | null;
+            /** Low Pct */
+            low_pct?: number | null;
+            /** Name */
+            name: string;
+            /** Zone */
+            zone: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RunPaceZone */
+        RunPaceZone: {
+            /** Fast Pct */
+            fast_pct?: number | null;
+            /** Fast S Per Km */
+            fast_s_per_km?: number | null;
+            /** Name */
+            name: string;
+            /** Slow Pct */
+            slow_pct?: number | null;
+            /** Slow S Per Km */
+            slow_s_per_km?: number | null;
+            /** Zone */
+            zone: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RunProfilePoint */
+        RunProfilePoint: {
+            /** X */
+            x: number;
+            /** Y */
+            y: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RunSession */
+        RunSession: {
+            /** Daniels */
+            daniels: string;
+            /** Hard */
+            hard: boolean;
+            /** Id */
+            id: string;
+            /** Intent */
+            intent: string;
+            /** Kind */
+            kind: string;
+            /** Max Minutes */
+            max_minutes: number;
+            /** Min Minutes */
+            min_minutes: number;
+            /** Minutes */
+            minutes: number;
+            /** Name */
+            name: string;
+            /**
+             * Profile
+             * @default []
+             */
+            profile: components["schemas"]["RunProfilePoint"][];
+            /** Rtss Estimate */
+            rtss_estimate: number;
+            /** Session Type */
+            session_type: string;
+            /**
+             * Source
+             * @default
+             */
+            source: string;
+            /** Stimulus */
+            stimulus: string;
+            /** Workout */
+            workout: {
+                [key: string]: unknown;
+            };
+        } & {
+            [key: string]: unknown;
+        };
+        /** RunSessions */
+        RunSessions: {
+            /** Method */
+            method: string;
+            /** Note */
+            note: string;
+            /**
+             * Sessions
+             * @default []
+             */
+            sessions: components["schemas"]["RunSession"][];
+            /** Targets */
+            targets: string;
+            /** Threshold Pace S Per Km */
+            threshold_pace_s_per_km?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RunZones */
+        RunZones: {
+            /** Confidence */
+            confidence: string;
+            /**
+             * Hr Zones
+             * @default []
+             */
+            hr_zones: components["schemas"]["RunHrZone"][];
+            /** Method */
+            method: string;
+            /**
+             * Pace History
+             * @default []
+             */
+            pace_history: components["schemas"]["SportThresholdEntry"][];
+            /**
+             * Pace Zones
+             * @default []
+             */
+            pace_zones: components["schemas"]["RunPaceZone"][];
+            /** Threshold Hr */
+            threshold_hr?: number | null;
+            /** Threshold Pace S Per Km */
+            threshold_pace_s_per_km?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
         /** SessionDismissed */
         SessionDismissed: {
             /** Dismissed */
@@ -3869,6 +6717,456 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /**
+         * SetupLimits
+         * @description GET /api/setup/limits: [min, max] per setup field.
+         */
+        SetupLimits: {
+            /** Age */
+            age?: number[] | null;
+            /** Cp */
+            cp?: number[] | null;
+            /** Ftp */
+            ftp?: number[] | null;
+            /** Hours Per Week */
+            hours_per_week?: number[] | null;
+            /** Lthr */
+            lthr?: number[] | null;
+            /** Max Hr */
+            max_hr?: number[] | null;
+            /** Weight */
+            weight?: number[] | null;
+            /** Wprime J */
+            wprime_j?: number[] | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /**
+         * SetupSaved
+         * @description POST /api/setup/save. The optional keys appear only when they apply.
+         */
+        SetupSaved: {
+            /** Athlete Id Detected */
+            athlete_id_detected?: string | null;
+            /** Athlete Name */
+            athlete_name?: string | null;
+            /** Creds Test */
+            creds_test?: string | null;
+            /**
+             * Ok
+             * @default true
+             */
+            ok: boolean;
+            /** Warning */
+            warning?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** SportLoadLine */
+        SportLoadLine: {
+            /** Atl */
+            atl: number;
+            /** Ctl */
+            ctl: number;
+            /** Tsb */
+            tsb: number;
+            /** Week Load */
+            week_load: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** SportThreshold */
+        SportThreshold: {
+            /** Current */
+            current?: number | null;
+            /**
+             * History
+             * @default []
+             */
+            history: components["schemas"]["SportThresholdEntry"][];
+            /** Sport */
+            sport: string;
+            /** Unit */
+            unit: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** SportThresholdEntry */
+        SportThresholdEntry: {
+            /** Date */
+            date: string;
+            /**
+             * Source
+             * @default manual
+             */
+            source: string;
+            /** Value */
+            value: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** SportThresholds */
+        SportThresholds: {
+            /** Thresholds */
+            thresholds: {
+                [key: string]: components["schemas"]["SportThreshold"];
+            };
+        } & {
+            [key: string]: unknown;
+        };
+        /** SportsLoad */
+        SportsLoad: {
+            /** As Of */
+            as_of: string;
+            combined: components["schemas"]["SportLoadLine"];
+            /** Confidence */
+            confidence: string;
+            /** Days Of History */
+            days_of_history: number;
+            /** Method */
+            method: string;
+            /** Settled */
+            settled: boolean;
+            /**
+             * Sports
+             * @default {}
+             */
+            sports: {
+                [key: string]: components["schemas"]["SportLoadLine"];
+            };
+        } & {
+            [key: string]: unknown;
+        };
+        /** StrengthExercise */
+        StrengthExercise: {
+            /** Cue */
+            cue: string;
+            /** Effort */
+            effort: string;
+            /** Hold S */
+            hold_s?: number | null;
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Pattern */
+            pattern: string;
+            /**
+             * Per Side
+             * @default false
+             */
+            per_side: boolean;
+            /** Reps */
+            reps?: number[] | null;
+            /** Rest */
+            rest: string;
+            /** Rpe */
+            rpe: number[];
+            /** Sets */
+            sets: number[];
+        } & {
+            [key: string]: unknown;
+        };
+        /** StrengthProgression */
+        StrengthProgression: {
+            /** Pct 1Rm */
+            pct_1rm: string;
+            /** Reps */
+            reps: number[];
+            /** Rest */
+            rest: string;
+            /** Sets */
+            sets: number[];
+            /**
+             * Verify
+             * @default false
+             */
+            verify: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /** StrengthSession */
+        StrengthSession: {
+            /** Disclaimer */
+            disclaimer: string;
+            /** Exercises */
+            exercises: components["schemas"]["StrengthExercise"][];
+            /**
+             * Hard
+             * @default false
+             */
+            hard: boolean;
+            /** Id */
+            id: string;
+            /** Intent */
+            intent: string;
+            /** Kind */
+            kind: string;
+            /** Load Au */
+            load_au: number[];
+            /** Load Method */
+            load_method: string;
+            /** Load Note */
+            load_note: string;
+            /** Minutes */
+            minutes: number;
+            /** Minutes Range */
+            minutes_range: number[];
+            /** Name */
+            name: string;
+            /** Not Validated */
+            not_validated: string;
+            progression?: components["schemas"]["StrengthProgression"] | null;
+            /** Rpe Range */
+            rpe_range: number[];
+            /** Source */
+            source: string;
+            /** Stage */
+            stage: string;
+            /** Stage Label */
+            stage_label: string;
+            /**
+             * Warmup Min
+             * @default 0
+             */
+            warmup_min: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** StrengthSessions */
+        StrengthSessions: {
+            /** Disclaimer */
+            disclaimer: string;
+            /** Load Method */
+            load_method: string;
+            /** Load Note */
+            load_note: string;
+            /** Not Validated */
+            not_validated: string;
+            /** Sessions */
+            sessions: components["schemas"]["StrengthSession"][];
+            /** Sources */
+            sources: string[];
+            /** Stage */
+            stage: string;
+            /** Stages */
+            stages: components["schemas"]["StrengthStage"][];
+        } & {
+            [key: string]: unknown;
+        };
+        /** StrengthStage */
+        StrengthStage: {
+            /** Effort */
+            effort: string;
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+            /** Pct 1Rm */
+            pct_1rm: string;
+            /** Reps */
+            reps: number[];
+            /** Rest */
+            rest: string;
+            /** Rpe */
+            rpe: number[];
+            /** Sets */
+            sets: number[];
+            /** Source */
+            source: string;
+            /**
+             * Verify
+             * @default false
+             */
+            verify: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /** SwimActivities */
+        SwimActivities: {
+            /** Confidence */
+            confidence: string;
+            /** Css S Per 100M */
+            css_s_per_100m?: number | null;
+            /** Method */
+            method: string;
+            /**
+             * Missing
+             * @default []
+             */
+            missing: string[];
+            /** Stroke Note */
+            stroke_note: string;
+            /**
+             * Swims
+             * @default []
+             */
+            swims: components["schemas"]["SwimActivity"][];
+        } & {
+            [key: string]: unknown;
+        };
+        /** SwimActivity */
+        SwimActivity: {
+            /** Avg Hr */
+            avg_hr?: number | null;
+            /** Date */
+            date?: string | null;
+            /** Distance M */
+            distance_m?: number | null;
+            /**
+             * Duration S
+             * @default 0
+             */
+            duration_s: number;
+            /** Icu Load */
+            icu_load?: number | null;
+            /** Id */
+            id: string;
+            /** Intensity */
+            intensity?: number | null;
+            /** Lengths */
+            lengths?: number | null;
+            /**
+             * Name
+             * @default
+             */
+            name: string;
+            /** Pace S Per 100M */
+            pace_s_per_100m?: number | null;
+            /** Pool Length M */
+            pool_length_m?: number | null;
+            /** Stroke Rate */
+            stroke_rate?: number | null;
+            /** Stss */
+            stss?: number | null;
+            /**
+             * Type
+             * @default
+             */
+            type: string;
+            /**
+             * Water
+             * @default unknown
+             */
+            water: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** SwimCss */
+        SwimCss: {
+            /** Confidence */
+            confidence: string;
+            /** Css S Per 100M */
+            css_s_per_100m?: number | null;
+            /**
+             * History
+             * @default []
+             */
+            history: components["schemas"]["SportThresholdEntry"][];
+            /** Method */
+            method: string;
+            /** Zones Note */
+            zones_note: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** SwimCssTest */
+        SwimCssTest: {
+            /** Anaerobic Distance M */
+            anaerobic_distance_m: number;
+            /** Confidence */
+            confidence: string;
+            /** Css M Per S */
+            css_m_per_s: number;
+            /** Css S Per 100M */
+            css_s_per_100m: number;
+            /** Method */
+            method: string;
+            /** N Trials */
+            n_trials: number;
+            /** R2 */
+            r2?: number | null;
+            /**
+             * Saved
+             * @default false
+             */
+            saved: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /** SwimSession */
+        SwimSession: {
+            /**
+             * Hard
+             * @default false
+             */
+            hard: boolean;
+            /** Id */
+            id: string;
+            /** Intent */
+            intent: string;
+            /** Kind */
+            kind: string;
+            /**
+             * Lines
+             * @default []
+             */
+            lines: string[];
+            /** Minutes */
+            minutes: number;
+            /** Minutes Max */
+            minutes_max: number;
+            /** Minutes Min */
+            minutes_min: number;
+            /** Name */
+            name: string;
+            /**
+             * Note
+             * @default
+             */
+            note: string;
+            /** Session Type */
+            session_type: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** SwimSessions */
+        SwimSessions: {
+            /** Css S Per 100M */
+            css_s_per_100m?: number | null;
+            /**
+             * Download Note
+             * @default
+             */
+            download_note: string;
+            /**
+             * Has Css
+             * @default false
+             */
+            has_css: boolean;
+            /**
+             * Not Validated
+             * @default
+             */
+            not_validated: string;
+            /**
+             * Pool M
+             * @default 25
+             */
+            pool_m: number;
+            /**
+             * Sessions
+             * @default []
+             */
+            sessions: components["schemas"]["SwimSession"][];
+            /**
+             * Source
+             * @default
+             */
+            source: string;
+        } & {
+            [key: string]: unknown;
+        };
         /** SyncProgress */
         SyncProgress: {
             /** Added */
@@ -3883,6 +7181,33 @@ export interface components {
             ts?: number | null;
             /** Updated */
             updated?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /**
+         * SyncResult
+         * @description POST /api/sync. ``status`` is "skipped" when no credentials are configured.
+         */
+        SyncResult: {
+            /**
+             * Activities
+             * @default 0
+             */
+            activities: number;
+            /** Error */
+            error?: string | null;
+            /**
+             * Status
+             * @default
+             */
+            status: string;
+            /** Timestamp */
+            timestamp: string;
+            /**
+             * Wellness
+             * @default 0
+             */
+            wellness: number;
         } & {
             [key: string]: unknown;
         };
@@ -4139,6 +7464,127 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** WeatherAttribution */
+        WeatherAttribution: {
+            /** Text */
+            text: string;
+            /** Url */
+            url: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** WeatherDay */
+        WeatherDay: {
+            /** Date */
+            date: string;
+            /** Feels Max C */
+            feels_max_c?: number | null;
+            /** Feels Min C */
+            feels_min_c?: number | null;
+            /** Gust Max Kmh */
+            gust_max_kmh?: number | null;
+            /**
+             * Rain Mm
+             * @default 0
+             */
+            rain_mm: number;
+            /** Rain Pct Max */
+            rain_pct_max?: number | null;
+            /** Rating */
+            rating: string;
+            /**
+             * Reasons
+             * @default []
+             */
+            reasons: string[];
+            /**
+             * Suggest Indoor
+             * @default false
+             */
+            suggest_indoor: boolean;
+            /**
+             * Summary
+             * @default
+             */
+            summary: string;
+            /** Temp Max C */
+            temp_max_c?: number | null;
+            /** Temp Min C */
+            temp_min_c?: number | null;
+            /** Wind Max Kmh */
+            wind_max_kmh?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** WeatherForecast */
+        WeatherForecast: {
+            attribution: components["schemas"]["WeatherAttribution"];
+            /**
+             * Days
+             * @default []
+             */
+            days: components["schemas"]["WeatherDay"][];
+            /**
+             * Message
+             * @default
+             */
+            message: string;
+            /** Status */
+            status: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** WeatherLocation */
+        WeatherLocation: {
+            /** Has Location */
+            has_location: boolean;
+            /**
+             * Network Enabled
+             * @default true
+             */
+            network_enabled: boolean;
+            place?: components["schemas"]["WeatherPlace"] | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** WeatherPlace */
+        WeatherPlace: {
+            /**
+             * Country
+             * @default
+             */
+            country: string;
+            /** Latitude */
+            latitude: number;
+            /** Longitude */
+            longitude: number;
+            /** Name */
+            name: string;
+            /**
+             * Region
+             * @default
+             */
+            region: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** WeatherSearch */
+        WeatherSearch: {
+            /** Available */
+            available: boolean;
+            /**
+             * Message
+             * @default
+             */
+            message: string;
+            /**
+             * Results
+             * @default []
+             */
+            results: components["schemas"]["WeatherPlace"][];
+        } & {
+            [key: string]: unknown;
+        };
         /** WeekSummary */
         WeekSummary: {
             /**
@@ -4223,6 +7669,47 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** WeightPoint */
+        WeightPoint: {
+            /** Date */
+            date: string;
+            /**
+             * Source
+             * @default manual
+             */
+            source: string;
+            /** Trend Kg */
+            trend_kg: number;
+            /** Weight Kg */
+            weight_kg: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** WeightTrend */
+        WeightTrend: {
+            /** Change 28D Kg */
+            change_28d_kg?: number | null;
+            /** Latest Trend Kg */
+            latest_trend_kg?: number | null;
+            /** Latest W Per Kg */
+            latest_w_per_kg?: number | null;
+            /** Method */
+            method: string;
+            /**
+             * Points
+             * @default []
+             */
+            points: components["schemas"]["WeightPoint"][];
+            /** Tau Days */
+            tau_days: number;
+            /**
+             * Wkg
+             * @default []
+             */
+            wkg: components["schemas"]["WkgPoint"][];
+        } & {
+            [key: string]: unknown;
+        };
         /** WellnessDay */
         WellnessDay: {
             /** Atl */
@@ -4247,6 +7734,19 @@ export interface components {
             tsb?: number | null;
             /** W Prime Fitness */
             w_prime_fitness?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** WkgPoint */
+        WkgPoint: {
+            /** Date */
+            date: string;
+            /** Ftp W */
+            ftp_w: number;
+            /** W Per Kg */
+            w_per_kg: number;
+            /** Weight Kg */
+            weight_kg: number;
         } & {
             [key: string]: unknown;
         };
@@ -4425,6 +7925,186 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    compare_api_analytics_compare_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RideCompare"];
+                };
+            };
+        };
+    };
+    power_model_api_analytics_power_model_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PowerModel"];
+                };
+            };
+        };
+    };
+    weight_trend_api_analytics_weight_trend_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeightTrend"];
+                };
+            };
+        };
+    };
+    get_balance_api_balance_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Balance"];
+                };
+            };
+        };
+    };
+    put_balance_targets_api_balance_targets_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BalanceTargets"];
+                };
+            };
+        };
+    };
+    builder_preview_api_builder_preview_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BuilderPreview"];
+                };
+            };
+        };
+    };
+    builder_save_api_builder_save_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BuilderSaved"];
+                };
+            };
+        };
+    };
+    builder_send_api_builder_send_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BuilderSaved"];
+                };
+            };
+        };
+    };
+    builder_load_api_builder_workout_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BuilderLoaded"];
+                };
+            };
+        };
+    };
     api_calendar_api_calendar_get: {
         parameters: {
             query?: never;
@@ -4505,6 +8185,26 @@ export interface operations {
             };
         };
     };
+    api_diag_frontend_error_api_diag_frontend_error_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FrontendErrorLogged"];
+                };
+            };
+        };
+    };
     api_diag_health_api_diag_health_get: {
         parameters: {
             query?: never;
@@ -4561,6 +8261,226 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EventProjection"];
+                };
+            };
+        };
+    };
+    folder_import_state_api_folder_import_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FolderImportState"];
+                };
+            };
+        };
+    };
+    folder_import_save_api_folder_import_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FolderImportState"];
+                };
+            };
+        };
+    };
+    folder_import_scan_api_folder_import_scan_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FolderImportStarted"];
+                };
+            };
+        };
+    };
+    fueling_today_api_fueling_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Fueling"];
+                };
+            };
+        };
+    };
+    gear_overview_api_gear_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GearOverview"];
+                };
+            };
+        };
+    };
+    gear_add_api_gear_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GearOverview"];
+                };
+            };
+        };
+    };
+    gear_assign_api_gear_assignment_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GearOverview"];
+                };
+            };
+        };
+    };
+    gear_delete_api_gear__item_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GearOverview"];
+                };
+            };
+        };
+    };
+    gear_edit_api_gear__item_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GearOverview"];
+                };
+            };
+        };
+    };
+    gear_service_api_gear__item_id__service_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GearOverview"];
+                };
+            };
+        };
+    };
+    api_icu_athlete_numbers_api_icu_athlete_numbers_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AthleteNumbers"];
                 };
             };
         };
@@ -4661,6 +8581,106 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["IcuRaces"];
+                };
+            };
+        };
+    };
+    injury_status_api_injury_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InjuryStatus"];
+                };
+            };
+        };
+    };
+    injury_add_api_injury_episodes_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InjuryStatus"];
+                };
+            };
+        };
+    };
+    injury_delete_api_injury_episodes__episode_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InjuryStatus"];
+                };
+            };
+        };
+    };
+    injury_resolve_api_injury_episodes__episode_id__resolve_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InjuryStatus"];
+                };
+            };
+        };
+    };
+    injury_ramp_rate_api_injury_ramp_rate_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RampRate"];
                 };
             };
         };
@@ -4865,6 +8885,206 @@ export interface operations {
             };
         };
     };
+    api_notifications_api_notifications_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationList"];
+                };
+            };
+        };
+    };
+    api_notifications_read_api_notifications_read_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationList"];
+                };
+            };
+        };
+    };
+    api_notifications_settings_api_notifications_settings_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationSettings"];
+                };
+            };
+        };
+    };
+    api_notifications_save_api_notifications_settings_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationSettings"];
+                };
+            };
+        };
+    };
+    api_notifications_test_api_notifications_test_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationTest"];
+                };
+            };
+        };
+    };
+    nutrition_connection_api_nutrition_connection_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NutritionConnection"];
+                };
+            };
+        };
+    };
+    nutrition_connection_save_api_nutrition_connection_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NutritionConnection"];
+                };
+            };
+        };
+    };
+    nutrition_connection_delete_api_nutrition_connection_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NutritionConnection"];
+                };
+            };
+        };
+    };
+    nutrition_sync_api_nutrition_sync_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NutritionSync"];
+                };
+            };
+        };
+    };
+    nutrition_test_api_nutrition_test_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NutritionTest"];
+                };
+            };
+        };
+    };
     api_picker_api_picker_get: {
         parameters: {
             query?: never;
@@ -4981,6 +9201,86 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PlanAutoRecalc"];
+                };
+            };
+        };
+    };
+    plan_brick_transition_api_plan_bricks_transition_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BrickTransition"];
+                };
+            };
+        };
+    };
+    plan_companions_api_plan_companions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanCompanions"];
+                };
+            };
+        };
+    };
+    plan_brick_note_api_plan_companions__companion_id__brick_note_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompanionDismissed"];
+                };
+            };
+        };
+    };
+    plan_companion_dismiss_api_plan_companions__companion_id__dismiss_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompanionDismissed"];
                 };
             };
         };
@@ -5405,6 +9705,26 @@ export interface operations {
             };
         };
     };
+    api_profile_dfa_backfill_cancel_api_profile_dfa_backfill_cancel_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DfaBackfillCancelRequested"];
+                };
+            };
+        };
+    };
     api_profile_dfa_backfill_status_api_profile_dfa_backfill_status_get: {
         parameters: {
             query?: never;
@@ -5685,6 +10005,126 @@ export interface operations {
             };
         };
     };
+    races_status_api_races_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RacesStatus"];
+                };
+            };
+        };
+    };
+    races_add_api_races_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RacesStatus"];
+                };
+            };
+        };
+    };
+    races_sync_api_races_sync_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RacesStatus"];
+                };
+            };
+        };
+    };
+    races_update_api_races__race_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RacesStatus"];
+                };
+            };
+        };
+    };
+    races_delete_api_races__race_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RacesStatus"];
+                };
+            };
+        };
+    };
+    race_day_api_races__race_id__race_day_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RaceDayPlan"];
+                };
+            };
+        };
+    };
     api_readiness_api_readiness_get: {
         parameters: {
             query?: never;
@@ -5945,6 +10385,166 @@ export interface operations {
             };
         };
     };
+    api_ride_delete_api_rides__ride_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Ok"];
+                };
+            };
+        };
+    };
+    run_activities_api_run_activities_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunActivities"];
+                };
+            };
+        };
+    };
+    run_critical_speed_api_run_critical_speed_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CriticalSpeed"];
+                };
+            };
+        };
+    };
+    run_gap_api_run_gap_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunGap"];
+                };
+            };
+        };
+    };
+    run_predict_api_run_predict_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RacePredictor"];
+                };
+            };
+        };
+    };
+    run_sessions_api_run_sessions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunSessions"];
+                };
+            };
+        };
+    };
+    run_session_api_run_sessions__session_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunSession"];
+                };
+            };
+        };
+    };
+    run_zones_api_run_zones_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunZones"];
+                };
+            };
+        };
+    };
     api_settings_api_settings_get: {
         parameters: {
             query?: never;
@@ -6045,6 +10645,26 @@ export interface operations {
             };
         };
     };
+    setup_check_activities_api_setup_check_activities_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActivitiesCheck"];
+                };
+            };
+        };
+    };
     setup_defaults_api_setup_defaults_get: {
         parameters: {
             query?: never;
@@ -6081,6 +10701,346 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EnsureProfile"];
+                };
+            };
+        };
+    };
+    setup_limits_api_setup_limits_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetupLimits"];
+                };
+            };
+        };
+    };
+    setup_pick_folder_api_setup_pick_folder_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PickedFolder"];
+                };
+            };
+        };
+    };
+    setup_save_api_setup_save_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetupSaved"];
+                };
+            };
+        };
+    };
+    setup_test_icu_api_setup_test_icu_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IcuKeyCheck"];
+                };
+            };
+        };
+    };
+    api_sports_load_api_sports_load_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SportsLoad"];
+                };
+            };
+        };
+    };
+    api_sports_thresholds_api_sports_thresholds_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SportThresholds"];
+                };
+            };
+        };
+    };
+    api_sports_set_threshold_api_sports_thresholds_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SportThresholds"];
+                };
+            };
+        };
+    };
+    strength_sessions_api_strength_sessions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StrengthSessions"];
+                };
+            };
+        };
+    };
+    swim_activities_api_swim_activities_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SwimActivities"];
+                };
+            };
+        };
+    };
+    swim_css_api_swim_css_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SwimCss"];
+                };
+            };
+        };
+    };
+    swim_css_test_api_swim_css_test_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SwimCssTest"];
+                };
+            };
+        };
+    };
+    open_water_list_api_swim_open_water_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpenWaterNotes"];
+                };
+            };
+        };
+    };
+    open_water_add_api_swim_open_water_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpenWaterNote"];
+                };
+            };
+        };
+    };
+    open_water_edit_api_swim_open_water__note_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpenWaterNote"];
+                };
+            };
+        };
+    };
+    open_water_delete_api_swim_open_water__note_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Ok"];
+                };
+            };
+        };
+    };
+    swim_sessions_api_swim_sessions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SwimSessions"];
+                };
+            };
+        };
+    };
+    api_sync_api_sync_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SyncResult"];
                 };
             };
         };
@@ -6201,6 +11161,106 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["VersionInfo"];
+                };
+            };
+        };
+    };
+    weather_forecast_api_weather_forecast_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeatherForecast"];
+                };
+            };
+        };
+    };
+    weather_location_api_weather_location_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeatherLocation"];
+                };
+            };
+        };
+    };
+    weather_location_set_api_weather_location_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeatherLocation"];
+                };
+            };
+        };
+    };
+    weather_location_clear_api_weather_location_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeatherLocation"];
+                };
+            };
+        };
+    };
+    weather_search_api_weather_search_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeatherSearch"];
                 };
             };
         };

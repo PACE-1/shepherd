@@ -1,6 +1,122 @@
 {
   "components": {
     "schemas": {
+      "ActivitiesCheck": {
+        "additionalProperties": true,
+        "description": "POST /api/setup/check-activities: HTTP 200 either way; ``ok`` false carries ``error``.",
+        "properties": {
+          "count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Count"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "garmin_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Garmin Count"
+          },
+          "latest_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Date"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "title": "ActivitiesCheck",
+        "type": "object"
+      },
+      "AthleteNumbers": {
+        "additionalProperties": true,
+        "description": "GET /api/icu/athlete-numbers: null for any value intervals.icu does not hold.",
+        "properties": {
+          "ftp": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ftp"
+          },
+          "lthr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lthr"
+          },
+          "max_hr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Hr"
+          },
+          "ok": {
+            "default": false,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "weight": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight"
+          }
+        },
+        "title": "AthleteNumbers",
+        "type": "object"
+      },
       "AutoAdjustResult": {
         "additionalProperties": true,
         "properties": {
@@ -322,6 +438,241 @@
         "title": "BackfillStatus",
         "type": "object"
       },
+      "Balance": {
+        "additionalProperties": true,
+        "properties": {
+          "as_of": {
+            "title": "As Of",
+            "type": "string"
+          },
+          "has_history": {
+            "default": false,
+            "title": "Has History",
+            "type": "boolean"
+          },
+          "has_targets": {
+            "default": false,
+            "title": "Has Targets",
+            "type": "boolean"
+          },
+          "limiter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limiter"
+          },
+          "limiter_note": {
+            "default": "",
+            "title": "Limiter Note",
+            "type": "string"
+          },
+          "method": {
+            "default": "",
+            "title": "Method",
+            "type": "string"
+          },
+          "months": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/BalanceBucket"
+            },
+            "title": "Months",
+            "type": "array"
+          },
+          "single_sport": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Single Sport"
+          },
+          "sports_present": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Sports Present",
+            "type": "array"
+          },
+          "targets": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Targets"
+          },
+          "weeks": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/BalanceBucket"
+            },
+            "title": "Weeks",
+            "type": "array"
+          }
+        },
+        "required": [
+          "as_of"
+        ],
+        "title": "Balance",
+        "type": "object"
+      },
+      "BalanceBucket": {
+        "additionalProperties": true,
+        "properties": {
+          "end": {
+            "title": "End",
+            "type": "string"
+          },
+          "gap_pp": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gap Pp"
+          },
+          "hours": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Hours",
+            "type": "object"
+          },
+          "hours_share": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Hours Share",
+            "type": "object"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "load": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Load",
+            "type": "object"
+          },
+          "load_share": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Load Share",
+            "type": "object"
+          },
+          "start": {
+            "title": "Start",
+            "type": "string"
+          },
+          "total_hours": {
+            "title": "Total Hours",
+            "type": "number"
+          },
+          "total_load": {
+            "title": "Total Load",
+            "type": "number"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "start",
+          "end",
+          "hours",
+          "load",
+          "total_hours",
+          "total_load",
+          "hours_share",
+          "load_share"
+        ],
+        "title": "BalanceBucket",
+        "type": "object"
+      },
+      "BalanceTargets": {
+        "additionalProperties": true,
+        "properties": {
+          "has_targets": {
+            "default": false,
+            "title": "Has Targets",
+            "type": "boolean"
+          },
+          "limiter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limiter"
+          },
+          "limiter_note": {
+            "default": "",
+            "title": "Limiter Note",
+            "type": "string"
+          },
+          "targets": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Targets"
+          }
+        },
+        "title": "BalanceTargets",
+        "type": "object"
+      },
       "BanisterValidation": {
         "additionalProperties": true,
         "properties": {
@@ -465,6 +816,289 @@
           }
         },
         "title": "BanisterValidation",
+        "type": "object"
+      },
+      "BestEffortDelta": {
+        "additionalProperties": true,
+        "properties": {
+          "a_w": {
+            "title": "A W",
+            "type": "integer"
+          },
+          "b_w": {
+            "title": "B W",
+            "type": "integer"
+          },
+          "delta_w": {
+            "title": "Delta W",
+            "type": "integer"
+          },
+          "duration_s": {
+            "title": "Duration S",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "duration_s",
+          "a_w",
+          "b_w",
+          "delta_w"
+        ],
+        "title": "BestEffortDelta",
+        "type": "object"
+      },
+      "BrickTransition": {
+        "additionalProperties": true,
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "transition_target_s": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transition Target S"
+          }
+        },
+        "title": "BrickTransition",
+        "type": "object"
+      },
+      "BuilderLoaded": {
+        "additionalProperties": true,
+        "properties": {
+          "file": {
+            "title": "File",
+            "type": "string"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "workout": {
+            "additionalProperties": true,
+            "title": "Workout",
+            "type": "object"
+          }
+        },
+        "required": [
+          "file",
+          "workout"
+        ],
+        "title": "BuilderLoaded",
+        "type": "object"
+      },
+      "BuilderPoint": {
+        "additionalProperties": true,
+        "properties": {
+          "x": {
+            "title": "X",
+            "type": "number"
+          },
+          "y": {
+            "title": "Y",
+            "type": "number"
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ],
+        "title": "BuilderPoint",
+        "type": "object"
+      },
+      "BuilderPreview": {
+        "additionalProperties": true,
+        "properties": {
+          "duration_s": {
+            "default": 0,
+            "title": "Duration S",
+            "type": "integer"
+          },
+          "errors": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/BuilderProblem"
+            },
+            "title": "Errors",
+            "type": "array"
+          },
+          "intensity_factor": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Intensity Factor"
+          },
+          "ok": {
+            "default": false,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "profile": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/BuilderPoint"
+            },
+            "title": "Profile",
+            "type": "array"
+          },
+          "tss": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tss"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "title": "BuilderPreview",
+        "type": "object"
+      },
+      "BuilderProblem": {
+        "additionalProperties": true,
+        "properties": {
+          "message": {
+            "default": "",
+            "title": "Message",
+            "type": "string"
+          },
+          "path": {
+            "default": "",
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "title": "BuilderProblem",
+        "type": "object"
+      },
+      "BuilderPush": {
+        "additionalProperties": true,
+        "properties": {
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "event_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event Date"
+          },
+          "needs_lthr": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Needs Lthr"
+          },
+          "needs_reconnect": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Needs Reconnect"
+          },
+          "ok": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ok"
+          },
+          "pushed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pushed"
+          }
+        },
+        "title": "BuilderPush",
+        "type": "object"
+      },
+      "BuilderSaved": {
+        "additionalProperties": true,
+        "properties": {
+          "created": {
+            "default": true,
+            "title": "Created",
+            "type": "boolean"
+          },
+          "file": {
+            "title": "File",
+            "type": "string"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "push": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BuilderPush"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "file"
+        ],
+        "title": "BuilderSaved",
         "type": "object"
       },
       "CalendarDay": {
@@ -776,6 +1410,472 @@
         "title": "CapReverted",
         "type": "object"
       },
+      "CompanionDismissed": {
+        "additionalProperties": true,
+        "properties": {
+          "companion": {
+            "$ref": "#/components/schemas/PlanCompanion"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "companion"
+        ],
+        "title": "CompanionDismissed",
+        "type": "object"
+      },
+      "CompareSide": {
+        "additionalProperties": true,
+        "properties": {
+          "end_s": {
+            "default": 0,
+            "title": "End S",
+            "type": "integer"
+          },
+          "hr_bpm": {
+            "default": [],
+            "items": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Hr Bpm",
+            "type": "array"
+          },
+          "name": {
+            "default": "Ride",
+            "title": "Name",
+            "type": "string"
+          },
+          "power_w": {
+            "default": [],
+            "items": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Power W",
+            "type": "array"
+          },
+          "ride_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ride Id"
+          },
+          "start_s": {
+            "default": 0,
+            "title": "Start S",
+            "type": "integer"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/CompareSummary"
+          },
+          "whole": {
+            "default": true,
+            "title": "Whole",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "summary"
+        ],
+        "title": "CompareSide",
+        "type": "object"
+      },
+      "CompareSummary": {
+        "additionalProperties": true,
+        "properties": {
+          "avg_hr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Hr"
+          },
+          "avg_power_w": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Power W"
+          },
+          "distance_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance Km"
+          },
+          "duration_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration S"
+          },
+          "if_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "If Pct"
+          },
+          "np_w": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Np W"
+          },
+          "tss": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tss"
+          }
+        },
+        "title": "CompareSummary",
+        "type": "object"
+      },
+      "CpFit": {
+        "additionalProperties": true,
+        "properties": {
+          "cp_ci95_w": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cp Ci95 W"
+          },
+          "cp_se_w": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cp Se W"
+          },
+          "cp_w": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cp W"
+          },
+          "n_points": {
+            "default": 0,
+            "title": "N Points",
+            "type": "integer"
+          },
+          "points": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/CpFitPoint"
+            },
+            "title": "Points",
+            "type": "array"
+          },
+          "r2": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "R2"
+          },
+          "reason": {
+            "default": "",
+            "title": "Reason",
+            "type": "string"
+          },
+          "see_j": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "See J"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "wprime_ci95_j": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wprime Ci95 J"
+          },
+          "wprime_j": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wprime J"
+          },
+          "wprime_se_j": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wprime Se J"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "CpFit",
+        "type": "object"
+      },
+      "CpFitPoint": {
+        "additionalProperties": true,
+        "properties": {
+          "duration_s": {
+            "title": "Duration S",
+            "type": "integer"
+          },
+          "watts": {
+            "title": "Watts",
+            "type": "integer"
+          },
+          "work_j": {
+            "title": "Work J",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "duration_s",
+          "watts",
+          "work_j"
+        ],
+        "title": "CpFitPoint",
+        "type": "object"
+      },
+      "CpHistoryPoint": {
+        "additionalProperties": true,
+        "properties": {
+          "cp_ci95_w": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cp Ci95 W"
+          },
+          "cp_w": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cp W"
+          },
+          "end_date": {
+            "title": "End Date",
+            "type": "string"
+          },
+          "pmax_w": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pmax W"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "wprime_j": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wprime J"
+          }
+        },
+        "required": [
+          "end_date",
+          "status"
+        ],
+        "title": "CpHistoryPoint",
+        "type": "object"
+      },
+      "CriticalSpeed": {
+        "additionalProperties": true,
+        "properties": {
+          "confidence": {
+            "title": "Confidence",
+            "type": "string"
+          },
+          "cs_m_per_s": {
+            "title": "Cs M Per S",
+            "type": "number"
+          },
+          "cs_pace_s_per_km": {
+            "title": "Cs Pace S Per Km",
+            "type": "number"
+          },
+          "d_prime_m": {
+            "title": "D Prime M",
+            "type": "number"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "n_trials": {
+            "title": "N Trials",
+            "type": "integer"
+          },
+          "r2": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "R2"
+          },
+          "saved": {
+            "default": false,
+            "title": "Saved",
+            "type": "boolean"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "cs_m_per_s",
+          "cs_pace_s_per_km",
+          "d_prime_m",
+          "n_trials",
+          "method",
+          "confidence"
+        ],
+        "title": "CriticalSpeed",
+        "type": "object"
+      },
       "DailyAdapt": {
         "additionalProperties": true,
         "properties": {
@@ -1058,6 +2158,25 @@
           }
         },
         "title": "DfaAggregate",
+        "type": "object"
+      },
+      "DfaBackfillCancelRequested": {
+        "additionalProperties": true,
+        "properties": {
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "task_id": {
+            "title": "Task Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "task_id"
+        ],
+        "title": "DfaBackfillCancelRequested",
         "type": "object"
       },
       "DfaRide": {
@@ -1900,6 +3019,165 @@
         "title": "FolderCount",
         "type": "object"
       },
+      "FolderImportFailure": {
+        "additionalProperties": true,
+        "properties": {
+          "file": {
+            "title": "File",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file",
+          "reason"
+        ],
+        "title": "FolderImportFailure",
+        "type": "object"
+      },
+      "FolderImportScan": {
+        "additionalProperties": true,
+        "properties": {
+          "aborted": {
+            "default": false,
+            "title": "Aborted",
+            "type": "boolean"
+          },
+          "already_imported": {
+            "default": 0,
+            "title": "Already Imported",
+            "type": "integer"
+          },
+          "duplicate": {
+            "default": 0,
+            "title": "Duplicate",
+            "type": "integer"
+          },
+          "error": {
+            "default": "",
+            "title": "Error",
+            "type": "string"
+          },
+          "failed": {
+            "default": 0,
+            "title": "Failed",
+            "type": "integer"
+          },
+          "failures": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/FolderImportFailure"
+            },
+            "title": "Failures",
+            "type": "array"
+          },
+          "finished_at": {
+            "default": "",
+            "title": "Finished At",
+            "type": "string"
+          },
+          "imported": {
+            "default": 0,
+            "title": "Imported",
+            "type": "integer"
+          },
+          "remaining": {
+            "default": 0,
+            "title": "Remaining",
+            "type": "integer"
+          },
+          "started_at": {
+            "title": "Started At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "started_at"
+        ],
+        "title": "FolderImportScan",
+        "type": "object"
+      },
+      "FolderImportStarted": {
+        "additionalProperties": true,
+        "properties": {
+          "running": {
+            "title": "Running",
+            "type": "boolean"
+          },
+          "started": {
+            "title": "Started",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "started",
+          "running"
+        ],
+        "title": "FolderImportStarted",
+        "type": "object"
+      },
+      "FolderImportState": {
+        "additionalProperties": true,
+        "properties": {
+          "folder": {
+            "default": "",
+            "title": "Folder",
+            "type": "string"
+          },
+          "last_scan": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FolderImportScan"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "max_files": {
+            "title": "Max Files",
+            "type": "integer"
+          },
+          "recursive": {
+            "default": false,
+            "title": "Recursive",
+            "type": "boolean"
+          },
+          "running": {
+            "default": false,
+            "title": "Running",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "max_files"
+        ],
+        "title": "FolderImportState",
+        "type": "object"
+      },
+      "FrontendErrorLogged": {
+        "additionalProperties": true,
+        "description": "POST /api/diag/frontend-error: ``code`` is the code that was logged (unknown codes become E_FRONTEND_GENERIC).",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "title": "FrontendErrorLogged",
+        "type": "object"
+      },
       "FtpHistory": {
         "additionalProperties": true,
         "properties": {
@@ -2179,6 +3457,481 @@
         "title": "FtpUpdated",
         "type": "object"
       },
+      "Fueling": {
+        "additionalProperties": true,
+        "properties": {
+          "connected": {
+            "default": false,
+            "title": "Connected",
+            "type": "boolean"
+          },
+          "daily_method": {
+            "title": "Daily Method",
+            "type": "string"
+          },
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "day": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FuelingDay"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "during": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FuelingDuring"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "energy_method": {
+            "title": "Energy Method",
+            "type": "string"
+          },
+          "hourly_method": {
+            "title": "Hourly Method",
+            "type": "string"
+          },
+          "logged": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NutritionDay"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "ride_kcal_approx": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ride Kcal Approx"
+          },
+          "session": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FuelingSession"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "weight_kg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight Kg"
+          }
+        },
+        "required": [
+          "date",
+          "hourly_method",
+          "daily_method",
+          "energy_method",
+          "note"
+        ],
+        "title": "Fueling",
+        "type": "object"
+      },
+      "FuelingDay": {
+        "additionalProperties": true,
+        "properties": {
+          "high_g": {
+            "title": "High G",
+            "type": "integer"
+          },
+          "high_g_per_kg": {
+            "title": "High G Per Kg",
+            "type": "integer"
+          },
+          "load": {
+            "title": "Load",
+            "type": "string"
+          },
+          "low_g": {
+            "title": "Low G",
+            "type": "integer"
+          },
+          "low_g_per_kg": {
+            "title": "Low G Per Kg",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "load",
+          "low_g_per_kg",
+          "high_g_per_kg",
+          "low_g",
+          "high_g"
+        ],
+        "title": "FuelingDay",
+        "type": "object"
+      },
+      "FuelingDuring": {
+        "additionalProperties": true,
+        "properties": {
+          "band": {
+            "title": "Band",
+            "type": "string"
+          },
+          "high_g": {
+            "title": "High G",
+            "type": "integer"
+          },
+          "high_g_per_h": {
+            "title": "High G Per H",
+            "type": "integer"
+          },
+          "low_g": {
+            "title": "Low G",
+            "type": "integer"
+          },
+          "low_g_per_h": {
+            "title": "Low G Per H",
+            "type": "integer"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "band",
+          "low_g_per_h",
+          "high_g_per_h",
+          "low_g",
+          "high_g",
+          "note"
+        ],
+        "title": "FuelingDuring",
+        "type": "object"
+      },
+      "FuelingSession": {
+        "additionalProperties": true,
+        "properties": {
+          "duration_min": {
+            "title": "Duration Min",
+            "type": "integer"
+          },
+          "session_type": {
+            "title": "Session Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_type",
+          "duration_min"
+        ],
+        "title": "FuelingSession",
+        "type": "object"
+      },
+      "GearItem": {
+        "additionalProperties": true,
+        "properties": {
+          "hours": {
+            "default": 0,
+            "title": "Hours",
+            "type": "number"
+          },
+          "hours_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hours Pct"
+          },
+          "icu_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Icu Name"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "km": {
+            "default": 0,
+            "title": "Km",
+            "type": "number"
+          },
+          "km_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Km Pct"
+          },
+          "last_service": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Service"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "parent_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Id"
+          },
+          "retired": {
+            "default": false,
+            "title": "Retired",
+            "type": "boolean"
+          },
+          "service_every_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Service Every Hours"
+          },
+          "service_every_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Service Every Km"
+          },
+          "services": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GearService"
+            },
+            "title": "Services",
+            "type": "array"
+          },
+          "started_on": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started On"
+          },
+          "state": {
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "state"
+        ],
+        "title": "GearItem",
+        "type": "object"
+      },
+      "GearOverview": {
+        "additionalProperties": true,
+        "properties": {
+          "items": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GearItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "method": {
+            "default": "",
+            "title": "Method",
+            "type": "string"
+          },
+          "recent": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GearRide"
+            },
+            "title": "Recent",
+            "type": "array"
+          },
+          "suggestions": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GearSuggestion"
+            },
+            "title": "Suggestions",
+            "type": "array"
+          }
+        },
+        "title": "GearOverview",
+        "type": "object"
+      },
+      "GearRide": {
+        "additionalProperties": true,
+        "properties": {
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "distance_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance Km"
+          },
+          "gear_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gear Id"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "sport": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sport"
+          }
+        },
+        "required": [
+          "id",
+          "date",
+          "source"
+        ],
+        "title": "GearRide",
+        "type": "object"
+      },
+      "GearService": {
+        "additionalProperties": true,
+        "properties": {
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "note": {
+            "default": "",
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "date"
+        ],
+        "title": "GearService",
+        "type": "object"
+      },
+      "GearSuggestion": {
+        "additionalProperties": true,
+        "properties": {
+          "icu_name": {
+            "title": "Icu Name",
+            "type": "string"
+          },
+          "rides": {
+            "title": "Rides",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "icu_name",
+          "rides"
+        ],
+        "title": "GearSuggestion",
+        "type": "object"
+      },
       "HrvImported": {
         "additionalProperties": true,
         "properties": {
@@ -2328,6 +4081,76 @@
           }
         },
         "title": "IcuConnection",
+        "type": "object"
+      },
+      "IcuKeyCheck": {
+        "additionalProperties": true,
+        "description": "POST /api/setup/test-icu: HTTP 200 either way; ``ok`` false carries ``error``.",
+        "properties": {
+          "athlete_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Athlete Id"
+          },
+          "eftp": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Eftp"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "weight": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight"
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "title": "IcuKeyCheck",
         "type": "object"
       },
       "IcuPushResult": {
@@ -2488,6 +4311,233 @@
           }
         },
         "title": "IcuRaces",
+        "type": "object"
+      },
+      "InjuryEpisode": {
+        "additionalProperties": true,
+        "properties": {
+          "body_area": {
+            "default": "",
+            "title": "Body Area",
+            "type": "string"
+          },
+          "end": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "note": {
+            "default": "",
+            "title": "Note",
+            "type": "string"
+          },
+          "sport": {
+            "default": "all",
+            "title": "Sport",
+            "type": "string"
+          },
+          "start": {
+            "title": "Start",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "start"
+        ],
+        "title": "InjuryEpisode",
+        "type": "object"
+      },
+      "InjuryRampWeek": {
+        "additionalProperties": true,
+        "properties": {
+          "easy_only": {
+            "default": false,
+            "title": "Easy Only",
+            "type": "boolean"
+          },
+          "end": {
+            "title": "End",
+            "type": "string"
+          },
+          "phase": {
+            "title": "Phase",
+            "type": "string"
+          },
+          "start": {
+            "title": "Start",
+            "type": "string"
+          },
+          "tss_target": {
+            "default": 0,
+            "title": "Tss Target",
+            "type": "number"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "phase"
+        ],
+        "title": "InjuryRampWeek",
+        "type": "object"
+      },
+      "InjuryReturn": {
+        "additionalProperties": true,
+        "properties": {
+          "absence_days": {
+            "title": "Absence Days",
+            "type": "integer"
+          },
+          "end": {
+            "title": "End",
+            "type": "string"
+          },
+          "episode_days": {
+            "title": "Episode Days",
+            "type": "integer"
+          },
+          "episode_id": {
+            "title": "Episode Id",
+            "type": "string"
+          },
+          "start": {
+            "title": "Start",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          },
+          "weeks_done": {
+            "title": "Weeks Done",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "episode_id",
+          "type",
+          "start",
+          "end",
+          "episode_days",
+          "absence_days",
+          "weeks_done"
+        ],
+        "title": "InjuryReturn",
+        "type": "object"
+      },
+      "InjuryShortBreak": {
+        "additionalProperties": true,
+        "properties": {
+          "end": {
+            "title": "End",
+            "type": "string"
+          },
+          "episode_days": {
+            "title": "Episode Days",
+            "type": "integer"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "episode_days",
+          "end"
+        ],
+        "title": "InjuryShortBreak",
+        "type": "object"
+      },
+      "InjuryStatus": {
+        "additionalProperties": true,
+        "properties": {
+          "active": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InjuryEpisode"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "episodes": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/InjuryEpisode"
+            },
+            "title": "Episodes",
+            "type": "array"
+          },
+          "has_plan": {
+            "default": false,
+            "title": "Has Plan",
+            "type": "boolean"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "plan_synced": {
+            "default": false,
+            "title": "Plan Synced",
+            "type": "boolean"
+          },
+          "ramp_weeks": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/InjuryRampWeek"
+            },
+            "title": "Ramp Weeks",
+            "type": "array"
+          },
+          "return_ramp": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InjuryReturn"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "short_break": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InjuryShortBreak"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "note"
+        ],
+        "title": "InjuryStatus",
         "type": "object"
       },
       "Insight": {
@@ -2668,6 +4718,308 @@
         "title": "MigrationResult",
         "type": "object"
       },
+      "NotificationEvents": {
+        "additionalProperties": true,
+        "properties": {
+          "gear_due": {
+            "default": true,
+            "title": "Gear Due",
+            "type": "boolean"
+          },
+          "missed": {
+            "default": true,
+            "title": "Missed",
+            "type": "boolean"
+          },
+          "readiness": {
+            "default": true,
+            "title": "Readiness",
+            "type": "boolean"
+          },
+          "sync_failure": {
+            "default": true,
+            "title": "Sync Failure",
+            "type": "boolean"
+          }
+        },
+        "title": "NotificationEvents",
+        "type": "object"
+      },
+      "NotificationItem": {
+        "additionalProperties": true,
+        "properties": {
+          "body": {
+            "title": "Body",
+            "type": "string"
+          },
+          "day": {
+            "title": "Day",
+            "type": "string"
+          },
+          "event": {
+            "title": "Event",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "read": {
+            "default": false,
+            "title": "Read",
+            "type": "boolean"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "event",
+          "day",
+          "title",
+          "body",
+          "ts"
+        ],
+        "title": "NotificationItem",
+        "type": "object"
+      },
+      "NotificationList": {
+        "additionalProperties": true,
+        "properties": {
+          "items": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/NotificationItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "unread": {
+            "default": 0,
+            "title": "Unread",
+            "type": "integer"
+          }
+        },
+        "title": "NotificationList",
+        "type": "object"
+      },
+      "NotificationSettings": {
+        "additionalProperties": true,
+        "properties": {
+          "events": {
+            "$ref": "#/components/schemas/NotificationEvents",
+            "default": {
+              "gear_due": true,
+              "missed": true,
+              "readiness": true,
+              "sync_failure": true
+            }
+          },
+          "has_url": {
+            "default": false,
+            "title": "Has Url",
+            "type": "boolean"
+          },
+          "readiness_time": {
+            "default": "",
+            "title": "Readiness Time",
+            "type": "string"
+          }
+        },
+        "title": "NotificationSettings",
+        "type": "object"
+      },
+      "NotificationTest": {
+        "additionalProperties": true,
+        "properties": {
+          "error": {
+            "default": "",
+            "title": "Error",
+            "type": "string"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "title": "NotificationTest",
+        "type": "object"
+      },
+      "NutritionConnection": {
+        "additionalProperties": true,
+        "properties": {
+          "base_url": {
+            "default": "",
+            "title": "Base Url",
+            "type": "string"
+          },
+          "configured": {
+            "default": false,
+            "title": "Configured",
+            "type": "boolean"
+          },
+          "has_key": {
+            "default": false,
+            "title": "Has Key",
+            "type": "boolean"
+          },
+          "last_synced_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Synced At"
+          }
+        },
+        "title": "NutritionConnection",
+        "type": "object"
+      },
+      "NutritionDay": {
+        "additionalProperties": true,
+        "properties": {
+          "carbs_g": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Carbs G"
+          },
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "fat_g": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fat G"
+          },
+          "kcal": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kcal"
+          },
+          "protein_g": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Protein G"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "synced_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Synced At"
+          },
+          "water_ml": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Water Ml"
+          }
+        },
+        "required": [
+          "date",
+          "source"
+        ],
+        "title": "NutritionDay",
+        "type": "object"
+      },
+      "NutritionSync": {
+        "additionalProperties": true,
+        "properties": {
+          "days_with_data": {
+            "title": "Days With Data",
+            "type": "integer"
+          },
+          "end": {
+            "title": "End",
+            "type": "string"
+          },
+          "start": {
+            "title": "Start",
+            "type": "string"
+          },
+          "synced_at": {
+            "title": "Synced At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "days_with_data",
+          "synced_at"
+        ],
+        "title": "NutritionSync",
+        "type": "object"
+      },
+      "NutritionTest": {
+        "additionalProperties": true,
+        "properties": {
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok",
+          "message"
+        ],
+        "title": "NutritionTest",
+        "type": "object"
+      },
       "Ok": {
         "additionalProperties": true,
         "properties": {
@@ -2678,6 +5030,106 @@
           }
         },
         "title": "Ok",
+        "type": "object"
+      },
+      "OpenWaterNote": {
+        "additionalProperties": true,
+        "properties": {
+          "activity_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Activity Id"
+          },
+          "conditions": {
+            "default": "",
+            "title": "Conditions",
+            "type": "string"
+          },
+          "course": {
+            "default": "",
+            "title": "Course",
+            "type": "string"
+          },
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "note": {
+            "default": "",
+            "title": "Note",
+            "type": "string"
+          },
+          "sighting": {
+            "default": "",
+            "title": "Sighting",
+            "type": "string"
+          },
+          "water_temp_c": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Water Temp C"
+          },
+          "wetsuit": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wetsuit"
+          }
+        },
+        "required": [
+          "id",
+          "date"
+        ],
+        "title": "OpenWaterNote",
+        "type": "object"
+      },
+      "OpenWaterNotes": {
+        "additionalProperties": true,
+        "properties": {
+          "notes": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/OpenWaterNote"
+            },
+            "title": "Notes",
+            "type": "array"
+          }
+        },
+        "title": "OpenWaterNotes",
+        "type": "object"
+      },
+      "PickedFolder": {
+        "additionalProperties": true,
+        "description": "GET /api/setup/pick-folder: \"\" when the dialog was cancelled or unavailable.",
+        "properties": {
+          "path": {
+            "default": "",
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "title": "PickedFolder",
         "type": "object"
       },
       "PickerResult": {
@@ -2776,6 +5228,214 @@
           "action"
         ],
         "title": "PlanAutoRecalc",
+        "type": "object"
+      },
+      "PlanCompanion": {
+        "additionalProperties": true,
+        "properties": {
+          "brick_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Brick Note"
+          },
+          "brick_of": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Brick Of"
+          },
+          "completion_matches": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completion Matches"
+          },
+          "day": {
+            "title": "Day",
+            "type": "string"
+          },
+          "day_name": {
+            "default": "",
+            "title": "Day Name",
+            "type": "string"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "dismissed_at": {
+            "default": "",
+            "title": "Dismissed At",
+            "type": "string"
+          },
+          "duration_min": {
+            "default": 0,
+            "title": "Duration Min",
+            "type": "integer"
+          },
+          "hard": {
+            "default": false,
+            "title": "Hard",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "limiter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limiter"
+          },
+          "session_type": {
+            "title": "Session Type",
+            "type": "string"
+          },
+          "sport": {
+            "title": "Sport",
+            "type": "string"
+          },
+          "status": {
+            "default": "pending",
+            "title": "Status",
+            "type": "string"
+          },
+          "template_id": {
+            "default": "",
+            "title": "Template Id",
+            "type": "string"
+          },
+          "workout": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workout"
+          }
+        },
+        "required": [
+          "id",
+          "day",
+          "sport",
+          "session_type"
+        ],
+        "title": "PlanCompanion",
+        "type": "object"
+      },
+      "PlanCompanionWeek": {
+        "additionalProperties": true,
+        "properties": {
+          "companions": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/PlanCompanion"
+            },
+            "title": "Companions",
+            "type": "array"
+          },
+          "end": {
+            "title": "End",
+            "type": "string"
+          },
+          "start": {
+            "title": "Start",
+            "type": "string"
+          },
+          "week_num": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Week Num"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ],
+        "title": "PlanCompanionWeek",
+        "type": "object"
+      },
+      "PlanCompanions": {
+        "additionalProperties": true,
+        "properties": {
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "has_plan": {
+            "default": false,
+            "title": "Has Plan",
+            "type": "boolean"
+          },
+          "note": {
+            "default": "",
+            "title": "Note",
+            "type": "string"
+          },
+          "today": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/PlanCompanion"
+            },
+            "title": "Today",
+            "type": "array"
+          },
+          "transition_target_s": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transition Target S"
+          },
+          "weeks": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/PlanCompanionWeek"
+            },
+            "title": "Weeks",
+            "type": "array"
+          }
+        },
+        "title": "PlanCompanions",
         "type": "object"
       },
       "PlanGoal": {
@@ -3646,6 +6306,80 @@
         "title": "PowerCurvePoint",
         "type": "object"
       },
+      "PowerModel": {
+        "additionalProperties": true,
+        "properties": {
+          "caveat": {
+            "title": "Caveat",
+            "type": "string"
+          },
+          "cp_w_per_kg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cp W Per Kg"
+          },
+          "fit": {
+            "$ref": "#/components/schemas/CpFit"
+          },
+          "history": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/CpHistoryPoint"
+            },
+            "title": "History",
+            "type": "array"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "n_rides": {
+            "title": "N Rides",
+            "type": "integer"
+          },
+          "pmax_w": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pmax W"
+          },
+          "weight_kg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight Kg"
+          },
+          "window_days": {
+            "title": "Window Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "window_days",
+          "n_rides",
+          "method",
+          "caveat",
+          "fit"
+        ],
+        "title": "PowerModel",
+        "type": "object"
+      },
       "PrToastQueue": {
         "additionalProperties": true,
         "properties": {
@@ -4049,6 +6783,113 @@
         "title": "ProgrammeSummary",
         "type": "object"
       },
+      "Race": {
+        "additionalProperties": true,
+        "properties": {
+          "arrive_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Arrive Time"
+          },
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "days_to_go": {
+            "default": 0,
+            "title": "Days To Go",
+            "type": "integer"
+          },
+          "discipline": {
+            "default": "cycling",
+            "title": "Discipline",
+            "type": "string"
+          },
+          "distance": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance"
+          },
+          "event_climb_m": {
+            "default": 0,
+            "title": "Event Climb M",
+            "type": "number"
+          },
+          "event_km": {
+            "default": 0,
+            "title": "Event Km",
+            "type": "number"
+          },
+          "event_type": {
+            "default": "granfondo",
+            "title": "Event Type",
+            "type": "string"
+          },
+          "expected_duration_h": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Duration H"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "in_plan": {
+            "default": false,
+            "title": "In Plan",
+            "type": "boolean"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "priority": {
+            "title": "Priority",
+            "type": "string"
+          },
+          "start_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Time"
+          },
+          "taper": {
+            "$ref": "#/components/schemas/RaceTaper"
+          }
+        },
+        "required": [
+          "id",
+          "date",
+          "priority",
+          "taper"
+        ],
+        "title": "Race",
+        "type": "object"
+      },
       "RaceAdded": {
         "additionalProperties": true,
         "properties": {
@@ -4093,6 +6934,714 @@
           }
         },
         "title": "RaceAdded",
+        "type": "object"
+      },
+      "RaceDayPlan": {
+        "additionalProperties": true,
+        "properties": {
+          "expected_duration_h": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Duration H"
+          },
+          "fueling": {
+            "title": "Fueling",
+            "type": "string"
+          },
+          "power": {
+            "$ref": "#/components/schemas/RacePower"
+          },
+          "race": {
+            "$ref": "#/components/schemas/Race"
+          },
+          "timeline": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/RaceTimelineRow"
+            },
+            "title": "Timeline",
+            "type": "array"
+          },
+          "warmup_min": {
+            "title": "Warmup Min",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "race",
+          "warmup_min",
+          "power",
+          "fueling"
+        ],
+        "title": "RaceDayPlan",
+        "type": "object"
+      },
+      "RaceInputCs": {
+        "additionalProperties": true,
+        "properties": {
+          "cs_m_per_s": {
+            "title": "Cs M Per S",
+            "type": "number"
+          },
+          "d_prime_m": {
+            "title": "D Prime M",
+            "type": "number"
+          },
+          "date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date"
+          }
+        },
+        "required": [
+          "cs_m_per_s",
+          "d_prime_m"
+        ],
+        "title": "RaceInputCs",
+        "type": "object"
+      },
+      "RaceInputRun": {
+        "additionalProperties": true,
+        "properties": {
+          "date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date"
+          },
+          "distance_m": {
+            "title": "Distance M",
+            "type": "number"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "pace_s_per_km": {
+            "title": "Pace S Per Km",
+            "type": "number"
+          },
+          "time_s": {
+            "title": "Time S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "distance_m",
+          "time_s",
+          "pace_s_per_km"
+        ],
+        "title": "RaceInputRun",
+        "type": "object"
+      },
+      "RacePower": {
+        "additionalProperties": true,
+        "properties": {
+          "available": {
+            "title": "Available",
+            "type": "boolean"
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "ftp": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ftp"
+          },
+          "if_high": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "If High"
+          },
+          "if_low": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "If Low"
+          },
+          "method": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Method"
+          },
+          "np_high": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Np High"
+          },
+          "np_low": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Np Low"
+          },
+          "predicted_if": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Predicted If"
+          },
+          "predicted_np": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Predicted Np"
+          },
+          "predicted_tss": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Predicted Tss"
+          },
+          "projected_duration_h": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Projected Duration H"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "required": [
+          "available"
+        ],
+        "title": "RacePower",
+        "type": "object"
+      },
+      "RacePrediction": {
+        "additionalProperties": true,
+        "properties": {
+          "distance_m": {
+            "title": "Distance M",
+            "type": "number"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "notes": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Notes",
+            "type": "array"
+          },
+          "pace_s_per_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pace S Per Km"
+          },
+          "race": {
+            "title": "Race",
+            "type": "string"
+          },
+          "range_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Range Text"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "time_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time S"
+          }
+        },
+        "required": [
+          "race",
+          "label",
+          "distance_m",
+          "model",
+          "status"
+        ],
+        "title": "RacePrediction",
+        "type": "object"
+      },
+      "RacePredictor": {
+        "additionalProperties": true,
+        "properties": {
+          "best_run": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RaceInputRun"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "critical_speed": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RaceInputCs"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "cs_confidence": {
+            "title": "Cs Confidence",
+            "type": "string"
+          },
+          "cs_method": {
+            "title": "Cs Method",
+            "type": "string"
+          },
+          "long_run_rule": {
+            "title": "Long Run Rule",
+            "type": "string"
+          },
+          "longest_run_m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Longest Run M"
+          },
+          "missing": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          },
+          "predictions": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/RacePrediction"
+            },
+            "title": "Predictions",
+            "type": "array"
+          },
+          "riegel_confidence": {
+            "title": "Riegel Confidence",
+            "type": "string"
+          },
+          "riegel_method": {
+            "title": "Riegel Method",
+            "type": "string"
+          },
+          "window_days": {
+            "title": "Window Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "window_days",
+          "riegel_method",
+          "riegel_confidence",
+          "cs_method",
+          "cs_confidence",
+          "long_run_rule"
+        ],
+        "title": "RacePredictor",
+        "type": "object"
+      },
+      "RaceTaper": {
+        "additionalProperties": true,
+        "properties": {
+          "before_tss": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Before Tss"
+          },
+          "end": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "planned_tss": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Planned Tss"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start"
+          },
+          "text": {
+            "default": "",
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind"
+        ],
+        "title": "RaceTaper",
+        "type": "object"
+      },
+      "RaceTaperWeek": {
+        "additionalProperties": true,
+        "properties": {
+          "end": {
+            "title": "End",
+            "type": "string"
+          },
+          "planned_tss": {
+            "default": 0,
+            "title": "Planned Tss",
+            "type": "number"
+          },
+          "start": {
+            "title": "Start",
+            "type": "string"
+          },
+          "tss_target": {
+            "default": 0,
+            "title": "Tss Target",
+            "type": "number"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ],
+        "title": "RaceTaperWeek",
+        "type": "object"
+      },
+      "RaceTimelineRow": {
+        "additionalProperties": true,
+        "properties": {
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "time": {
+            "title": "Time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "time",
+          "label"
+        ],
+        "title": "RaceTimelineRow",
+        "type": "object"
+      },
+      "RacesStatus": {
+        "additionalProperties": true,
+        "properties": {
+          "confidence": {
+            "default": "",
+            "title": "Confidence",
+            "type": "string"
+          },
+          "has_plan": {
+            "default": false,
+            "title": "Has Plan",
+            "type": "boolean"
+          },
+          "method": {
+            "default": "",
+            "title": "Method",
+            "type": "string"
+          },
+          "plan_a_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Plan A Date"
+          },
+          "plan_synced": {
+            "default": false,
+            "title": "Plan Synced",
+            "type": "boolean"
+          },
+          "races": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Race"
+            },
+            "title": "Races",
+            "type": "array"
+          },
+          "stored": {
+            "default": false,
+            "title": "Stored",
+            "type": "boolean"
+          },
+          "taper_weeks": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/RaceTaperWeek"
+            },
+            "title": "Taper Weeks",
+            "type": "array"
+          }
+        },
+        "title": "RacesStatus",
+        "type": "object"
+      },
+      "RampRate": {
+        "additionalProperties": true,
+        "properties": {
+          "as_of": {
+            "title": "As Of",
+            "type": "string"
+          },
+          "combined": {
+            "$ref": "#/components/schemas/RampRateLine"
+          },
+          "confidence": {
+            "title": "Confidence",
+            "type": "string"
+          },
+          "high": {
+            "title": "High",
+            "type": "number"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "sports": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/RampRateLine"
+            },
+            "default": {},
+            "title": "Sports",
+            "type": "object"
+          },
+          "threshold": {
+            "title": "Threshold",
+            "type": "number"
+          },
+          "warn": {
+            "title": "Warn",
+            "type": "boolean"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "as_of",
+          "threshold",
+          "high",
+          "combined",
+          "warn",
+          "method",
+          "confidence",
+          "note"
+        ],
+        "title": "RampRate",
+        "type": "object"
+      },
+      "RampRateLine": {
+        "additionalProperties": true,
+        "properties": {
+          "change_pct": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Change Pct"
+          },
+          "level": {
+            "title": "Level",
+            "type": "string"
+          },
+          "prev_4wk_avg": {
+            "title": "Prev 4Wk Avg",
+            "type": "number"
+          },
+          "ratio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ratio"
+          },
+          "week_load": {
+            "title": "Week Load",
+            "type": "number"
+          }
+        },
+        "required": [
+          "week_load",
+          "prev_4wk_avg",
+          "level"
+        ],
+        "title": "RampRateLine",
         "type": "object"
       },
       "Readiness": {
@@ -4392,6 +7941,45 @@
           }
         },
         "title": "RetestSnoozed",
+        "type": "object"
+      },
+      "RideCompare": {
+        "additionalProperties": true,
+        "properties": {
+          "a": {
+            "$ref": "#/components/schemas/CompareSide"
+          },
+          "b": {
+            "$ref": "#/components/schemas/CompareSide"
+          },
+          "best_efforts": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/BestEffortDelta"
+            },
+            "title": "Best Efforts",
+            "type": "array"
+          },
+          "bin_s": {
+            "title": "Bin S",
+            "type": "integer"
+          },
+          "delta": {
+            "$ref": "#/components/schemas/CompareSummary"
+          },
+          "min_best_effort_s": {
+            "title": "Min Best Effort S",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "bin_s",
+          "min_best_effort_s",
+          "a",
+          "b",
+          "delta"
+        ],
+        "title": "RideCompare",
         "type": "object"
       },
       "RideDetail": {
@@ -5056,6 +8644,647 @@
         "title": "RidesSynced",
         "type": "object"
       },
+      "RunActivities": {
+        "additionalProperties": true,
+        "properties": {
+          "confidence": {
+            "title": "Confidence",
+            "type": "string"
+          },
+          "max_hr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Hr"
+          },
+          "max_hr_source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Hr Source"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "missing": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          },
+          "rest_hr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rest Hr"
+          },
+          "runs": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/RunActivity"
+            },
+            "title": "Runs",
+            "type": "array"
+          },
+          "sex": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sex"
+          },
+          "threshold_hr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold Hr"
+          },
+          "threshold_pace_s_per_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold Pace S Per Km"
+          }
+        },
+        "required": [
+          "method",
+          "confidence"
+        ],
+        "title": "RunActivities",
+        "type": "object"
+      },
+      "RunActivity": {
+        "additionalProperties": true,
+        "properties": {
+          "avg_hr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Hr"
+          },
+          "cadence_doubled": {
+            "default": false,
+            "title": "Cadence Doubled",
+            "type": "boolean"
+          },
+          "cadence_spm": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cadence Spm"
+          },
+          "date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date"
+          },
+          "distance_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance Km"
+          },
+          "duration_s": {
+            "default": 0,
+            "title": "Duration S",
+            "type": "number"
+          },
+          "hrtss": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hrtss"
+          },
+          "icu_load": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Icu Load"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "intensity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Intensity"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "pace_s_per_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pace S Per Km"
+          },
+          "rtss": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rtss"
+          },
+          "step_length_m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Step Length M"
+          },
+          "stride_length_m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stride Length M"
+          },
+          "type": {
+            "default": "",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "RunActivity",
+        "type": "object"
+      },
+      "RunGap": {
+        "additionalProperties": true,
+        "properties": {
+          "confidence": {
+            "title": "Confidence",
+            "type": "string"
+          },
+          "cost_j_per_kg_m": {
+            "title": "Cost J Per Kg M",
+            "type": "number"
+          },
+          "flat_cost_j_per_kg_m": {
+            "title": "Flat Cost J Per Kg M",
+            "type": "number"
+          },
+          "gap_s_per_km": {
+            "title": "Gap S Per Km",
+            "type": "number"
+          },
+          "grade_pct": {
+            "title": "Grade Pct",
+            "type": "number"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "pace_s_per_km": {
+            "title": "Pace S Per Km",
+            "type": "number"
+          }
+        },
+        "required": [
+          "pace_s_per_km",
+          "grade_pct",
+          "gap_s_per_km",
+          "cost_j_per_kg_m",
+          "flat_cost_j_per_kg_m",
+          "method",
+          "confidence"
+        ],
+        "title": "RunGap",
+        "type": "object"
+      },
+      "RunHrZone": {
+        "additionalProperties": true,
+        "properties": {
+          "high_bpm": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "High Bpm"
+          },
+          "high_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "High Pct"
+          },
+          "low_bpm": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Low Bpm"
+          },
+          "low_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Low Pct"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "zone": {
+            "title": "Zone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "zone",
+          "name"
+        ],
+        "title": "RunHrZone",
+        "type": "object"
+      },
+      "RunPaceZone": {
+        "additionalProperties": true,
+        "properties": {
+          "fast_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fast Pct"
+          },
+          "fast_s_per_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fast S Per Km"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "slow_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slow Pct"
+          },
+          "slow_s_per_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slow S Per Km"
+          },
+          "zone": {
+            "title": "Zone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "zone",
+          "name"
+        ],
+        "title": "RunPaceZone",
+        "type": "object"
+      },
+      "RunProfilePoint": {
+        "additionalProperties": true,
+        "properties": {
+          "x": {
+            "title": "X",
+            "type": "number"
+          },
+          "y": {
+            "title": "Y",
+            "type": "number"
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ],
+        "title": "RunProfilePoint",
+        "type": "object"
+      },
+      "RunSession": {
+        "additionalProperties": true,
+        "properties": {
+          "daniels": {
+            "title": "Daniels",
+            "type": "string"
+          },
+          "hard": {
+            "title": "Hard",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "intent": {
+            "title": "Intent",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "max_minutes": {
+            "title": "Max Minutes",
+            "type": "integer"
+          },
+          "min_minutes": {
+            "title": "Min Minutes",
+            "type": "integer"
+          },
+          "minutes": {
+            "title": "Minutes",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "profile": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/RunProfilePoint"
+            },
+            "title": "Profile",
+            "type": "array"
+          },
+          "rtss_estimate": {
+            "title": "Rtss Estimate",
+            "type": "number"
+          },
+          "session_type": {
+            "title": "Session Type",
+            "type": "string"
+          },
+          "source": {
+            "default": "",
+            "title": "Source",
+            "type": "string"
+          },
+          "stimulus": {
+            "title": "Stimulus",
+            "type": "string"
+          },
+          "workout": {
+            "additionalProperties": true,
+            "title": "Workout",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "session_type",
+          "stimulus",
+          "daniels",
+          "intent",
+          "hard",
+          "min_minutes",
+          "max_minutes",
+          "minutes",
+          "workout",
+          "rtss_estimate"
+        ],
+        "title": "RunSession",
+        "type": "object"
+      },
+      "RunSessions": {
+        "additionalProperties": true,
+        "properties": {
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "sessions": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/RunSession"
+            },
+            "title": "Sessions",
+            "type": "array"
+          },
+          "targets": {
+            "title": "Targets",
+            "type": "string"
+          },
+          "threshold_pace_s_per_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold Pace S Per Km"
+          }
+        },
+        "required": [
+          "targets",
+          "note",
+          "method"
+        ],
+        "title": "RunSessions",
+        "type": "object"
+      },
+      "RunZones": {
+        "additionalProperties": true,
+        "properties": {
+          "confidence": {
+            "title": "Confidence",
+            "type": "string"
+          },
+          "hr_zones": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/RunHrZone"
+            },
+            "title": "Hr Zones",
+            "type": "array"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "pace_history": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SportThresholdEntry"
+            },
+            "title": "Pace History",
+            "type": "array"
+          },
+          "pace_zones": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/RunPaceZone"
+            },
+            "title": "Pace Zones",
+            "type": "array"
+          },
+          "threshold_hr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold Hr"
+          },
+          "threshold_pace_s_per_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold Pace S Per Km"
+          }
+        },
+        "required": [
+          "method",
+          "confidence"
+        ],
+        "title": "RunZones",
+        "type": "object"
+      },
       "SessionDismissed": {
         "additionalProperties": true,
         "properties": {
@@ -5373,6 +9602,1120 @@
         "title": "SetupDefaults",
         "type": "object"
       },
+      "SetupLimits": {
+        "additionalProperties": true,
+        "description": "GET /api/setup/limits: [min, max] per setup field.",
+        "properties": {
+          "age": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Age"
+          },
+          "cp": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cp"
+          },
+          "ftp": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ftp"
+          },
+          "hours_per_week": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hours Per Week"
+          },
+          "lthr": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lthr"
+          },
+          "max_hr": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Hr"
+          },
+          "weight": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight"
+          },
+          "wprime_j": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wprime J"
+          }
+        },
+        "title": "SetupLimits",
+        "type": "object"
+      },
+      "SetupSaved": {
+        "additionalProperties": true,
+        "description": "POST /api/setup/save. The optional keys appear only when they apply.",
+        "properties": {
+          "athlete_id_detected": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Athlete Id Detected"
+          },
+          "athlete_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Athlete Name"
+          },
+          "creds_test": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Creds Test"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "warning": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Warning"
+          }
+        },
+        "title": "SetupSaved",
+        "type": "object"
+      },
+      "SportLoadLine": {
+        "additionalProperties": true,
+        "properties": {
+          "atl": {
+            "title": "Atl",
+            "type": "number"
+          },
+          "ctl": {
+            "title": "Ctl",
+            "type": "number"
+          },
+          "tsb": {
+            "title": "Tsb",
+            "type": "number"
+          },
+          "week_load": {
+            "title": "Week Load",
+            "type": "number"
+          }
+        },
+        "required": [
+          "ctl",
+          "atl",
+          "tsb",
+          "week_load"
+        ],
+        "title": "SportLoadLine",
+        "type": "object"
+      },
+      "SportThreshold": {
+        "additionalProperties": true,
+        "properties": {
+          "current": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current"
+          },
+          "history": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SportThresholdEntry"
+            },
+            "title": "History",
+            "type": "array"
+          },
+          "sport": {
+            "title": "Sport",
+            "type": "string"
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sport",
+          "unit"
+        ],
+        "title": "SportThreshold",
+        "type": "object"
+      },
+      "SportThresholdEntry": {
+        "additionalProperties": true,
+        "properties": {
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "source": {
+            "default": "manual",
+            "title": "Source",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "number"
+          }
+        },
+        "required": [
+          "value",
+          "date"
+        ],
+        "title": "SportThresholdEntry",
+        "type": "object"
+      },
+      "SportThresholds": {
+        "additionalProperties": true,
+        "properties": {
+          "thresholds": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/SportThreshold"
+            },
+            "title": "Thresholds",
+            "type": "object"
+          }
+        },
+        "required": [
+          "thresholds"
+        ],
+        "title": "SportThresholds",
+        "type": "object"
+      },
+      "SportsLoad": {
+        "additionalProperties": true,
+        "properties": {
+          "as_of": {
+            "title": "As Of",
+            "type": "string"
+          },
+          "combined": {
+            "$ref": "#/components/schemas/SportLoadLine"
+          },
+          "confidence": {
+            "title": "Confidence",
+            "type": "string"
+          },
+          "days_of_history": {
+            "title": "Days Of History",
+            "type": "integer"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "settled": {
+            "title": "Settled",
+            "type": "boolean"
+          },
+          "sports": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/SportLoadLine"
+            },
+            "default": {},
+            "title": "Sports",
+            "type": "object"
+          }
+        },
+        "required": [
+          "as_of",
+          "days_of_history",
+          "settled",
+          "combined",
+          "method",
+          "confidence"
+        ],
+        "title": "SportsLoad",
+        "type": "object"
+      },
+      "StrengthExercise": {
+        "additionalProperties": true,
+        "properties": {
+          "cue": {
+            "title": "Cue",
+            "type": "string"
+          },
+          "effort": {
+            "title": "Effort",
+            "type": "string"
+          },
+          "hold_s": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hold S"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "pattern": {
+            "title": "Pattern",
+            "type": "string"
+          },
+          "per_side": {
+            "default": false,
+            "title": "Per Side",
+            "type": "boolean"
+          },
+          "reps": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reps"
+          },
+          "rest": {
+            "title": "Rest",
+            "type": "string"
+          },
+          "rpe": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Rpe",
+            "type": "array"
+          },
+          "sets": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Sets",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "pattern",
+          "cue",
+          "sets",
+          "rpe",
+          "effort",
+          "rest"
+        ],
+        "title": "StrengthExercise",
+        "type": "object"
+      },
+      "StrengthProgression": {
+        "additionalProperties": true,
+        "properties": {
+          "pct_1rm": {
+            "title": "Pct 1Rm",
+            "type": "string"
+          },
+          "reps": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Reps",
+            "type": "array"
+          },
+          "rest": {
+            "title": "Rest",
+            "type": "string"
+          },
+          "sets": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Sets",
+            "type": "array"
+          },
+          "verify": {
+            "default": false,
+            "title": "Verify",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "sets",
+          "reps",
+          "rest",
+          "pct_1rm"
+        ],
+        "title": "StrengthProgression",
+        "type": "object"
+      },
+      "StrengthSession": {
+        "additionalProperties": true,
+        "properties": {
+          "disclaimer": {
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "exercises": {
+            "items": {
+              "$ref": "#/components/schemas/StrengthExercise"
+            },
+            "title": "Exercises",
+            "type": "array"
+          },
+          "hard": {
+            "default": false,
+            "title": "Hard",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "intent": {
+            "title": "Intent",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "load_au": {
+            "items": {
+              "type": "number"
+            },
+            "title": "Load Au",
+            "type": "array"
+          },
+          "load_method": {
+            "title": "Load Method",
+            "type": "string"
+          },
+          "load_note": {
+            "title": "Load Note",
+            "type": "string"
+          },
+          "minutes": {
+            "title": "Minutes",
+            "type": "integer"
+          },
+          "minutes_range": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Minutes Range",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "not_validated": {
+            "title": "Not Validated",
+            "type": "string"
+          },
+          "progression": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StrengthProgression"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rpe_range": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Rpe Range",
+            "type": "array"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "stage": {
+            "title": "Stage",
+            "type": "string"
+          },
+          "stage_label": {
+            "title": "Stage Label",
+            "type": "string"
+          },
+          "warmup_min": {
+            "default": 0,
+            "title": "Warmup Min",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "intent",
+          "minutes",
+          "minutes_range",
+          "stage",
+          "stage_label",
+          "exercises",
+          "rpe_range",
+          "load_au",
+          "load_note",
+          "load_method",
+          "disclaimer",
+          "not_validated",
+          "source"
+        ],
+        "title": "StrengthSession",
+        "type": "object"
+      },
+      "StrengthSessions": {
+        "additionalProperties": true,
+        "properties": {
+          "disclaimer": {
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "load_method": {
+            "title": "Load Method",
+            "type": "string"
+          },
+          "load_note": {
+            "title": "Load Note",
+            "type": "string"
+          },
+          "not_validated": {
+            "title": "Not Validated",
+            "type": "string"
+          },
+          "sessions": {
+            "items": {
+              "$ref": "#/components/schemas/StrengthSession"
+            },
+            "title": "Sessions",
+            "type": "array"
+          },
+          "sources": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Sources",
+            "type": "array"
+          },
+          "stage": {
+            "title": "Stage",
+            "type": "string"
+          },
+          "stages": {
+            "items": {
+              "$ref": "#/components/schemas/StrengthStage"
+            },
+            "title": "Stages",
+            "type": "array"
+          }
+        },
+        "required": [
+          "stage",
+          "stages",
+          "sessions",
+          "disclaimer",
+          "not_validated",
+          "load_note",
+          "load_method",
+          "sources"
+        ],
+        "title": "StrengthSessions",
+        "type": "object"
+      },
+      "StrengthStage": {
+        "additionalProperties": true,
+        "properties": {
+          "effort": {
+            "title": "Effort",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "pct_1rm": {
+            "title": "Pct 1Rm",
+            "type": "string"
+          },
+          "reps": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Reps",
+            "type": "array"
+          },
+          "rest": {
+            "title": "Rest",
+            "type": "string"
+          },
+          "rpe": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Rpe",
+            "type": "array"
+          },
+          "sets": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Sets",
+            "type": "array"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "verify": {
+            "default": false,
+            "title": "Verify",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "sets",
+          "reps",
+          "rpe",
+          "effort",
+          "rest",
+          "pct_1rm",
+          "source"
+        ],
+        "title": "StrengthStage",
+        "type": "object"
+      },
+      "SwimActivities": {
+        "additionalProperties": true,
+        "properties": {
+          "confidence": {
+            "title": "Confidence",
+            "type": "string"
+          },
+          "css_s_per_100m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Css S Per 100M"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "missing": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          },
+          "stroke_note": {
+            "title": "Stroke Note",
+            "type": "string"
+          },
+          "swims": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SwimActivity"
+            },
+            "title": "Swims",
+            "type": "array"
+          }
+        },
+        "required": [
+          "method",
+          "confidence",
+          "stroke_note"
+        ],
+        "title": "SwimActivities",
+        "type": "object"
+      },
+      "SwimActivity": {
+        "additionalProperties": true,
+        "properties": {
+          "avg_hr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Hr"
+          },
+          "date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date"
+          },
+          "distance_m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance M"
+          },
+          "duration_s": {
+            "default": 0,
+            "title": "Duration S",
+            "type": "number"
+          },
+          "icu_load": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Icu Load"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "intensity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Intensity"
+          },
+          "lengths": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lengths"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "pace_s_per_100m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pace S Per 100M"
+          },
+          "pool_length_m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pool Length M"
+          },
+          "stroke_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stroke Rate"
+          },
+          "stss": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stss"
+          },
+          "type": {
+            "default": "",
+            "title": "Type",
+            "type": "string"
+          },
+          "water": {
+            "default": "unknown",
+            "title": "Water",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "SwimActivity",
+        "type": "object"
+      },
+      "SwimCss": {
+        "additionalProperties": true,
+        "properties": {
+          "confidence": {
+            "title": "Confidence",
+            "type": "string"
+          },
+          "css_s_per_100m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Css S Per 100M"
+          },
+          "history": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SportThresholdEntry"
+            },
+            "title": "History",
+            "type": "array"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "zones_note": {
+            "title": "Zones Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "zones_note",
+          "method",
+          "confidence"
+        ],
+        "title": "SwimCss",
+        "type": "object"
+      },
+      "SwimCssTest": {
+        "additionalProperties": true,
+        "properties": {
+          "anaerobic_distance_m": {
+            "title": "Anaerobic Distance M",
+            "type": "number"
+          },
+          "confidence": {
+            "title": "Confidence",
+            "type": "string"
+          },
+          "css_m_per_s": {
+            "title": "Css M Per S",
+            "type": "number"
+          },
+          "css_s_per_100m": {
+            "title": "Css S Per 100M",
+            "type": "number"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "n_trials": {
+            "title": "N Trials",
+            "type": "integer"
+          },
+          "r2": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "R2"
+          },
+          "saved": {
+            "default": false,
+            "title": "Saved",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "css_m_per_s",
+          "css_s_per_100m",
+          "anaerobic_distance_m",
+          "n_trials",
+          "method",
+          "confidence"
+        ],
+        "title": "SwimCssTest",
+        "type": "object"
+      },
+      "SwimSession": {
+        "additionalProperties": true,
+        "properties": {
+          "hard": {
+            "default": false,
+            "title": "Hard",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "intent": {
+            "title": "Intent",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "lines": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "minutes": {
+            "title": "Minutes",
+            "type": "integer"
+          },
+          "minutes_max": {
+            "title": "Minutes Max",
+            "type": "integer"
+          },
+          "minutes_min": {
+            "title": "Minutes Min",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "note": {
+            "default": "",
+            "title": "Note",
+            "type": "string"
+          },
+          "session_type": {
+            "title": "Session Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "session_type",
+          "intent",
+          "minutes",
+          "minutes_min",
+          "minutes_max"
+        ],
+        "title": "SwimSession",
+        "type": "object"
+      },
+      "SwimSessions": {
+        "additionalProperties": true,
+        "properties": {
+          "css_s_per_100m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Css S Per 100M"
+          },
+          "download_note": {
+            "default": "",
+            "title": "Download Note",
+            "type": "string"
+          },
+          "has_css": {
+            "default": false,
+            "title": "Has Css",
+            "type": "boolean"
+          },
+          "not_validated": {
+            "default": "",
+            "title": "Not Validated",
+            "type": "string"
+          },
+          "pool_m": {
+            "default": 25,
+            "title": "Pool M",
+            "type": "integer"
+          },
+          "sessions": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SwimSession"
+            },
+            "title": "Sessions",
+            "type": "array"
+          },
+          "source": {
+            "default": "",
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "title": "SwimSessions",
+        "type": "object"
+      },
       "SyncProgress": {
         "additionalProperties": true,
         "properties": {
@@ -5444,6 +10787,47 @@
           }
         },
         "title": "SyncProgress",
+        "type": "object"
+      },
+      "SyncResult": {
+        "additionalProperties": true,
+        "description": "POST /api/sync. ``status`` is \"skipped\" when no credentials are configured.",
+        "properties": {
+          "activities": {
+            "default": 0,
+            "title": "Activities",
+            "type": "integer"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "timestamp": {
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "wellness": {
+            "default": 0,
+            "title": "Wellness",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "timestamp"
+        ],
+        "title": "SyncResult",
         "type": "object"
       },
       "SyncStatus": {
@@ -6016,6 +11400,265 @@
         "title": "VersionInfo",
         "type": "object"
       },
+      "WeatherAttribution": {
+        "additionalProperties": true,
+        "properties": {
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text",
+          "url"
+        ],
+        "title": "WeatherAttribution",
+        "type": "object"
+      },
+      "WeatherDay": {
+        "additionalProperties": true,
+        "properties": {
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "feels_max_c": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Feels Max C"
+          },
+          "feels_min_c": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Feels Min C"
+          },
+          "gust_max_kmh": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gust Max Kmh"
+          },
+          "rain_mm": {
+            "default": 0,
+            "title": "Rain Mm",
+            "type": "number"
+          },
+          "rain_pct_max": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rain Pct Max"
+          },
+          "rating": {
+            "title": "Rating",
+            "type": "string"
+          },
+          "reasons": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "suggest_indoor": {
+            "default": false,
+            "title": "Suggest Indoor",
+            "type": "boolean"
+          },
+          "summary": {
+            "default": "",
+            "title": "Summary",
+            "type": "string"
+          },
+          "temp_max_c": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Temp Max C"
+          },
+          "temp_min_c": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Temp Min C"
+          },
+          "wind_max_kmh": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wind Max Kmh"
+          }
+        },
+        "required": [
+          "date",
+          "rating"
+        ],
+        "title": "WeatherDay",
+        "type": "object"
+      },
+      "WeatherForecast": {
+        "additionalProperties": true,
+        "properties": {
+          "attribution": {
+            "$ref": "#/components/schemas/WeatherAttribution"
+          },
+          "days": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/WeatherDay"
+            },
+            "title": "Days",
+            "type": "array"
+          },
+          "message": {
+            "default": "",
+            "title": "Message",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "attribution"
+        ],
+        "title": "WeatherForecast",
+        "type": "object"
+      },
+      "WeatherLocation": {
+        "additionalProperties": true,
+        "properties": {
+          "has_location": {
+            "title": "Has Location",
+            "type": "boolean"
+          },
+          "network_enabled": {
+            "default": true,
+            "title": "Network Enabled",
+            "type": "boolean"
+          },
+          "place": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WeatherPlace"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "has_location"
+        ],
+        "title": "WeatherLocation",
+        "type": "object"
+      },
+      "WeatherPlace": {
+        "additionalProperties": true,
+        "properties": {
+          "country": {
+            "default": "",
+            "title": "Country",
+            "type": "string"
+          },
+          "latitude": {
+            "title": "Latitude",
+            "type": "number"
+          },
+          "longitude": {
+            "title": "Longitude",
+            "type": "number"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "region": {
+            "default": "",
+            "title": "Region",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "latitude",
+          "longitude"
+        ],
+        "title": "WeatherPlace",
+        "type": "object"
+      },
+      "WeatherSearch": {
+        "additionalProperties": true,
+        "properties": {
+          "available": {
+            "title": "Available",
+            "type": "boolean"
+          },
+          "message": {
+            "default": "",
+            "title": "Message",
+            "type": "string"
+          },
+          "results": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/WeatherPlace"
+            },
+            "title": "Results",
+            "type": "array"
+          }
+        },
+        "required": [
+          "available"
+        ],
+        "title": "WeatherSearch",
+        "type": "object"
+      },
       "WeekSummary": {
         "additionalProperties": true,
         "properties": {
@@ -6166,6 +11809,103 @@
         "title": "WeekSummary",
         "type": "object"
       },
+      "WeightPoint": {
+        "additionalProperties": true,
+        "properties": {
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "source": {
+            "default": "manual",
+            "title": "Source",
+            "type": "string"
+          },
+          "trend_kg": {
+            "title": "Trend Kg",
+            "type": "number"
+          },
+          "weight_kg": {
+            "title": "Weight Kg",
+            "type": "number"
+          }
+        },
+        "required": [
+          "date",
+          "weight_kg",
+          "trend_kg"
+        ],
+        "title": "WeightPoint",
+        "type": "object"
+      },
+      "WeightTrend": {
+        "additionalProperties": true,
+        "properties": {
+          "change_28d_kg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Change 28D Kg"
+          },
+          "latest_trend_kg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Trend Kg"
+          },
+          "latest_w_per_kg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest W Per Kg"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "points": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/WeightPoint"
+            },
+            "title": "Points",
+            "type": "array"
+          },
+          "tau_days": {
+            "title": "Tau Days",
+            "type": "number"
+          },
+          "wkg": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/WkgPoint"
+            },
+            "title": "Wkg",
+            "type": "array"
+          }
+        },
+        "required": [
+          "method",
+          "tau_days"
+        ],
+        "title": "WeightTrend",
+        "type": "object"
+      },
       "WellnessDay": {
         "additionalProperties": true,
         "properties": {
@@ -6288,6 +12028,35 @@
           "date"
         ],
         "title": "WellnessDay",
+        "type": "object"
+      },
+      "WkgPoint": {
+        "additionalProperties": true,
+        "properties": {
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "ftp_w": {
+            "title": "Ftp W",
+            "type": "integer"
+          },
+          "w_per_kg": {
+            "title": "W Per Kg",
+            "type": "number"
+          },
+          "weight_kg": {
+            "title": "Weight Kg",
+            "type": "number"
+          }
+        },
+        "required": [
+          "date",
+          "ftp_w",
+          "weight_kg",
+          "w_per_kg"
+        ],
+        "title": "WkgPoint",
         "type": "object"
       },
       "WorkoutDetail": {
@@ -6644,6 +12413,159 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/analytics/compare": {
+      "get": {
+        "operationId": "compare_api_analytics_compare_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RideCompare"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/analytics/power-model": {
+      "get": {
+        "operationId": "power_model_api_analytics_power_model_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PowerModel"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/analytics/weight-trend": {
+      "get": {
+        "operationId": "weight_trend_api_analytics_weight_trend_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeightTrend"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/balance": {
+      "get": {
+        "operationId": "get_balance_api_balance_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Balance"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/balance/targets": {
+      "put": {
+        "operationId": "put_balance_targets_api_balance_targets_put",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BalanceTargets"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/builder/preview": {
+      "post": {
+        "operationId": "builder_preview_api_builder_preview_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuilderPreview"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/builder/save": {
+      "post": {
+        "operationId": "builder_save_api_builder_save_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuilderSaved"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/builder/send": {
+      "post": {
+        "operationId": "builder_send_api_builder_send_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuilderSaved"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/builder/workout": {
+      "get": {
+        "operationId": "builder_load_api_builder_workout_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuilderLoaded"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/calendar": {
       "get": {
         "operationId": "api_calendar_api_calendar_get",
@@ -6710,6 +12632,23 @@
         }
       }
     },
+    "/api/diag/frontend-error": {
+      "post": {
+        "operationId": "api_diag_frontend_error_api_diag_frontend_error_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FrontendErrorLogged"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/diag/health": {
       "get": {
         "operationId": "api_diag_health_api_diag_health_get",
@@ -6753,6 +12692,187 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EventProjection"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/folder-import": {
+      "get": {
+        "operationId": "folder_import_state_api_folder_import_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderImportState"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "operationId": "folder_import_save_api_folder_import_put",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderImportState"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/folder-import/scan": {
+      "post": {
+        "operationId": "folder_import_scan_api_folder_import_scan_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderImportStarted"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/fueling": {
+      "get": {
+        "operationId": "fueling_today_api_fueling_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fueling"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/gear": {
+      "get": {
+        "operationId": "gear_overview_api_gear_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GearOverview"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "operationId": "gear_add_api_gear_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GearOverview"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/gear/assignment": {
+      "put": {
+        "operationId": "gear_assign_api_gear_assignment_put",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GearOverview"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/gear/{item_id}": {
+      "delete": {
+        "operationId": "gear_delete_api_gear__item_id__delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GearOverview"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "gear_edit_api_gear__item_id__patch",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GearOverview"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/gear/{item_id}/service": {
+      "post": {
+        "operationId": "gear_service_api_gear__item_id__service_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GearOverview"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/icu/athlete-numbers": {
+      "get": {
+        "operationId": "api_icu_athlete_numbers_api_icu_athlete_numbers_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AthleteNumbers"
                 }
               }
             },
@@ -6836,6 +12956,91 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/IcuRaces"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/injury": {
+      "get": {
+        "operationId": "injury_status_api_injury_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InjuryStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/injury/episodes": {
+      "post": {
+        "operationId": "injury_add_api_injury_episodes_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InjuryStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/injury/episodes/{episode_id}": {
+      "delete": {
+        "operationId": "injury_delete_api_injury_episodes__episode_id__delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InjuryStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/injury/episodes/{episode_id}/resolve": {
+      "post": {
+        "operationId": "injury_resolve_api_injury_episodes__episode_id__resolve_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InjuryStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/injury/ramp-rate": {
+      "get": {
+        "operationId": "injury_ramp_rate_api_injury_ramp_rate_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RampRate"
                 }
               }
             },
@@ -7014,6 +13219,170 @@
         }
       }
     },
+    "/api/notifications": {
+      "get": {
+        "operationId": "api_notifications_api_notifications_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationList"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/notifications/read": {
+      "post": {
+        "operationId": "api_notifications_read_api_notifications_read_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationList"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/notifications/settings": {
+      "get": {
+        "operationId": "api_notifications_settings_api_notifications_settings_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationSettings"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "operationId": "api_notifications_save_api_notifications_settings_put",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationSettings"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/notifications/test": {
+      "post": {
+        "operationId": "api_notifications_test_api_notifications_test_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationTest"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/nutrition/connection": {
+      "delete": {
+        "operationId": "nutrition_connection_delete_api_nutrition_connection_delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NutritionConnection"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "operationId": "nutrition_connection_api_nutrition_connection_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NutritionConnection"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "operationId": "nutrition_connection_save_api_nutrition_connection_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NutritionConnection"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/nutrition/sync": {
+      "post": {
+        "operationId": "nutrition_sync_api_nutrition_sync_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NutritionSync"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/nutrition/test": {
+      "post": {
+        "operationId": "nutrition_test_api_nutrition_test_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NutritionTest"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/picker": {
       "get": {
         "operationId": "api_picker_api_picker_get",
@@ -7108,6 +13477,74 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PlanAutoRecalc"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/plan/bricks/transition": {
+      "put": {
+        "operationId": "plan_brick_transition_api_plan_bricks_transition_put",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrickTransition"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/plan/companions": {
+      "get": {
+        "operationId": "plan_companions_api_plan_companions_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanCompanions"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/plan/companions/{companion_id}/brick-note": {
+      "post": {
+        "operationId": "plan_brick_note_api_plan_companions__companion_id__brick_note_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanionDismissed"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/plan/companions/{companion_id}/dismiss": {
+      "post": {
+        "operationId": "plan_companion_dismiss_api_plan_companions__companion_id__dismiss_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanionDismissed"
                 }
               }
             },
@@ -7473,6 +13910,23 @@
         }
       }
     },
+    "/api/profile/dfa-backfill/cancel": {
+      "post": {
+        "operationId": "api_profile_dfa_backfill_cancel_api_profile_dfa_backfill_cancel_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DfaBackfillCancelRequested"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/profile/dfa-backfill/status": {
       "get": {
         "operationId": "api_profile_dfa_backfill_status_api_profile_dfa_backfill_status_get",
@@ -7709,6 +14163,104 @@
         }
       }
     },
+    "/api/races": {
+      "get": {
+        "operationId": "races_status_api_races_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RacesStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "operationId": "races_add_api_races_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RacesStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/races/sync": {
+      "post": {
+        "operationId": "races_sync_api_races_sync_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RacesStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/races/{race_id}": {
+      "delete": {
+        "operationId": "races_delete_api_races__race_id__delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RacesStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "operationId": "races_update_api_races__race_id__put",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RacesStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/races/{race_id}/race-day": {
+      "get": {
+        "operationId": "race_day_api_races__race_id__race_day_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RaceDayPlan"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/readiness": {
       "get": {
         "operationId": "api_readiness_api_readiness_get",
@@ -7934,6 +14486,142 @@
         }
       }
     },
+    "/api/rides/{ride_id}": {
+      "delete": {
+        "operationId": "api_ride_delete_api_rides__ride_id__delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/run/activities": {
+      "get": {
+        "operationId": "run_activities_api_run_activities_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunActivities"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/run/critical-speed": {
+      "post": {
+        "operationId": "run_critical_speed_api_run_critical_speed_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CriticalSpeed"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/run/gap": {
+      "get": {
+        "operationId": "run_gap_api_run_gap_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunGap"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/run/predict": {
+      "get": {
+        "operationId": "run_predict_api_run_predict_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RacePredictor"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/run/sessions": {
+      "get": {
+        "operationId": "run_sessions_api_run_sessions_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunSessions"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/run/sessions/{session_id}": {
+      "get": {
+        "operationId": "run_session_api_run_sessions__session_id__get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunSession"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/run/zones": {
+      "get": {
+        "operationId": "run_zones_api_run_zones_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunZones"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/settings": {
       "get": {
         "operationId": "api_settings_api_settings_get",
@@ -8015,6 +14703,23 @@
         }
       }
     },
+    "/api/setup/check-activities": {
+      "post": {
+        "operationId": "setup_check_activities_api_setup_check_activities_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivitiesCheck"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/setup/defaults": {
       "get": {
         "operationId": "setup_defaults_api_setup_defaults_get",
@@ -8041,6 +14746,289 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EnsureProfile"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/setup/limits": {
+      "get": {
+        "operationId": "setup_limits_api_setup_limits_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetupLimits"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/setup/pick-folder": {
+      "get": {
+        "operationId": "setup_pick_folder_api_setup_pick_folder_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PickedFolder"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/setup/save": {
+      "post": {
+        "operationId": "setup_save_api_setup_save_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetupSaved"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/setup/test-icu": {
+      "post": {
+        "operationId": "setup_test_icu_api_setup_test_icu_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IcuKeyCheck"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/sports/load": {
+      "get": {
+        "operationId": "api_sports_load_api_sports_load_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SportsLoad"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/sports/thresholds": {
+      "get": {
+        "operationId": "api_sports_thresholds_api_sports_thresholds_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SportThresholds"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "operationId": "api_sports_set_threshold_api_sports_thresholds_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SportThresholds"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/strength/sessions": {
+      "get": {
+        "operationId": "strength_sessions_api_strength_sessions_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StrengthSessions"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/swim/activities": {
+      "get": {
+        "operationId": "swim_activities_api_swim_activities_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SwimActivities"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/swim/css": {
+      "get": {
+        "operationId": "swim_css_api_swim_css_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SwimCss"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/swim/css-test": {
+      "post": {
+        "operationId": "swim_css_test_api_swim_css_test_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SwimCssTest"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/swim/open-water": {
+      "get": {
+        "operationId": "open_water_list_api_swim_open_water_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenWaterNotes"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "operationId": "open_water_add_api_swim_open_water_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenWaterNote"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/swim/open-water/{note_id}": {
+      "delete": {
+        "operationId": "open_water_delete_api_swim_open_water__note_id__delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "operationId": "open_water_edit_api_swim_open_water__note_id__put",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenWaterNote"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/swim/sessions": {
+      "get": {
+        "operationId": "swim_sessions_api_swim_sessions_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SwimSessions"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/sync": {
+      "post": {
+        "operationId": "api_sync_api_sync_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncResult"
                 }
               }
             },
@@ -8143,6 +15131,87 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/VersionInfo"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/weather/forecast": {
+      "get": {
+        "operationId": "weather_forecast_api_weather_forecast_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherForecast"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/weather/location": {
+      "delete": {
+        "operationId": "weather_location_clear_api_weather_location_delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherLocation"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "operationId": "weather_location_api_weather_location_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherLocation"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "operationId": "weather_location_set_api_weather_location_put",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherLocation"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/weather/search": {
+      "get": {
+        "operationId": "weather_search_api_weather_search_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherSearch"
                 }
               }
             },

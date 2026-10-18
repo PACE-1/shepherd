@@ -58,13 +58,15 @@ The historical list is not a failure allow-list.
 
 Pull requests run `.github/workflows/tests.yml` on GitHub-hosted runners: the
 same gate on `ubuntu-latest` with the locked headless profile, and a `web` job
-(`pnpm typecheck`, `lint`, `test`, `build`). The upstream macOS job is kept for
-manual `workflow_dispatch` runs only; no decision has been recorded to retire
-macOS testing, and it takes about 70 minutes on a hosted Mac.
+(`pnpm typecheck`, `lint`, `test`, `build`), and a browser smoke job. macOS and
+Windows testing are retired: Linux (the Docker image and the AppImage are the
+shipped artifacts) is the only supported target.
 
 `.forgejo/workflows/tests.yml` runs the same Linux gate for the Forgejo mirror.
-No Forgejo runner was visible to the repository account, so that copy has not
-been executed; GitHub is where CI is validated.
+Forgejo is the owner's local host and is not the release identity: no Forgejo
+runner was visible to the repository account, so that copy has not been
+executed. GitHub is the public home, the release channel (`PACE-1/shepherd`)
+and where CI is validated.
 
 Inventory, candidate decisions and current measurement limits are recorded in
 [code-bloat/README.md](code-bloat/README.md). Product defect fixes, algorithm
