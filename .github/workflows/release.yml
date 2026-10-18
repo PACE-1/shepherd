@@ -1,7 +1,7 @@
 name: Build release artifacts
 
-# Builds a macOS DMG and a Linux AppImage on every tag push
-# (v*.*.*) and uploads them to the matching GitHub Release. Runs also on
+# Builds the Linux AppImage on every tag push (v*.*.*) and uploads it to the
+# matching GitHub Release. Runs also on
 # manual dispatch. Binaries live in Release assets — never in git — so the
 # repo stays lean.
 
@@ -20,99 +20,15 @@ permissions:
   contents: write  # needed to upload to releases
 
 jobs:
-  # ───────────────────────────────────────────────────────────────────
-  # macOS DMG — DISABLED since v1.8.8
-  #
-  # CI builds the DMG without the Apple notarization secrets
-  # (.notarize.env / Developer ID Application cert in keychain), so
-  # build_dmg.sh falls back to ad-hoc signing. That produces a
-  # Shepherd.dmg that Gatekeeper rejects with "Shepherd is damaged"
-  # the moment a user downloads it. Worse, the bare-name Shepherd.dmg
-  # asset that CI uploaded sorted ahead of the manually-notarized
-  # Shepherd-v$VER.dmg in _select_platform_asset, so the update banner
-  # served Mac users the broken one.
-  #
-  # macOS ships are produced manually via the [[shepherd-release]] skill
-  # (build_dmg.sh + .notarize.env + xcrun notarytool + stapler). Re-enable
-  # this job only after the Apple secrets are wired into GitHub Actions
-  # (APPLE_ID, APPLE_TEAM_ID, APPLE_APP_PASSWORD, APPLE_P12_BASE64) and
-  # build_dmg.sh is taught to import the .p12 from base64 env in CI.
-  # ───────────────────────────────────────────────────────────────────
-  build-macos:
-    name: Build macOS DMG
-    if: false  # ← disabled; manual notarized ship via shepherd-release skill
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pyinstaller
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
-      - name: Build the web interface
-        run: |
-          corepack enable
-          corepack prepare pnpm@12.11.2 --activate
-          cd web && pnpm install --frozen-lockfile && pnpm build
-
-      - name: Install create-dmg
-        run: brew install create-dmg || echo "create-dmg already installed"
-
-      # TODO: codesign + notarize. Requires Apple Developer ID secrets:
-      #   APPLE_ID, APPLE_TEAM_ID, APPLE_APP_PASSWORD
-      # Without signing, end users must right-click → Open to bypass Gatekeeper.
-      # Sketch for later:
-      #   codesign --deep --options runtime --sign "$APPLE_DEV_ID" dist/Shepherd.app
-      #   xcrun notarytool submit dist_dmg/Shepherd.dmg \
-      #     --apple-id "$APPLE_ID" --team-id "$APPLE_TEAM_ID" \
-      #     --password "$APPLE_APP_PASSWORD" --wait
-      #   xcrun stapler staple dist_dmg/Shepherd.dmg
-
-      - name: Build DMG
-        run: |
-          chmod +x packaging/build_dmg.sh
-          # build_dmg.sh writes to ~/Desktop; we redirect via env var.
-          export DESTDIR="$GITHUB_WORKSPACE/dist_dmg"
-          mkdir -p "$DESTDIR"
-          ./packaging/build_dmg.sh || { cat /tmp/dmg_build.log 2>/dev/null || true; exit 1; }
-          # Fallback: some build_dmg.sh variants hardcode ~/Desktop
-          if [ ! -f "$DESTDIR/Shepherd.dmg" ] && [ -f "$HOME/Desktop/Shepherd.dmg" ]; then
-            cp "$HOME/Desktop/Shepherd.dmg" "$DESTDIR/Shepherd.dmg"
-          fi
-          ls -la "$DESTDIR"
-
-      - name: Upload DMG artifact (build-only)
-        if: github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@v4
-        with:
-          name: Shepherd-macOS-DMG
-          path: dist_dmg/Shepherd.dmg
-          retention-days: 7
-
-      - name: Attach DMG to release
-        if: startsWith(github.ref, 'refs/tags/v') || inputs.tag != ''
-        uses: softprops/action-gh-release@v2
-        with:
-          files: dist_dmg/Shepherd.dmg
-          fail_on_unmatched_files: true
-          tag_name: ${{ inputs.tag || github.ref_name }}
+  # macOS DMGs are not built here. They are built, notarized and uploaded by
+  # hand (packaging/build_dmg.sh with the Apple credentials), because a CI
+  # build without the notarization secrets produces a DMG that Gatekeeper
+  # rejects as "damaged".
 
   # ───────────────────────────────────────────────────────────────────
   # Linux AppImage — ADDITIVE AND NON-BLOCKING
   #
-  # Nothing here may cost the macOS ship. No `needs:` couples this
-  # job to build-macos in either direction, and
+  # Nothing here may cost the hand-built macOS ship, so
   # continue-on-error keeps a red Linux build from failing the workflow run —
   # a broken AppImage must still leave a complete macOS release. The
   # price is that failures show as a warning rather than a red X, so every
