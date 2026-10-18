@@ -212,6 +212,7 @@ describe("Settings connection", () => {
       "/api/swim/open-water": () => json({ notes: [] }),
       "/api/icu/push": () => json({ connected: true, write_ok: true, sync_enabled: false, horizon_days: 14 }),
       "/api/settings/workout-folders": () => json({ builtin: { count: 1 }, extra: null }),
+      "/api/folder-import": () => json({ folder: "", recursive: false, running: false, max_files: 200, last_scan: null }),
     })
     render(<ThemeProvider><Settings /></ThemeProvider>)
     expect((await screen.findByRole("link", { name: "Reconnect" })).getAttribute("href")).toBe("/oauth/icu/start?return_to=%2Fv2%2F%3Fwizard%3Dsettings")
@@ -244,6 +245,7 @@ describe("Connect with an API key", () => {
     "/api/swim/open-water": () => json({ notes: [] }),
     "/api/icu/push": () => json({ connected: false, write_ok: false, sync_enabled: false, horizon_days: 14 }),
     "/api/settings/workout-folders": () => json({ builtin: { count: 1 }, extra: null }),
+    "/api/folder-import": () => json({ folder: "", recursive: false, running: false, max_files: 200, last_scan: null }),
     ...extra,
   })
 

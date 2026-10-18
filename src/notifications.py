@@ -36,6 +36,10 @@ POST_TIMEOUT_S = 5
 MAX_ITEMS = 100
 KEEP_DAYS = 60            # dedupe keys older than this are dropped
 _DEFAULT = {"ntfy_url": "", "events": {e: True for e in EVENTS}, "readiness_time": ""}
+# #31: the sync-health notice is a sync problem, so the sync-failure switch governs it.
+_TOGGLE = {"sync_health": "sync_failure"}
+HEALTH_WINDOW_DAYS = 14
+HEALTH_MIN = 2            # one odd activity is not evidence; two in the window are
 
 
 class NotificationError(ValueError):
@@ -143,7 +147,7 @@ def _spawn(fn: Callable[[], None]) -> None:
 def notify(pd: Path, event: str, day: str, title: str, body: str, now: Optional[datetime] = None) -> bool:
     """Record one notice and send it, once per (event, day). False when off or already sent."""
     s = load_settings(pd)
-    if not s["events"].get(event):
+    if not s["events"].get(_TOGGLE.get(event, event)):
         return False
     stamp = (now or datetime.now()).isoformat(timespec="seconds")
     key = f"{event}:{day}"
@@ -202,14 +206,14 @@ def mark_all_read(pd: Path) -> dict:
 
 # ── the three events ────────────────────────────────────────────────────────
 
-def _set_failing(pd: Path, failing: bool) -> bool:
-    """Set the sync-failure latch; True when this call flipped it."""
+def _set_failing(pd: Path, failing: bool, key: str = "sync_failing") -> bool:
+    """Set the sync-failure latch (or another episode latch); True when this call flipped it."""
     flipped = []
 
     def mutate(st: dict) -> Optional[bool]:
-        if bool(st.get("sync_failing")) == failing:
+        if bool(st.get(key)) == failing:
             return False
-        st["sync_failing"] = failing
+        st[key] = failing
         flipped.append(True)
         return None
     update_json(_state_path(pd), mutate, default=dict)
@@ -261,6 +265,35 @@ def check_missed(pd: Path, today: date, now: datetime, get_planned: Callable[[st
                   "Open the plan to move it or let it go.", now)
 
 
+def check_sync_health(pd: Path, today: date, withheld_days: list, local_only_days: list,
+                      now: Optional[datetime] = None) -> bool:
+    """#31: once per episode, when intervals.icu is visibly not passing rides on.
+
+    Evidence only, in the last HEALTH_WINDOW_DAYS: activities intervals.icu
+    listed without their data (``withheld_days``, one entry per activity), and
+    days with a ride the rider imported that intervals.icu has nothing for
+    (``local_only_days``). A rider who has not ridden has neither, so is never
+    told. The episode ends when the evidence is gone.
+    """
+    cutoff = (today - timedelta(days=HEALTH_WINDOW_DAYS)).isoformat()
+    withheld = sum(1 for d in withheld_days if cutoff <= str(d)[:10] <= today.isoformat())
+    local = len({str(d)[:10] for d in local_only_days if cutoff <= str(d)[:10] < today.isoformat()})
+    if withheld < HEALTH_MIN and local < HEALTH_MIN:
+        _set_failing(pd, False, "sync_health_flag")
+        return False
+    if not _set_failing(pd, True, "sync_health_flag"):
+        return False
+    seen = []
+    if withheld:
+        seen.append(f"intervals.icu listed {withheld} of your activities without their data")
+    if local:
+        seen.append(f"{local} days with rides you imported have nothing on intervals.icu")
+    return notify(pd, "sync_health", today.isoformat(), "Shepherd: some rides are not coming through",
+                  f"In the last {HEALTH_WINDOW_DAYS} days, " + ", and ".join(seen) + ". "
+                  "Shepherd keeps what it already has. To bring rides in without intervals.icu, "
+                  "set a FIT folder in Settings (Folder import) or import FIT files on the Analysis tab.", now)
+
+
 def _sent(pd: Path) -> dict:
     try:
         st = json.loads(_state_path(pd).read_text(encoding="utf-8"))
@@ -296,6 +329,38 @@ def _had_activity(day: str) -> bool:
     return row is not None
 
 
+def _withheld_days(since: str) -> list:
+    """Stubs the last sync skipped, plus stored rows with a sport and a length
+    but nothing computed from the recording (no load, power or heart rate)."""
+    import db
+    days = list(db.last_stub_days)
+    rows = db.get_db().execute(
+        "SELECT date, raw_json FROM activities WHERE date >= ? AND duration_sec > 0 AND tss IS NULL "
+        "AND avg_power IS NULL AND avg_hr IS NULL",
+        (since,)).fetchall()
+    for d, raw in rows:
+        try:
+            r = json.loads(raw or "{}")
+        except ValueError:
+            r = {}
+        if not (r.get("icu_intensity") or r.get("icu_average_watts") or r.get("average_heartrate")):
+            days.append(d)
+    return days
+
+
+def _local_only_days(since: str) -> list:
+    """Start days of imported FIT rides on days the activities table has nothing."""
+    import db
+    import ride_storage
+    out = []
+    for r in ride_storage.load_all_rides():
+        d = str(r.get("started_at") or "")[:10]
+        if r.get("source") == "fit" and d >= since and db.get_db().execute(
+                "SELECT 1 FROM activities WHERE substr(date, 1, 10) = ? LIMIT 1", (d,)).fetchone() is None:
+            out.append(d)
+    return out
+
+
 def _readiness(pid: str, day: str) -> Optional[dict]:
     import readiness_composite
     return readiness_composite.compute_readiness_composite(pid, day)
@@ -318,6 +383,8 @@ def on_sync_pass() -> None:
         _set_failing(pd, False)
         check_readiness(pd, now.date(), now, lambda d: _readiness(pid, d), lambda d: _planned(pd, d))
         check_missed(pd, now.date(), now, lambda d: _planned(pd, d), _had_activity)
+        since = (now.date() - timedelta(days=HEALTH_WINDOW_DAYS)).isoformat()
+        check_sync_health(pd, now.date(), _withheld_days(since), _local_only_days(since), now)
     except Exception:  # noqa: BLE001 - never break the sync loop
         log.debug("notifications: sync-pass check failed", exc_info=True)
 

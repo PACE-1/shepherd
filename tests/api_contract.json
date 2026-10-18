@@ -2978,6 +2978,145 @@
         "title": "FolderCount",
         "type": "object"
       },
+      "FolderImportFailure": {
+        "additionalProperties": true,
+        "properties": {
+          "file": {
+            "title": "File",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file",
+          "reason"
+        ],
+        "title": "FolderImportFailure",
+        "type": "object"
+      },
+      "FolderImportScan": {
+        "additionalProperties": true,
+        "properties": {
+          "aborted": {
+            "default": false,
+            "title": "Aborted",
+            "type": "boolean"
+          },
+          "already_imported": {
+            "default": 0,
+            "title": "Already Imported",
+            "type": "integer"
+          },
+          "duplicate": {
+            "default": 0,
+            "title": "Duplicate",
+            "type": "integer"
+          },
+          "error": {
+            "default": "",
+            "title": "Error",
+            "type": "string"
+          },
+          "failed": {
+            "default": 0,
+            "title": "Failed",
+            "type": "integer"
+          },
+          "failures": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/FolderImportFailure"
+            },
+            "title": "Failures",
+            "type": "array"
+          },
+          "finished_at": {
+            "default": "",
+            "title": "Finished At",
+            "type": "string"
+          },
+          "imported": {
+            "default": 0,
+            "title": "Imported",
+            "type": "integer"
+          },
+          "remaining": {
+            "default": 0,
+            "title": "Remaining",
+            "type": "integer"
+          },
+          "started_at": {
+            "title": "Started At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "started_at"
+        ],
+        "title": "FolderImportScan",
+        "type": "object"
+      },
+      "FolderImportStarted": {
+        "additionalProperties": true,
+        "properties": {
+          "running": {
+            "title": "Running",
+            "type": "boolean"
+          },
+          "started": {
+            "title": "Started",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "started",
+          "running"
+        ],
+        "title": "FolderImportStarted",
+        "type": "object"
+      },
+      "FolderImportState": {
+        "additionalProperties": true,
+        "properties": {
+          "folder": {
+            "default": "",
+            "title": "Folder",
+            "type": "string"
+          },
+          "last_scan": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FolderImportScan"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "max_files": {
+            "title": "Max Files",
+            "type": "integer"
+          },
+          "recursive": {
+            "default": false,
+            "title": "Recursive",
+            "type": "boolean"
+          },
+          "running": {
+            "default": false,
+            "title": "Running",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "max_files"
+        ],
+        "title": "FolderImportState",
+        "type": "object"
+      },
       "FrontendErrorLogged": {
         "additionalProperties": true,
         "description": "POST /api/diag/frontend-error: ``code`` is the code that was logged (unknown codes become E_FRONTEND_GENERIC).",
@@ -11613,6 +11752,55 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EventProjection"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/folder-import": {
+      "get": {
+        "operationId": "folder_import_state_api_folder_import_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderImportState"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "operationId": "folder_import_save_api_folder_import_put",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderImportState"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/folder-import/scan": {
+      "post": {
+        "operationId": "folder_import_scan_api_folder_import_scan_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderImportStarted"
                 }
               }
             },
