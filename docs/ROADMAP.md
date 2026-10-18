@@ -1,61 +1,103 @@
-# Roadmap (working plan, 2026-10-17)
+# Roadmap (adopted 2026-10-18)
 
-Source of truth for scope is the GitHub board and milestones; this file orders them and records dependencies.
+**The roadmap board is the GitHub project [Shepherd (#3)](https://github.com/users/PACE-1/projects/3/views/1).** It holds what is planned, its status and its release. This file holds the rules, the versioning policy, the owner decisions, and the known gaps of what has shipped. When the two disagree, the board wins for ordering and this file wins for rules.
 
 ## Rules for every item
-- One branch and PR per issue (or per tight group). Local gate (`tools/gate.sh`) green before merge.
+- One branch and PR per issue (or per tight group). Local gate (`tools/gate.sh`) green before merge. No more multi-issue PRs like #147.
+- Before starting work, check the board and the open PRs for anything already covering the same issue or files (#147 and #158 built two multi-sport models in parallel).
 - Tests with the change: a failing test first for bugs, contract tests for new endpoints, vitest for new screens, one browser test per new screen.
-- API changes: Pydantic response model, regenerate `tests/api_contract.json` and `web/src/api/schema.d.ts`.
+- API changes: Pydantic response model, regenerate `tests/api_contract.json` and `web/src/api/schema.d.ts`. New endpoints go in a `routes_*.py` module, not `app.py`.
 - Running and swim numbers need a source: a named published method, reference values from it as tests, and a stated confidence. No invented coefficients.
 - Planner output changes (#11, #24, #111, #113, #125) go up for review rather than straight to merge.
+- Every MAJOR and MINOR passes the rollout checklist (#160) before its stable tag.
 
-## Wave 0: reliability (milestone "Shepherd reliability")
-| Issue | What | Notes |
+## Where data comes from (from 4.1)
+
+| Data | Source | Notes |
 |---|---|---|
-| #140 | AI key carried to another provider | security, first |
-| #141 | AI calls block the event loop | thread pool |
-| #142 | Check-in edit deletes notes | server keeps stored notes |
-| #143 | Missing ride returns 500 | return the 404 |
-| #144 | Summary image downloads | open inline in a tab |
-| #139 | Zwift upload errors | intervals.icu setting, not ours; hint added in Settings |
-| #107 | CI mostly red | lint errors, Playwright smoke in CI |
+| Sleep, HRV, resting HR, body battery, stress, steps, readiness | **Garmin Connect** (direct, #156) | Garmin's value wins over intervals.icu's. |
+| Activity files (FIT) | **Garmin Connect**, plus upload and folder import | One de-duplicated import path (#161). |
+| Fitness numbers (CTL/ATL/eFTP), planning calendar, workouts sent to Zwift and others | **intervals.icu** | Can optionally receive Garmin activities from Shepherd (#31). |
+| Nutrition and fueling | **SparkyFitness** API (#112) | Decided. |
+| Thresholds, check-ins, races, injuries | **The rider** | A manual value always beats a synced one. |
 
-## Wave 1: foundation and everyday experience
+The per-field precedence table belongs in `docs/DATA.md` (#161).
+
+## Versioning: semantic versioning
+
+**Next release: 4.0.0.** The repo still has the upstream project's tags v1.0.2 through v3.13.1 (including a v2.0.0), so the fork goes to the first number above them. The old tags stay as history. Tooling: #159.
+
+**The public API (what a version number promises):** the data folder (layout, `DATA_FORMAT`, SQLite schema, JSON files); the `SHEPHERD_*` configuration and the Docker contract (port 22400, `/data` volume, user, required variables); the HTTP API documented in `docs/API.md` and `tests/api_contract.json`; the supported platforms (Docker on linux/amd64, the Linux AppImage).
+
+| Bump | When |
+|---|---|
+| **MAJOR** | Something above breaks for an existing install or needs a manual upgrade step: dropping a platform, a migration that can't run on its own, a renamed variable with no alias, a removed API route or field, a container user change that needs a volume ownership fix. |
+| **MINOR** | New features, backward compatible; data migrates forward automatically. Includes reviewed planner changes, noted in the release notes. |
+| **PATCH** | Bug and security fixes only; no new settings, routes or data layout. |
+
+- **Pre-releases:** `X.Y.Z-beta.N`, then `X.Y.Z-rc.N`. They are published as GitHub pre-releases, so the in-app update check never offers them to stable users.
+- **Version source:** the `VERSION` file; the tag `vX.Y.Z` must match it. Changelog headings: `## vX.Y.Z — title (date)`.
+- **Docker tags:** `:X.Y.Z` always; `:X.Y` and `:latest` for the newest stable; `:beta` for the newest pre-release.
+- **Branches:** `main` is the release line. A MINOR is built up on `release/X.Y`, one PR per issue; patches land on `main` and are merged forward.
+- **Downgrades** aren't promised across a MINOR or MAJOR: back up first. The release notes say so.
+
+## Releases
+
+### 4.0.0: what is on `main` now, made safe to ship (MAJOR)
+`main` already holds #147: macOS/Windows retired (breaking), multi-sport load and thresholds, run/swim/strength companion sessions, the cycling workout builder, races, injury, gear, weather, SparkyFitness (on demand), notifications, phone layout, palettes, export, the Docker publish workflow. 4.0.0 ships that, plus:
+
+| Issue | What |
+|---|---|
+| #153 | Non-root container (breaking: one-time volume ownership fix, command in the release notes) |
+| #152 | Login throttling and expiring sessions (everyone signs in again once) |
+| #154 | Lock on the data folder: one server process per data directory |
+| #107 | CI green on GitHub Actions: lint fixed in #147, superseded runs cancelled (#149, merged); the bricks/triathlon browser test failed once and passed on re-run, so watch for a flake |
+| #155 | Dependabot, `pip-audit`, `SECURITY.md` |
+| #159 | Pre-release flag in release.yml, `:beta` image, breaking-change check, versioning docs |
+| #31 | Phase-0 data protections: done (#147, and #150 merged: sync no longer prunes rides). The issue stays open for the Garmin route (#156, 4.1.0) |
+| #164 | Test-order pollution |
+| #26, #16 | Finish: the cleanup and lint pass, `NOTICE` still lists the trainer packages |
+| #139 | Zwift upload errors: an intervals.icu setting; Settings explains it; close once confirmed |
+
+No new features beyond what #147 already merged. Pre-releases `4.0.0-beta.1`, then `4.0.0-rc.1`, upgrade-tested from a 1.0.1 backup. The beta is the first time #147's features run against live services, so expect fixes (#160).
+
+### 4.1.0: data foundation (MINOR)
 | Issue | What | Depends on |
 |---|---|---|
-| #109 | Multi-sport data model (sport on activities, per-sport thresholds, per-sport and combined load) | none; everything in waves 3 and 4 needs it |
-| #145 | At-a-glance home for newer riders | none |
-| #106 | Theme options | none |
-| #105 | Guided onboarding | #145 helps |
-| #130 | Mobile layout and installable web app | #145 |
+| #156 | Garmin direct: health data and activities (branch `claude/practical-brown-9ydn5d`) | 4.0.0 |
+| #161 | Ingest contract: per-field precedence, one de-duplicated FIT path (Garmin, folder import, upload), cache clearing after sync, sync health panel | #156 |
+| #109 | Multi-sport model on `main` (#147's `multisport.py`) with per-sport detail pages (#166, merged); remaining: zone-aware charts, run/swim sessions in the plan data | none |
+| #163 | Parse each FIT once per request | #161 |
 
-## Wave 2: tools that work for every sport
-| Issue | What | Depends on |
-|---|---|---|
-| #110 | Workout builder, push to Garmin through intervals.icu | #109 for run and swim targets; cycling part can ship first |
-| #113 | Injury and illness, return ramp, ramp-rate warning | #109 |
-| #111 | Race planner: A/B/C, taper, race-day plan | #109, #113 |
-| #114 | Weight trend, W/kg history, power-duration model | none |
-| #116 | Ride comparison | none |
-| #129 | Data export and restore | none |
-| #131 | Notifications | none |
-| #127 | Strength and mobility sessions | planner |
+Beta `4.1.0-beta.N` on the owner's real Garmin and intervals.icu accounts for about 2 weeks (#160).
 
-## Wave 3: running and triathlon
-Order: #118 zones, #119 load, #128 readiness across sports, #120 run workouts, #121 race predictor, #122 swim, #124 sport balance, #123 bricks, #125 race-distance plans, #126 open-water notes. All depend on #109.
+### 4.2.0: everyday experience (MINOR)
+Remaining scope on #145, #130, #131 (web push, retries), #128 readiness on Garmin data (body battery, stress, Garmin readiness), #129 (restore from the UI), and **#165 Garmin-only riders**.
 
-## Wave 4: needs a decision or an outside system
-- #112 fueling: pick a self-hosted tracker with a phone app and an API first; then integrate.
-- #115 gear, #117 weather: integrations; weather needs a source and a location setting.
-- #13 server exposure, #31 Garmin data via intervals.icu, #132 rest of the rebrand (detach fork, domain, trademark): external or owner decisions.
-- #94, #9, #10, #11, #23, #24, #26, #16: maintenance and refactors from the earlier roadmap; planner ones need review.
+### 4.3.0: nutrition (MINOR)
+#112 SparkyFitness, beyond the on-demand slice on `main`: background sync, self-signed HTTPS for home servers, fueling targets from planned load. Beta on the owner's real server.
+
+### 4.4.0: tools (MINOR)
+Remaining scope on #110 (send to the watch through Garmin; run and swim targets), #111 (run/swim races, segment pacing, fueling), #113, #114 (weight from Garmin; W/kg over time), #116, #115 (gear from Garmin's gear API), #117.
+
+### 4.5.0 onward: running and triathlon (MINORs, umbrella #133)
+Remaining scope on #118–#127 (the gaps in the tables below), each through the science rule. Turning companion sessions into real per-sport plan sessions needs #24. If the plan file changes in a way older versions can't load, that release is **5.0.0**.
+
+### Ongoing (one slice per release)
+#10 typed API (one error shape merged in #157; service extraction remains) · #23 (one FIT power reader merged in #167), #24 planner and calculation consolidation · #11 intensity ceiling (owner decision: floor or rail fix, moves golden cases) · #94 desktop parity · #9 browser tests · #13 server access (remote OAuth callback unverified) · #132 rebrand (naming search, fork detach: owner actions).
+
+## Owner decisions (2026-10-18)
+- #147 stays merged; the roadmap is re-planned around `main`. #158 and #151 are closed, so `main`'s multi-sport model and palettes are the ones going forward.
+- Semantic versioning; the next release is 4.0.0 (what is on `main`, plus breaking and security fixes, no new features); features follow as MINORs.
+- Garmin is the source of health data and activity files; intervals.icu is the source of fitness numbers and planning; SparkyFitness is the source of nutrition.
+- Garmin-only riders (no intervals.icu) come in 4.2.0, the minor after the Garmin release.
 
 ## What "done" means for the large items
 A vertical slice that works end to end and is tested, with the remaining scope written on the issue, beats a wide unfinished layer. Each issue is closed only when its own checklist is met.
 
 ## Status (2026-10-18) and known gaps
 
-Everything below is on branch `claude/peaceful-bell-wcwgkb`, not yet on `main`. No issue is closed: each closes only when its own checklist is met. "Verified" means unit/contract/browser tests passed in a container with no real riders' data and no live external services.
+Everything below shipped on `main` with #147 (merged 2026-10-18) and goes out in 4.0.0. Each issue stays open until its own checklist is met; the gaps below are the remaining scope. "Verified" means unit/contract/browser tests passed in a container with no real riders' data and no live external services.
 
 | Issue | State | Remaining scope (known gaps) |
 |---|---|---|
@@ -79,10 +121,10 @@ Everything below is on branch `claude/peaceful-bell-wcwgkb`, not yet on `main`. 
 | #10 typed API | slice | 8 UI-called routes remain without a model (7 file/image downloads and one 204), each with a stated reason; no service extraction yet. |
 | #26/#16 release | decided | macOS/Windows retired; Linux (Docker, AppImage) only; GitHub is the release identity. No Docker image publish step yet (registry and tag policy to decide). Final cleanup/lint pass planned before the next major version. |
 
-Known defects found, not fixed:
-- One ride-detail load parses the same FIT file four times (stats, device info, RR intervals, sport), about 1 s each even for a 5-minute file; Compare loads two rides. Eight parse sites, and existing tests patch the parser, so a shared cache needs care.
-- `web/src/lib/planForm.ts` sends the A event inside `events` when an event goal has B/C races; `generate_plan` refuses an A there with a 400.
-- Test-order pollution: running `test_api_contract.py` before the account tests in one process fails about 17 of them (they pass alone). The full parallel gate is unaffected.
+Known defects (tracked):
+- #163: one ride-detail load parses the same FIT file four times.
+- #164: test-order pollution; `test_api_contract.py` before `test_account_core.py` in one process fails 9 tests.
+- (The plan-form A-event bug, #162, was fixed in #147.)
 - Not started (need a design decision): #123 bricks, #125 race-distance plans, #127 strength sessions, run/swim sessions in the plan. They depend on how a plan holds non-cycling sessions.
 - #132 rebrand: README rewritten (install, platforms, configuration, first run, update, backup). Still open and not doable from here: the naming/trademark availability search (GNU Shepherd and Shepherd.js exist) and detaching the GitHub fork network (a GitHub account action). `NOTICE` still lists third-party packages (bleak, pycycling, openant) from the removed trainer subsystem; fix in the cleanup pass.
 - #13 server access: implemented (`src/access.py`, `docs/SERVER.md`, `tests/test_access_control.py`). Not verified: that intervals.icu accepts a remote-browser OAuth callback (use the API-key connection on a server).
