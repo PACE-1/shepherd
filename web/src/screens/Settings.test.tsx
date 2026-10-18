@@ -32,7 +32,7 @@ function mock(over: Record<string, (body: unknown) => Response> = {}) {
     if (url === "/api/sports/load") return json({ as_of: "2026-10-18", days_of_history: 0, settled: false, combined: { ctl: 0, atl: 0, tsb: 0, week_load: 0 }, sports: {}, method: "", confidence: "" })
     if (url === "/api/sports/thresholds") return json({ thresholds: {} })
     if (url === "/api/nutrition/connection") return json({ configured: false, base_url: "", has_key: false, last_synced_at: null })
-    if (url === "/api/notifications/settings") return json({ has_url: false, events: { readiness: true, missed: true, sync_failure: true }, readiness_time: "" })
+    if (url === "/api/notifications/settings") return json({ has_url: false, events: { readiness: true, missed: true, sync_failure: true, gear_due: true }, readiness_time: "" })
     if (url === "/api/run/zones") return json({ pace_zones: [], hr_zones: [], method: "", confidence: "" })
     if (url === "/api/run/activities") return json({ runs: [], missing: [], method: "", confidence: "" })
     if (url === "/api/run/predict") return json({ window_days: 56, predictions: [], missing: [], riegel_method: "", riegel_confidence: "", cs_method: "", cs_confidence: "", long_run_rule: "" })
@@ -72,6 +72,7 @@ describe("Settings", () => {
     expect(await screen.findByText(/Connected as Isaac/)).toBeTruthy()
     expect(screen.getByText(/40 rides and 90 wellness days stored. Last sync: 2026-10-16T08:00:00/)).toBeTruthy()
     expect(await screen.findByText("1.0.0")).toBeTruthy()
+    expect(screen.getByRole("link", { name: "Gear and service reminders" }).getAttribute("href")).toBe("#/gear")
   })
 
   it("saves only the changed field, then shows it as saved", async () => {

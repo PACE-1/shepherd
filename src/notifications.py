@@ -31,7 +31,7 @@ from atomic_io import file_lock, update_json, write_text_atomic
 
 log = logging.getLogger("shepherd.notifications")
 
-EVENTS = ("readiness", "missed", "sync_failure")
+EVENTS = ("readiness", "missed", "sync_failure", "gear_due")
 POST_TIMEOUT_S = 5
 MAX_ITEMS = 100
 KEEP_DAYS = 60            # dedupe keys older than this are dropped
@@ -140,13 +140,14 @@ def _spawn(fn: Callable[[], None]) -> None:
     threading.Thread(target=fn, name="ntfy-post", daemon=True).start()
 
 
-def notify(pd: Path, event: str, day: str, title: str, body: str, now: Optional[datetime] = None) -> bool:
-    """Record one notice and send it, once per (event, day). False when off or already sent."""
+def notify(pd: Path, event: str, day: str, title: str, body: str, now: Optional[datetime] = None,
+           key: Optional[str] = None) -> bool:
+    """Record one notice and send it, once per (event, day) or per ``key``. False when off or already sent."""
     s = load_settings(pd)
     if not s["events"].get(event):
         return False
     stamp = (now or datetime.now()).isoformat(timespec="seconds")
-    key = f"{event}:{day}"
+    key = key or f"{event}:{day}"
     created = []
 
     def claim(st: dict) -> Optional[bool]:
@@ -261,6 +262,33 @@ def check_missed(pd: Path, today: date, now: datetime, get_planned: Callable[[st
                   "Open the plan to move it or let it go.", now)
 
 
+def check_gear_due(pd: Path, today: date, now: datetime, get_items: Callable[[], list[dict]]) -> int:
+    """One notice per gear item each time it becomes due (``gear.item_status`` dicts); a service re-arms it.
+
+    The latch stores, per item, the last-service day it was announced for. An item that stops being due
+    (serviced, threshold raised, retired) drops out, so crossing again later announces again.
+    """
+    if not load_settings(pd)["events"]["gear_due"]:
+        return 0
+    due = {i["id"]: i for i in get_items() if i.get("state") == "due"}
+    fresh: list[dict] = []
+
+    def mutate(st: dict) -> Optional[bool]:
+        old = st.get("gear_due") if isinstance(st.get("gear_due"), dict) else {}
+        new = {k: (i.get("last_service") or "") for k, i in due.items()}
+        fresh.extend(i for k, i in due.items() if old.get(k) != new[k])
+        if new == old:
+            return False
+        st["gear_due"] = new
+        return None
+    update_json(_state_path(pd), mutate, default=dict)
+    day = today.isoformat()
+    return sum(notify(pd, "gear_due", day, f"Shepherd: {i['name']} is due for service",
+                      f"{i['name']} has reached its service threshold ({i['km']:g} km, {i['hours']:g} h since it was started "
+                      "or last serviced). Mark service done on the Gear screen when it is looked after.", now,
+                      key=f"gear_due:{i['id']}:{day}") for i in fresh)
+
+
 def _sent(pd: Path) -> dict:
     try:
         st = json.loads(_state_path(pd).read_text(encoding="utf-8"))
@@ -301,6 +329,13 @@ def _readiness(pid: str, day: str) -> Optional[dict]:
     return readiness_composite.compute_readiness_composite(pid, day)
 
 
+def _gear_items(pd: Path) -> list[dict]:
+    import gear
+    import routes_gear
+    state, rows = gear.read(Path(pd) / gear.FILE_NAME), routes_gear._rows()
+    return [gear.item_status(i, rows, state) for i in state["items"]]
+
+
 def _active():
     from profile_manager import ProfileManager
     pm = ProfileManager.get()
@@ -318,6 +353,7 @@ def on_sync_pass() -> None:
         _set_failing(pd, False)
         check_readiness(pd, now.date(), now, lambda d: _readiness(pid, d), lambda d: _planned(pd, d))
         check_missed(pd, now.date(), now, lambda d: _planned(pd, d), _had_activity)
+        check_gear_due(pd, now.date(), now, lambda: _gear_items(pd))
     except Exception:  # noqa: BLE001 - never break the sync loop
         log.debug("notifications: sync-pass check failed", exc_info=True)
 

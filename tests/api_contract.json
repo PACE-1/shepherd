@@ -4507,6 +4507,11 @@
       "NotificationEvents": {
         "additionalProperties": true,
         "properties": {
+          "gear_due": {
+            "default": true,
+            "title": "Gear Due",
+            "type": "boolean"
+          },
           "missed": {
             "default": true,
             "title": "Missed",
@@ -4596,6 +4601,7 @@
           "events": {
             "$ref": "#/components/schemas/NotificationEvents",
             "default": {
+              "gear_due": true,
               "missed": true,
               "readiness": true,
               "sync_failure": true

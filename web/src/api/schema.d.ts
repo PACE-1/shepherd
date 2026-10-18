@@ -4343,6 +4343,11 @@ export interface components {
         /** NotificationEvents */
         NotificationEvents: {
             /**
+             * Gear Due
+             * @default true
+             */
+            gear_due: boolean;
+            /**
              * Missed
              * @default true
              */
@@ -4401,6 +4406,7 @@ export interface components {
         NotificationSettings: {
             /**
              * @default {
+             *       "gear_due": true,
              *       "missed": true,
              *       "readiness": true,
              *       "sync_failure": true

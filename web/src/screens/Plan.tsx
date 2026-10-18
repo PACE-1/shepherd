@@ -407,6 +407,12 @@ export function Plan() {
           <Button variant="outline" size="sm" onClick={() => setTool("race")}>
             Add a race…
           </Button>
+          <Button variant="outline" size="sm" className="max-md:min-h-11" render={<a href="#/races" />}>
+            All races
+          </Button>
+          <Button variant="outline" size="sm" className="max-md:min-h-11" render={<a href="#/injury" />}>
+            Injury and illness
+          </Button>
           <Button variant="outline" size="sm" onClick={() => setTool("availability")}>
             Availability…
           </Button>
