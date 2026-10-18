@@ -28,8 +28,9 @@ Routes that return a list of a declared model are included.
 - Success is `200` with a JSON body. Commands answer `{"ok": true, …}`.
 - A refused request is `400` (bad input) or `404` (no plan, no such session).
   Uploads add `411` (no `Content-Length`), `413` (over the size limit) and `504` (parse timeout).
-- Error bodies carry a human sentence in `error` or `detail`. `web/src/lib/api.ts`
-  surfaces that text. The server never returns exception text on a 500; the
+- Error bodies carry one human sentence in both `error` and `detail`: a handler
+  for `HTTPException` fills both, and handlers that return `{"error": …}` directly
+  are being moved to it. `web/src/lib/api.ts` surfaces that text. The server never returns exception text on a 500; the
   detail is logged instead.
 - Some commands answer `200` with `ok: false` and an `action` naming why nothing
   changed (for example `already_easy`). The UI shows that as a plain message.
