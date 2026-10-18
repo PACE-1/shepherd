@@ -4,6 +4,70 @@
  */
 
 export interface paths {
+    "/api/builder/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["builder_preview_api_builder_preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/builder/save": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["builder_save_api_builder_save_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/builder/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["builder_send_api_builder_send_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/builder/workout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["builder_load_api_builder_workout_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/calendar": {
         parameters: {
             query?: never;
@@ -1719,6 +1783,115 @@ export interface components {
             tau_fits_used?: {
                 [key: string]: unknown;
             } | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** BuilderLoaded */
+        BuilderLoaded: {
+            /** File */
+            file: string;
+            /**
+             * Ok
+             * @default true
+             */
+            ok: boolean;
+            /** Workout */
+            workout: {
+                [key: string]: unknown;
+            };
+        } & {
+            [key: string]: unknown;
+        };
+        /** BuilderPoint */
+        BuilderPoint: {
+            /** X */
+            x: number;
+            /** Y */
+            y: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** BuilderPreview */
+        BuilderPreview: {
+            /**
+             * Duration S
+             * @default 0
+             */
+            duration_s: number;
+            /**
+             * Errors
+             * @default []
+             */
+            errors: components["schemas"]["BuilderProblem"][];
+            /** Intensity Factor */
+            intensity_factor?: number | null;
+            /**
+             * Ok
+             * @default false
+             */
+            ok: boolean;
+            /**
+             * Profile
+             * @default []
+             */
+            profile: components["schemas"]["BuilderPoint"][];
+            /** Tss */
+            tss?: number | null;
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: string[];
+        } & {
+            [key: string]: unknown;
+        };
+        /** BuilderProblem */
+        BuilderProblem: {
+            /**
+             * Message
+             * @default
+             */
+            message: string;
+            /**
+             * Path
+             * @default
+             */
+            path: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** BuilderPush */
+        BuilderPush: {
+            /** Error */
+            error?: string | null;
+            /** Event Date */
+            event_date?: string | null;
+            /** Needs Lthr */
+            needs_lthr?: boolean | null;
+            /** Needs Reconnect */
+            needs_reconnect?: boolean | null;
+            /** Ok */
+            ok?: boolean | null;
+            /** Pushed */
+            pushed?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** BuilderSaved */
+        BuilderSaved: {
+            /**
+             * Created
+             * @default true
+             */
+            created: boolean;
+            /** File */
+            file: string;
+            /**
+             * Ok
+             * @default true
+             */
+            ok: boolean;
+            push?: components["schemas"]["BuilderPush"] | null;
         } & {
             [key: string]: unknown;
         };
@@ -4532,6 +4705,86 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    builder_preview_api_builder_preview_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BuilderPreview"];
+                };
+            };
+        };
+    };
+    builder_save_api_builder_save_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BuilderSaved"];
+                };
+            };
+        };
+    };
+    builder_send_api_builder_send_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BuilderSaved"];
+                };
+            };
+        };
+    };
+    builder_load_api_builder_workout_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BuilderLoaded"];
+                };
+            };
+        };
+    };
     api_calendar_api_calendar_get: {
         parameters: {
             query?: never;

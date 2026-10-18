@@ -27,8 +27,16 @@ def test_every_documented_route_still_exists_with_its_method():
     import os, tempfile
     os.environ.setdefault("SHEPHERD_HOME", tempfile.mkdtemp(prefix="domestique-contract-"))
     import app as app_module
-    live = {(r.path, m.lower()) for r in app_module.app.routes
-            for m in getattr(r, "methods", set()) or ()}
+    def flat(routes, prefix=""):
+        # FastAPI >= 0.139 keeps an included router (src/routes_*.py) as one wrapper entry.
+        for r in routes:
+            inner = getattr(r, "original_router", None)
+            if inner is not None:
+                yield from flat(inner.routes, prefix + (getattr(inner, "prefix", "") or ""))
+            else:
+                yield prefix + r.path, getattr(r, "methods", None) or ()
+
+    live = {(path, m.lower()) for path, methods in flat(app_module.app.routes) for m in methods}
     for path, ops in snap["paths"].items():
         for method in ops:
             assert (path, method) in live, f"{method.upper()} {path} is documented but not served"

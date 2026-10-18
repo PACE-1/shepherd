@@ -1117,3 +1117,46 @@ class LlmConnection(_Model):
 class Insight(_Model):
     text: str
     model: str = ""
+
+
+# ── Workout builder (#110, cycling slice) ────────────────────────────────────
+class BuilderProblem(_Model):
+    path: str = ""
+    message: str = ""
+
+
+class BuilderPoint(_Model):
+    x: float
+    y: float
+
+
+class BuilderPreview(_Model):
+    ok: bool = False
+    errors: list[BuilderProblem] = []
+    warnings: list[str] = []
+    duration_s: int = 0
+    intensity_factor: Optional[float] = None
+    tss: Optional[float] = None
+    profile: list[BuilderPoint] = []
+
+
+class BuilderPush(_Model):
+    ok: Optional[bool] = None
+    pushed: Optional[int] = None
+    event_date: Optional[str] = None
+    error: Optional[str] = None
+    needs_reconnect: Optional[bool] = None
+    needs_lthr: Optional[bool] = None
+
+
+class BuilderSaved(_Model):
+    ok: bool = True
+    file: str
+    created: bool = True
+    push: Optional[BuilderPush] = None      # only on /send
+
+
+class BuilderLoaded(_Model):
+    ok: bool = True
+    file: str
+    workout: dict

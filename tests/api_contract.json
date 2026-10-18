@@ -467,6 +467,237 @@
         "title": "BanisterValidation",
         "type": "object"
       },
+      "BuilderLoaded": {
+        "additionalProperties": true,
+        "properties": {
+          "file": {
+            "title": "File",
+            "type": "string"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "workout": {
+            "additionalProperties": true,
+            "title": "Workout",
+            "type": "object"
+          }
+        },
+        "required": [
+          "file",
+          "workout"
+        ],
+        "title": "BuilderLoaded",
+        "type": "object"
+      },
+      "BuilderPoint": {
+        "additionalProperties": true,
+        "properties": {
+          "x": {
+            "title": "X",
+            "type": "number"
+          },
+          "y": {
+            "title": "Y",
+            "type": "number"
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ],
+        "title": "BuilderPoint",
+        "type": "object"
+      },
+      "BuilderPreview": {
+        "additionalProperties": true,
+        "properties": {
+          "duration_s": {
+            "default": 0,
+            "title": "Duration S",
+            "type": "integer"
+          },
+          "errors": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/BuilderProblem"
+            },
+            "title": "Errors",
+            "type": "array"
+          },
+          "intensity_factor": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Intensity Factor"
+          },
+          "ok": {
+            "default": false,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "profile": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/BuilderPoint"
+            },
+            "title": "Profile",
+            "type": "array"
+          },
+          "tss": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tss"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "title": "BuilderPreview",
+        "type": "object"
+      },
+      "BuilderProblem": {
+        "additionalProperties": true,
+        "properties": {
+          "message": {
+            "default": "",
+            "title": "Message",
+            "type": "string"
+          },
+          "path": {
+            "default": "",
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "title": "BuilderProblem",
+        "type": "object"
+      },
+      "BuilderPush": {
+        "additionalProperties": true,
+        "properties": {
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "event_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event Date"
+          },
+          "needs_lthr": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Needs Lthr"
+          },
+          "needs_reconnect": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Needs Reconnect"
+          },
+          "ok": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ok"
+          },
+          "pushed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pushed"
+          }
+        },
+        "title": "BuilderPush",
+        "type": "object"
+      },
+      "BuilderSaved": {
+        "additionalProperties": true,
+        "properties": {
+          "created": {
+            "default": true,
+            "title": "Created",
+            "type": "boolean"
+          },
+          "file": {
+            "title": "File",
+            "type": "string"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "push": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BuilderPush"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "file"
+        ],
+        "title": "BuilderSaved",
+        "type": "object"
+      },
       "CalendarDay": {
         "additionalProperties": true,
         "properties": {
@@ -6798,6 +7029,74 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/builder/preview": {
+      "post": {
+        "operationId": "builder_preview_api_builder_preview_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuilderPreview"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/builder/save": {
+      "post": {
+        "operationId": "builder_save_api_builder_save_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuilderSaved"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/builder/send": {
+      "post": {
+        "operationId": "builder_send_api_builder_send_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuilderSaved"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/builder/workout": {
+      "get": {
+        "operationId": "builder_load_api_builder_workout_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuilderLoaded"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/calendar": {
       "get": {
         "operationId": "api_calendar_api_calendar_get",

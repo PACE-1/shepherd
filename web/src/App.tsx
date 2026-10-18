@@ -12,6 +12,7 @@ import { RideDetail } from "@/screens/RideDetail"
 import { Setup } from "@/screens/Setup"
 import { Settings } from "@/screens/Settings"
 import { Shuffle } from "@/screens/Shuffle"
+import { WorkoutBuilder } from "@/screens/WorkoutBuilder"
 
 // ponytail: hash routing, no router dependency. Swap for react-router when nested routes or loaders are needed.
 const subscribe = (cb: () => void) => {
@@ -33,6 +34,12 @@ export function App() {
     return (
       <AppShell tab="analysis">
         <RideDetail id={decodeURIComponent(rest.join("/"))} />
+      </AppShell>
+    )
+  if (head === "builder")
+    return (
+      <AppShell tab="library">
+        <WorkoutBuilder file={rest.length ? decodeURIComponent(rest.join("/")) : undefined} />
       </AppShell>
     )
   const tab = isTab(route) ? route : "home"
