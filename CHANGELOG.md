@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **Fixed: ride strain scores were never calculated** (a wrongly named parameter); they are now computed when a ride loads.
+- **Fixed: the first visit to the workout Library took about 8 seconds.** The library is prepared in the background at startup.
+- **Fixed: a slow earlier answer could replace a newer one on Settings and Analysis cards**, which showed as the wrong comparison or range.
+- **Fixed: Settings was wider than a phone screen.**
 - **Added: colour palettes (#106).** Settings > Appearance offers Graphite, Ocean, Forest, Sunset and Violet, each with a light and a dark variant, alongside light, dark and system. Charts and menus follow the palette.
 - **Added: download your data (#129).** Settings has CSV exports of activities, wellness and check-ins, and a full backup that leaves out your intervals.icu and AI keys.
 - **Added: training load by sport (#109).** Settings shows fitness, fatigue and form for cycling, running and swimming and for all sports together, and keeps run threshold pace and heart rate and swim critical speed with their history.

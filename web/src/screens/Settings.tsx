@@ -263,7 +263,7 @@ function About() {
 
 export function Settings() {
   return (
-    <div className="grid gap-4 lg:grid-cols-2" aria-label="Settings">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2" aria-label="Settings">
       <p className="text-sm lg:col-span-2">New here, or want to check your setup? <a className="underline" href="#/onboarding">Run the guided setup</a>.</p>
       <div className="lg:col-span-2">
         <Rider />
