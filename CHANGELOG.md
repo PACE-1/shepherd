@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Release tooling for semantic versioning (#159).** Tags with a `-` (`v4.0.0-beta.1`) are published as GitHub pre-releases, so the in-app update check never offers them to stable users; the newest pre-release also gets the `:beta` Docker tag; a pull request that removes an API route or field, or a `SHEPHERD_*` variable, now needs the `breaking` label. Versioning rules are in `docs/DEVELOPMENT.md`.
 - **Added: run, swim and strength sessions in the plan, next to the cycling plan.** For riders who save a sport split (hours per sport), the plan gains companion sessions: run, swim, strength and mobility, with a transition-time target and a "how the run felt" note for brick runs. Cycling-only riders' plans are unchanged. All session structures are design templates after published sources (Daniels, ACSM 2009, CSS convention), not validated against recorded runs or swims. (#120 #122 #123 #124 #127)
 - **Added: run workout library (#120).** Eight run sessions with Friel pace-zone or effort targets, an estimated rTSS, filters and `.fit`/`.txt` downloads in the Library. Not tried on a Garmin.
 - **Added: swim sessions (CSS based) and strength/mobility sessions** with exercise lists, sets, reps and session-RPE load; browse and print under Settings.
