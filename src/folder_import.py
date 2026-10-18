@@ -98,6 +98,7 @@ def save(pd: Path, folder: Optional[str], recursive: Optional[bool]) -> dict:
         if new_folder is not None:
             if new_folder != st.get("folder"):
                 st["last_scan"] = None
+                st["handled"] = {}      # the key has no folder in it: another folder starts clean
             st["folder"] = new_folder
         if recursive is not None:
             st["recursive"] = bool(recursive)

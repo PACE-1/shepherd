@@ -126,6 +126,22 @@ def test_a_corrupt_file_reads_as_empty(tmp_path):
 
 
 # ── routes ────────────────────────────────────────────────────────────────────────────────────────
+@pytest.fixture(autouse=True)
+def _leave_no_trace():
+    """The route test saves real targets (which switch on companion-session planning for every later plan
+    built in this worker) and inserts activity rows into the shared test profile: undo both."""
+    yield
+    try:
+        import db
+        from fastapi.testclient import TestClient
+        import app
+        TestClient(app.app).put("/api/balance/targets", json={"targets": {}, "limiter": None})
+        db.get_db().execute("DELETE FROM activities WHERE id LIKE 'bal%'")
+        db.get_db().commit()
+    except Exception:  # noqa: BLE001 - cleanup only
+        pass
+
+
 def test_routes_empty_profile_then_targets_and_actuals():
     from fastapi.testclient import TestClient
     import app

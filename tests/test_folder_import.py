@@ -260,3 +260,17 @@ def test_endpoints_validate_and_round_trip(c, tmp_path):
     s = c.put("/api/folder-import", json={"folder": ""}).json()
     assert s["folder"] == ""
     assert c.post("/api/folder-import/scan").status_code == 409
+
+
+def test_choosing_another_folder_forgets_what_was_handled_in_the_old_one(tmp_path):
+    a, b = tmp_path / "a", tmp_path / "b"
+    a.mkdir(); b.mkdir()
+    pd = tmp_path / "p"
+    pd.mkdir()
+    fi.save(pd, str(a), None)
+    fi.update_json(fi._path(pd), lambda st: st.setdefault("handled", {}).update({"ride.fit|10|1750000000": "x"}), default=dict)
+    assert fi.load(pd)["handled"]
+    fi.save(pd, str(a), True)            # same folder, other option: keeps the record
+    assert fi.load(pd)["handled"]
+    fi.save(pd, str(b), None)            # another folder: a file there must not read as already imported
+    assert fi.load(pd)["handled"] == {}
