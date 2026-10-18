@@ -29,7 +29,9 @@ maintenance load after up to 2 weeks off, 50..90 % after 3-4 weeks, 40..90 % aft
     1993;21(1):125-135) and the IOC consensus on load and illness (Schwellnus M et al. Br J Sports Med
     2016;50:1043-1052). The ramp therefore starts only once the rider marks the episode resolved, and holds
     intensity out for its whole length.
-  * Any episode, however short, gets at least the planner's shortest ramp (the one for up to 2 weeks off).
+  * An injury, or an illness of 15 days or more, gets at least the planner's shortest ramp (the one for up to 2
+    weeks off). A shorter illness gets none: the rider's own report of feeling well ends the pause, and the planner's
+    short-break re-entry rule (SCIENCE.md 1b: keep the intensity, cut the volume) applies.
     That is a deliberate conservative choice, not a published number.
 Confidence: low. These are conservative coaching heuristics, not a validated return-to-sport protocol.
 
@@ -63,6 +65,9 @@ NOT_MEDICAL_ADVICE = (
     "Not medical advice. This is a conservative training heuristic. See a clinician for an injury that is "
     "not settling, and do not train with a fever or chest symptoms (chest pain, breathlessness, palpitations).")
 
+# Below this many days, an illness gets no return ramp (the planner's own short-break re-entry rule
+# applies, SCIENCE.md 1b); at 15 days that rule hands over to the planner's recovery ramp.
+SHORT_ILLNESS_DAYS = 15
 RAMP_ELEVATED, RAMP_HIGH = 1.3, 1.5
 RAMP_METHOD = ("Last 7 days' load divided by the weekly average of the 4 weeks before them (uncoupled "
                "acute:chronic ratio, Lolli et al. 2019). Above 1.3 is past the 'sweet spot' and 1.5 or more "
@@ -235,6 +240,8 @@ def return_ramp(periods: list | None, today: date) -> dict | None:
         return None
     end, start, p = max(rows, key=lambda r: r[0])
     days = (end - start).days + 1
+    if p.get("type") == "illness" and days < SHORT_ILLNESS_DAYS:
+        return None   # a short illness is a short break: the planner's re-entry rule (SCIENCE.md 1b) applies, with no forced ramp
     return {"episode_id": p["episode_id"], "type": p.get("type", "injury"), "start": start.isoformat(),
             "end": end.isoformat(), "episode_days": days, "absence_days": max(7, days),
             "weeks_done": ((today - end).days - 1) // 7}

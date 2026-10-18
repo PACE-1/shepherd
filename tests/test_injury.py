@@ -85,7 +85,7 @@ def test_sync_keeps_other_time_off_pauses_to_plan_end_and_skips_other_sports():
 
 
 def _row(start, end, **kw):
-    return {"start": start, "end": end, "type": "illness", "episode_id": "x", **kw}
+    return {"start": start, "end": end, "type": "injury", "episode_id": "x", **kw}
 
 
 def test_return_ramp_only_for_finished_episode_rows():
@@ -95,7 +95,7 @@ def test_return_ramp_only_for_finished_episode_rows():
     assert injury.return_ramp([_row("2026-09-10", "2026-09-30", open=True)], TODAY) is None
     assert injury.return_ramp([_row("2026-09-10", "2026-09-14")], TODAY) is None   # still covers today
     assert injury.return_ramp([_row("2026-09-20", "2026-09-22")], TODAY) is None   # in the future
-    r = injury.return_ramp([_row("2026-09-11", "2026-09-13")], TODAY)
+    r = injury.return_ramp([_row("2026-09-11", "2026-09-13")], TODAY)       # an injury, however short, gets the ramp
     assert (r["episode_days"], r["absence_days"], r["weeks_done"]) == (3, 7, 0)
     r = injury.return_ramp([_row("2026-08-01", "2026-08-21"), _row("2026-08-25", "2026-09-05")], TODAY)
     assert (r["start"], r["episode_days"], r["absence_days"], r["weeks_done"]) == ("2026-08-25", 12, 12, 1)
@@ -254,7 +254,7 @@ def test_endpoints_record_resolve_and_delete_and_mirror_into_the_plan(client):
     assert plan["unavailable_periods"][-1]["episode_id"] == eid and plan["unavailable_periods"][-1]["end"] == "2027-09-14"
     r = c.post(f"/api/injury/episodes/{eid}/resolve", json={}).json()       # "I'm back"
     assert r["episodes"][0]["end"] == "2026-09-13" and r["active"] is None
-    assert r["return_ramp"]["absence_days"] == 7 and r["plan_synced"]
+    assert r["return_ramp"] is None and r["plan_synced"]   # a 2-day flu: no forced ramp (SCIENCE.md 1b governs)
     assert c.post("/api/injury/episodes/nope/resolve", json={}).status_code == 404
     assert c.delete(f"/api/injury/episodes/{eid}").json()["episodes"] == []
     assert json.loads((d / "current_plan.json").read_text())["unavailable_periods"] == _plan()["unavailable_periods"]
@@ -268,3 +268,11 @@ def test_episodes_without_a_plan_are_stored_and_ramp_rate_answers(client):
     assert not r["has_plan"] and not r["plan_synced"] and r["episodes"][0]["body_area"] == "knee"
     rr = c.get("/api/injury/ramp-rate")
     assert rr.status_code == 200 and set(rr.json()["combined"]) >= {"week_load", "prev_4wk_avg", "ratio", "level"}
+
+
+def test_a_short_illness_gets_no_forced_ramp_but_a_long_one_does():
+    short = _row("2026-08-31", "2026-09-13", type="illness")                 # 14 days
+    assert injury.return_ramp([short], TODAY) is None                         # the planner's 1b re-entry rule applies
+    assert injury.return_ramp([_row("2026-09-11", "2026-09-13", type="illness")], TODAY) is None
+    r = injury.return_ramp([_row("2026-08-30", "2026-09-13", type="illness")], TODAY)   # 15 days
+    assert r["episode_days"] == 15 and r["absence_days"] == 15

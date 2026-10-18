@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Changed: a short illness (under 15 days) no longer forces an easy-only return.** When you feel well, say "I'm back"; the planner's short-break rule (keep the intensity, cut the volume) applies. Injuries and longer illnesses keep the easy-only return.
 - **Added: gear tracking (#115).** Bikes, shoes and components with distance and hours, your own service thresholds, "service done" resets and best-effort intervals.icu gear matching.
 - **Added: weekly sport balance (#124).** Hours and load by sport per week and month against a target split you set, with an optional limiter marker (display only; planner emphasis not built).
 - **API: response models and a guard test for every JSON route the web UI calls (#10).**
