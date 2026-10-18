@@ -1007,6 +1007,69 @@
         "title": "CapReverted",
         "type": "object"
       },
+      "CriticalSpeed": {
+        "additionalProperties": true,
+        "properties": {
+          "confidence": {
+            "title": "Confidence",
+            "type": "string"
+          },
+          "cs_m_per_s": {
+            "title": "Cs M Per S",
+            "type": "number"
+          },
+          "cs_pace_s_per_km": {
+            "title": "Cs Pace S Per Km",
+            "type": "number"
+          },
+          "d_prime_m": {
+            "title": "D Prime M",
+            "type": "number"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "n_trials": {
+            "title": "N Trials",
+            "type": "integer"
+          },
+          "r2": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "R2"
+          },
+          "saved": {
+            "default": false,
+            "title": "Saved",
+            "type": "boolean"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "cs_m_per_s",
+          "cs_pace_s_per_km",
+          "d_prime_m",
+          "n_trials",
+          "method",
+          "confidence"
+        ],
+        "title": "CriticalSpeed",
+        "type": "object"
+      },
       "DailyAdapt": {
         "additionalProperties": true,
         "properties": {
@@ -5417,6 +5480,497 @@
         "title": "RidesSynced",
         "type": "object"
       },
+      "RunActivities": {
+        "additionalProperties": true,
+        "properties": {
+          "confidence": {
+            "title": "Confidence",
+            "type": "string"
+          },
+          "max_hr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Hr"
+          },
+          "max_hr_source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Hr Source"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "missing": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          },
+          "rest_hr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rest Hr"
+          },
+          "runs": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/RunActivity"
+            },
+            "title": "Runs",
+            "type": "array"
+          },
+          "sex": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sex"
+          },
+          "threshold_hr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold Hr"
+          },
+          "threshold_pace_s_per_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold Pace S Per Km"
+          }
+        },
+        "required": [
+          "method",
+          "confidence"
+        ],
+        "title": "RunActivities",
+        "type": "object"
+      },
+      "RunActivity": {
+        "additionalProperties": true,
+        "properties": {
+          "avg_hr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Hr"
+          },
+          "cadence_doubled": {
+            "default": false,
+            "title": "Cadence Doubled",
+            "type": "boolean"
+          },
+          "cadence_spm": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cadence Spm"
+          },
+          "date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date"
+          },
+          "distance_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance Km"
+          },
+          "duration_s": {
+            "default": 0,
+            "title": "Duration S",
+            "type": "number"
+          },
+          "hrtss": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hrtss"
+          },
+          "icu_load": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Icu Load"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "intensity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Intensity"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "pace_s_per_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pace S Per Km"
+          },
+          "rtss": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rtss"
+          },
+          "step_length_m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Step Length M"
+          },
+          "stride_length_m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stride Length M"
+          },
+          "type": {
+            "default": "",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "RunActivity",
+        "type": "object"
+      },
+      "RunGap": {
+        "additionalProperties": true,
+        "properties": {
+          "confidence": {
+            "title": "Confidence",
+            "type": "string"
+          },
+          "cost_j_per_kg_m": {
+            "title": "Cost J Per Kg M",
+            "type": "number"
+          },
+          "flat_cost_j_per_kg_m": {
+            "title": "Flat Cost J Per Kg M",
+            "type": "number"
+          },
+          "gap_s_per_km": {
+            "title": "Gap S Per Km",
+            "type": "number"
+          },
+          "grade_pct": {
+            "title": "Grade Pct",
+            "type": "number"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "pace_s_per_km": {
+            "title": "Pace S Per Km",
+            "type": "number"
+          }
+        },
+        "required": [
+          "pace_s_per_km",
+          "grade_pct",
+          "gap_s_per_km",
+          "cost_j_per_kg_m",
+          "flat_cost_j_per_kg_m",
+          "method",
+          "confidence"
+        ],
+        "title": "RunGap",
+        "type": "object"
+      },
+      "RunHrZone": {
+        "additionalProperties": true,
+        "properties": {
+          "high_bpm": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "High Bpm"
+          },
+          "high_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "High Pct"
+          },
+          "low_bpm": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Low Bpm"
+          },
+          "low_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Low Pct"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "zone": {
+            "title": "Zone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "zone",
+          "name"
+        ],
+        "title": "RunHrZone",
+        "type": "object"
+      },
+      "RunPaceZone": {
+        "additionalProperties": true,
+        "properties": {
+          "fast_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fast Pct"
+          },
+          "fast_s_per_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fast S Per Km"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "slow_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slow Pct"
+          },
+          "slow_s_per_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slow S Per Km"
+          },
+          "zone": {
+            "title": "Zone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "zone",
+          "name"
+        ],
+        "title": "RunPaceZone",
+        "type": "object"
+      },
+      "RunZones": {
+        "additionalProperties": true,
+        "properties": {
+          "confidence": {
+            "title": "Confidence",
+            "type": "string"
+          },
+          "hr_zones": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/RunHrZone"
+            },
+            "title": "Hr Zones",
+            "type": "array"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "pace_history": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SportThresholdEntry"
+            },
+            "title": "Pace History",
+            "type": "array"
+          },
+          "pace_zones": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/RunPaceZone"
+            },
+            "title": "Pace Zones",
+            "type": "array"
+          },
+          "threshold_hr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold Hr"
+          },
+          "threshold_pace_s_per_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold Pace S Per Km"
+          }
+        },
+        "required": [
+          "method",
+          "confidence"
+        ],
+        "title": "RunZones",
+        "type": "object"
+      },
       "SessionDismissed": {
         "additionalProperties": true,
         "properties": {
@@ -8592,6 +9146,74 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/RidesSynced"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/run/activities": {
+      "get": {
+        "operationId": "run_activities_api_run_activities_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunActivities"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/run/critical-speed": {
+      "post": {
+        "operationId": "run_critical_speed_api_run_critical_speed_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CriticalSpeed"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/run/gap": {
+      "get": {
+        "operationId": "run_gap_api_run_gap_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunGap"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/run/zones": {
+      "get": {
+        "operationId": "run_zones_api_run_zones_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunZones"
                 }
               }
             },

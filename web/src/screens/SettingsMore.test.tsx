@@ -202,6 +202,8 @@ describe("Settings connection", () => {
       "/api/sports/load": () => json({ as_of: "2026-10-18", days_of_history: 0, settled: false, combined: { ctl: 0, atl: 0, tsb: 0, week_load: 0 }, sports: {}, method: "", confidence: "" }),
       "/api/sports/thresholds": () => json({ thresholds: {} }),
       "/api/notifications/settings": () => json({ has_url: false, events: { readiness: true, missed: true, sync_failure: true }, readiness_time: "" }),
+      "/api/run/zones": () => json({ pace_zones: [], hr_zones: [], method: "", confidence: "" }),
+      "/api/run/activities": () => json({ runs: [], missing: [], method: "", confidence: "" }),
       "/api/icu/push": () => json({ connected: true, write_ok: true, sync_enabled: false, horizon_days: 14 }),
       "/api/settings/workout-folders": () => json({ builtin: { count: 1 }, extra: null }),
     })
@@ -226,6 +228,8 @@ describe("Connect with an API key", () => {
     "/api/sports/load": () => json({ as_of: "2026-10-18", days_of_history: 0, settled: false, combined: { ctl: 0, atl: 0, tsb: 0, week_load: 0 }, sports: {}, method: "", confidence: "" }),
     "/api/sports/thresholds": () => json({ thresholds: {} }),
     "/api/notifications/settings": () => json({ has_url: false, events: { readiness: true, missed: true, sync_failure: true }, readiness_time: "" }),
+    "/api/run/zones": () => json({ pace_zones: [], hr_zones: [], method: "", confidence: "" }),
+    "/api/run/activities": () => json({ runs: [], missing: [], method: "", confidence: "" }),
     "/api/icu/push": () => json({ connected: false, write_ok: false, sync_enabled: false, horizon_days: 14 }),
     "/api/settings/workout-folders": () => json({ builtin: { count: 1 }, extra: null }),
     ...extra,
