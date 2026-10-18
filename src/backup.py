@@ -50,7 +50,7 @@ MARKER = ".data_format"
 MANIFEST = "manifest.json"
 _EXCLUDED_DIRS = {"logs", "cache", "__pycache__"}
 _EXCLUDED_NAMES = {"update_check_cache.json"}
-_SECRET_NAMES = {".env", "llm.json"}  # intervals.icu credentials and the AI provider key
+_SECRET_NAMES = {".env", "llm.json", "nutrition_sparkyfitness.json"}  # intervals.icu credentials, the AI provider and SparkyFitness keys
 _EXCLUDED_SUFFIXES = (".tmp", ".part", "-wal", "-shm", ".lock")
 _SQLITE_SUFFIXES = (".db", ".sqlite", ".sqlite3")
 

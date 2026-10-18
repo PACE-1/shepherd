@@ -2887,6 +2887,199 @@
         "title": "FtpUpdated",
         "type": "object"
       },
+      "Fueling": {
+        "additionalProperties": true,
+        "properties": {
+          "connected": {
+            "default": false,
+            "title": "Connected",
+            "type": "boolean"
+          },
+          "daily_method": {
+            "title": "Daily Method",
+            "type": "string"
+          },
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "day": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FuelingDay"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "during": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FuelingDuring"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "energy_method": {
+            "title": "Energy Method",
+            "type": "string"
+          },
+          "hourly_method": {
+            "title": "Hourly Method",
+            "type": "string"
+          },
+          "logged": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NutritionDay"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "ride_kcal_approx": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ride Kcal Approx"
+          },
+          "session": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FuelingSession"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "weight_kg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight Kg"
+          }
+        },
+        "required": [
+          "date",
+          "hourly_method",
+          "daily_method",
+          "energy_method",
+          "note"
+        ],
+        "title": "Fueling",
+        "type": "object"
+      },
+      "FuelingDay": {
+        "additionalProperties": true,
+        "properties": {
+          "high_g": {
+            "title": "High G",
+            "type": "integer"
+          },
+          "high_g_per_kg": {
+            "title": "High G Per Kg",
+            "type": "integer"
+          },
+          "load": {
+            "title": "Load",
+            "type": "string"
+          },
+          "low_g": {
+            "title": "Low G",
+            "type": "integer"
+          },
+          "low_g_per_kg": {
+            "title": "Low G Per Kg",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "load",
+          "low_g_per_kg",
+          "high_g_per_kg",
+          "low_g",
+          "high_g"
+        ],
+        "title": "FuelingDay",
+        "type": "object"
+      },
+      "FuelingDuring": {
+        "additionalProperties": true,
+        "properties": {
+          "band": {
+            "title": "Band",
+            "type": "string"
+          },
+          "high_g": {
+            "title": "High G",
+            "type": "integer"
+          },
+          "high_g_per_h": {
+            "title": "High G Per H",
+            "type": "integer"
+          },
+          "low_g": {
+            "title": "Low G",
+            "type": "integer"
+          },
+          "low_g_per_h": {
+            "title": "Low G Per H",
+            "type": "integer"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "band",
+          "low_g_per_h",
+          "high_g_per_h",
+          "low_g",
+          "high_g",
+          "note"
+        ],
+        "title": "FuelingDuring",
+        "type": "object"
+      },
+      "FuelingSession": {
+        "additionalProperties": true,
+        "properties": {
+          "duration_min": {
+            "title": "Duration Min",
+            "type": "integer"
+          },
+          "session_type": {
+            "title": "Session Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_type",
+          "duration_min"
+        ],
+        "title": "FuelingSession",
+        "type": "object"
+      },
       "HrvImported": {
         "additionalProperties": true,
         "properties": {
@@ -3697,6 +3890,172 @@
           "ok"
         ],
         "title": "NotificationTest",
+        "type": "object"
+      },
+      "NutritionConnection": {
+        "additionalProperties": true,
+        "properties": {
+          "base_url": {
+            "default": "",
+            "title": "Base Url",
+            "type": "string"
+          },
+          "configured": {
+            "default": false,
+            "title": "Configured",
+            "type": "boolean"
+          },
+          "has_key": {
+            "default": false,
+            "title": "Has Key",
+            "type": "boolean"
+          },
+          "last_synced_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Synced At"
+          }
+        },
+        "title": "NutritionConnection",
+        "type": "object"
+      },
+      "NutritionDay": {
+        "additionalProperties": true,
+        "properties": {
+          "carbs_g": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Carbs G"
+          },
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "fat_g": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fat G"
+          },
+          "kcal": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kcal"
+          },
+          "protein_g": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Protein G"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "synced_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Synced At"
+          },
+          "water_ml": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Water Ml"
+          }
+        },
+        "required": [
+          "date",
+          "source"
+        ],
+        "title": "NutritionDay",
+        "type": "object"
+      },
+      "NutritionSync": {
+        "additionalProperties": true,
+        "properties": {
+          "days_with_data": {
+            "title": "Days With Data",
+            "type": "integer"
+          },
+          "end": {
+            "title": "End",
+            "type": "string"
+          },
+          "start": {
+            "title": "Start",
+            "type": "string"
+          },
+          "synced_at": {
+            "title": "Synced At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "days_with_data",
+          "synced_at"
+        ],
+        "title": "NutritionSync",
+        "type": "object"
+      },
+      "NutritionTest": {
+        "additionalProperties": true,
+        "properties": {
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok",
+          "message"
+        ],
+        "title": "NutritionTest",
         "type": "object"
       },
       "Ok": {
@@ -8905,6 +9264,23 @@
         }
       }
     },
+    "/api/fueling": {
+      "get": {
+        "operationId": "fueling_today_api_fueling_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fueling"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/icu/connection": {
       "get": {
         "operationId": "api_icu_connection_api_icu_connection_get",
@@ -9318,6 +9694,87 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotificationTest"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/nutrition/connection": {
+      "delete": {
+        "operationId": "nutrition_connection_delete_api_nutrition_connection_delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NutritionConnection"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "operationId": "nutrition_connection_api_nutrition_connection_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NutritionConnection"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "operationId": "nutrition_connection_save_api_nutrition_connection_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NutritionConnection"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/nutrition/sync": {
+      "post": {
+        "operationId": "nutrition_sync_api_nutrition_sync_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NutritionSync"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/nutrition/test": {
+      "post": {
+        "operationId": "nutrition_test_api_nutrition_test_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NutritionTest"
                 }
               }
             },

@@ -3,6 +3,7 @@ import { useSyncExternalStore } from "react"
 import { AppShell, isTab } from "@/components/AppShell"
 import { Analysis } from "@/screens/Analysis"
 import { Dfa } from "@/screens/Dfa"
+import { Fueling } from "@/screens/Fueling"
 import { Home } from "@/screens/Home"
 import { Injury } from "@/screens/Injury"
 import { Library } from "@/screens/Library"
@@ -47,6 +48,7 @@ export function App() {
       </AppShell>
     )
   if (head === "injury") return <AppShell tab="plan"><Injury /></AppShell>
+  if (head === "fueling") return <AppShell tab="analysis"><Fueling /></AppShell>
   if (head === "compare" && rest.length) return <AppShell tab="analysis"><RideCompare key={route} a={decodeURIComponent(rest[0])} b={rest[1] ? decodeURIComponent(rest[1]) : undefined} /></AppShell>
   const tab = isTab(route) ? route : "home"
   return (

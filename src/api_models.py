@@ -1436,3 +1436,72 @@ class RideCompare(_Model):
     b: CompareSide
     delta: CompareSummary                    # b - a per summary field
     best_efforts: list[BestEffortDelta] = []
+
+
+# ── Nutrition (SparkyFitness) and fueling (#112) ──────────────────────────────
+
+class NutritionConnection(_Model):
+    configured: bool = False
+    base_url: str = ""
+    has_key: bool = False             # the key itself is never returned
+    last_synced_at: Optional[str] = None
+
+
+class NutritionTest(_Model):
+    ok: bool
+    message: str
+
+
+class NutritionSync(_Model):
+    start: str
+    end: str
+    days_with_data: int
+    synced_at: str
+
+
+class NutritionDay(_Model):
+    date: str
+    source: str
+    kcal: Optional[float] = None
+    carbs_g: Optional[float] = None
+    protein_g: Optional[float] = None
+    fat_g: Optional[float] = None
+    water_ml: Optional[float] = None
+    synced_at: Optional[str] = None
+
+
+class FuelingSession(_Model):
+    session_type: str
+    duration_min: int
+
+
+class FuelingDuring(_Model):
+    band: str                         # none | small | moderate | high
+    low_g_per_h: int
+    high_g_per_h: int
+    low_g: int
+    high_g: int
+    note: str
+
+
+class FuelingDay(_Model):
+    load: str                         # light | moderate | high | very_high
+    low_g_per_kg: int
+    high_g_per_kg: int
+    low_g: int
+    high_g: int
+
+
+class Fueling(_Model):
+    date: str
+    weight_kg: Optional[float] = None
+    session: Optional[FuelingSession] = None
+    during: Optional[FuelingDuring] = None
+    day: Optional[FuelingDay] = None
+    logged: Optional[NutritionDay] = None
+    connected: bool = False
+    ride_kcal_approx: Optional[int] = None
+    hourly_method: str
+    daily_method: str
+    energy_method: str
+    note: str
