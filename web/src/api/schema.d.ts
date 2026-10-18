@@ -1444,6 +1444,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/run/predict": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["run_predict_api_run_predict_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/run/zones": {
         parameters: {
             query?: never;
@@ -4208,6 +4224,94 @@ export interface components {
             regen_info?: {
                 [key: string]: unknown;
             } | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RaceInputCs */
+        RaceInputCs: {
+            /** Cs M Per S */
+            cs_m_per_s: number;
+            /** D Prime M */
+            d_prime_m: number;
+            /** Date */
+            date?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RaceInputRun */
+        RaceInputRun: {
+            /** Date */
+            date?: string | null;
+            /** Distance M */
+            distance_m: number;
+            /** Id */
+            id: string;
+            /**
+             * Name
+             * @default
+             */
+            name: string;
+            /** Pace S Per Km */
+            pace_s_per_km: number;
+            /** Time S */
+            time_s: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RacePrediction */
+        RacePrediction: {
+            /** Distance M */
+            distance_m: number;
+            /** Label */
+            label: string;
+            /** Model */
+            model: string;
+            /**
+             * Notes
+             * @default []
+             */
+            notes: string[];
+            /** Pace S Per Km */
+            pace_s_per_km?: number | null;
+            /** Race */
+            race: string;
+            /** Range Text */
+            range_text?: string | null;
+            /** Status */
+            status: string;
+            /** Time S */
+            time_s?: number | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RacePredictor */
+        RacePredictor: {
+            best_run?: components["schemas"]["RaceInputRun"] | null;
+            critical_speed?: components["schemas"]["RaceInputCs"] | null;
+            /** Cs Confidence */
+            cs_confidence: string;
+            /** Cs Method */
+            cs_method: string;
+            /** Long Run Rule */
+            long_run_rule: string;
+            /** Longest Run M */
+            longest_run_m?: number | null;
+            /**
+             * Missing
+             * @default []
+             */
+            missing: string[];
+            /**
+             * Predictions
+             * @default []
+             */
+            predictions: components["schemas"]["RacePrediction"][];
+            /** Riegel Confidence */
+            riegel_confidence: string;
+            /** Riegel Method */
+            riegel_method: string;
+            /** Window Days */
+            window_days: number;
         } & {
             [key: string]: unknown;
         };
@@ -7539,6 +7643,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RunGap"];
+                };
+            };
+        };
+    };
+    run_predict_api_run_predict_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RacePredictor"];
                 };
             };
         };

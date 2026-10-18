@@ -13,6 +13,7 @@ from fastapi import APIRouter, HTTPException
 
 import api_models
 import clock
+from atomic_io import write_json_atomic
 import db
 import multisport
 import run_metrics as rm
@@ -25,6 +26,11 @@ _WALKS = ("walk", "hike")
 def _thresholds_path():
     from profile_manager import ProfileManager
     return ProfileManager.get().active_dir / "sport_thresholds.json"
+
+
+def _cs_path():
+    """The last saved critical-speed test (CS and D'), read by the race predictor (#121)."""
+    return _thresholds_path().with_name("run_critical_speed.json")
 
 
 def _run_thresholds() -> dict:
@@ -64,6 +70,7 @@ def run_critical_speed(body: dict):
             multisport.set_threshold(_thresholds_path(), "run_threshold_pace", out["cs_pace_s_per_km"], clock.today(), source="critical_speed")
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
+        write_json_atomic(_cs_path(), {"cs_m_per_s": out["cs_m_per_s"], "d_prime_m": out["d_prime_m"], "date": clock.today().isoformat()})
         out["saved"] = True
     return out
 
