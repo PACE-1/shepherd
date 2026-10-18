@@ -498,7 +498,9 @@ surfaced a genuine pre-existing defect: the 48 h rule is already violated on
 main (6 breaches at 6 h/week, 7 after this branch), because spacing is enforced
 on the SLOTS designated hard while a file served to an endurance slot can carry
 threshold content. Marked `expectedFailure` with the measurement rather than
-loosened, so a fix reports an unexpected success.
+loosened, so a fix reports an unexpected success. (Fixed since: the final
+pass moved to the end of every entry point and the test is now an ordinary
+regression test; see its docstring in `tests/test_tid_plan_properties.py`.)
 
 A sixth guard went into `conftest.py`: `_ACTIVE_DISTRIBUTION` is module-global
 state that `generate_plan` sets from the goal, and it leaked across FILES under
