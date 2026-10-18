@@ -4261,6 +4261,30 @@
         "title": "InjuryReturn",
         "type": "object"
       },
+      "InjuryShortBreak": {
+        "additionalProperties": true,
+        "properties": {
+          "end": {
+            "title": "End",
+            "type": "string"
+          },
+          "episode_days": {
+            "title": "Episode Days",
+            "type": "integer"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "episode_days",
+          "end"
+        ],
+        "title": "InjuryShortBreak",
+        "type": "object"
+      },
       "InjuryStatus": {
         "additionalProperties": true,
         "properties": {
@@ -4312,6 +4336,16 @@
             "anyOf": [
               {
                 "$ref": "#/components/schemas/InjuryReturn"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "short_break": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InjuryShortBreak"
               },
               {
                 "type": "null"

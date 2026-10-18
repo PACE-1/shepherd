@@ -1,7 +1,7 @@
 """Gear (#115): bikes, shoes and components with distance and hours, service thresholds, "service done".
 
-Logic lives in gear.py. There is no push reminder: due items show on the Gear screen (adding an event to
-notifications.py would change its settings model, tests and Settings screen, which this feature does not own).
+Logic lives in gear.py. A due item shows on the Gear screen and raises one bell notice (and an ntfy push if
+set up) through the "gear_due" event in notifications.py; "service done" re-arms it.
 """
 from datetime import date
 

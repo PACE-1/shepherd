@@ -561,7 +561,7 @@ test("Injury & illness: an ongoing illness pauses the plan and 'I'm back' starts
   expect(plan.plan_json.unavailable_periods.at(-1)).toMatchObject({ type: "illness", open: true })
   await page.getByRole("button", { name: "I'm back" }).click()
   await expect(page.getByText("Nothing ongoing.")).toBeVisible()
-  await expect(page.getByText("Back after 3 days of illness.")).toBeVisible()
+  await expect(page.getByText(/^Back after \d+ days? of illness\. A short illness has no forced return ramp/)).toBeVisible()
   await expect(page.getByRole("alert")).toHaveCount(0)
   const status = await (await api(request, "/api/injury")).json()
   expect(status.episodes[0].end).not.toBeNull()

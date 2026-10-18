@@ -4211,6 +4211,17 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** InjuryShortBreak */
+        InjuryShortBreak: {
+            /** End */
+            end: string;
+            /** Episode Days */
+            episode_days: number;
+            /** Type */
+            type: string;
+        } & {
+            [key: string]: unknown;
+        };
         /** InjuryStatus */
         InjuryStatus: {
             active?: components["schemas"]["InjuryEpisode"] | null;
@@ -4239,6 +4250,7 @@ export interface components {
              */
             ramp_weeks: components["schemas"]["InjuryRampWeek"][];
             return_ramp?: components["schemas"]["InjuryReturn"] | null;
+            short_break?: components["schemas"]["InjuryShortBreak"] | null;
         } & {
             [key: string]: unknown;
         };

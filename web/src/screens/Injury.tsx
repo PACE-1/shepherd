@@ -172,11 +172,15 @@ function ReturnRamp({ data }: { data: InjuryStatus }) {
   return (
     <div className="space-y-2 text-sm">
       {data.active ? (
-        <p>The plan is paused while this goes on. When you are back, the return ramp starts.</p>
+        <p>The plan is paused while this goes on. When you feel well, press "I'm back". An injury, or an illness of 15 days or more, then returns through an easy-only ramp; a shorter illness does not.</p>
       ) : r ? (
         <p>
           Back after {r.episode_days} day{r.episode_days === 1 ? "" : "s"} of {r.type}
           {r.weeks_done > 0 ? `, ${r.weeks_done} ramp week${r.weeks_done === 1 ? "" : "s"} done` : ""}.
+        </p>
+      ) : data.short_break ? (
+        <p>
+          Back after {data.short_break.episode_days} day{data.short_break.episode_days === 1 ? "" : "s"} of {data.short_break.type}. A short illness has no forced return ramp: train as you feel, and the plan keeps your intensity and trims the volume for a short break.
         </p>
       ) : (
         <p className="text-muted-foreground">No recent episode, so no return ramp.</p>

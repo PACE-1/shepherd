@@ -255,6 +255,7 @@ def test_endpoints_record_resolve_and_delete_and_mirror_into_the_plan(client):
     r = c.post(f"/api/injury/episodes/{eid}/resolve", json={}).json()       # "I'm back"
     assert r["episodes"][0]["end"] == "2026-09-13" and r["active"] is None
     assert r["return_ramp"] is None and r["plan_synced"]   # a 2-day flu: no forced ramp (SCIENCE.md 1b governs)
+    assert r["short_break"] == {"type": "illness", "episode_days": 2, "end": "2026-09-13"}
     assert c.post("/api/injury/episodes/nope/resolve", json={}).status_code == 404
     assert c.delete(f"/api/injury/episodes/{eid}").json()["episodes"] == []
     assert json.loads((d / "current_plan.json").read_text())["unavailable_periods"] == _plan()["unavailable_periods"]

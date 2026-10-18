@@ -1304,10 +1304,17 @@ class InjuryRampWeek(_Model):
     easy_only: bool = False
 
 
+class InjuryShortBreak(_Model):
+    type: str
+    episode_days: int
+    end: str
+
+
 class InjuryStatus(_Model):
     episodes: list[InjuryEpisode] = []
     active: Optional[InjuryEpisode] = None
     return_ramp: Optional[InjuryReturn] = None
+    short_break: Optional[InjuryShortBreak] = None   # a finished illness too short for a ramp
     ramp_weeks: list[InjuryRampWeek] = []
     has_plan: bool = False
     plan_synced: bool = False            # the plan's time off changed: rebuild it

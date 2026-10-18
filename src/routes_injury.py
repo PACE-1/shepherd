@@ -47,6 +47,18 @@ def _sync_plan(today: date) -> bool:
     return tp.run_under_plan_lock(run)
 
 
+def _short_break(eps: list[dict], today: date) -> dict | None:
+    """The latest finished illness when it was too short for a return ramp (see injury.SHORT_ILLNESS_DAYS)."""
+    done = [e for e in eps if e.get("end") and e["end"] < today.isoformat()]
+    if not done:
+        return None
+    last = max(done, key=lambda e: e["end"])
+    days = (date.fromisoformat(last["end"]) - date.fromisoformat(last["start"])).days + 1
+    if last["type"] != "illness" or days >= injury.SHORT_ILLNESS_DAYS:
+        return None
+    return {"type": last["type"], "episode_days": days, "end": last["end"]}
+
+
 def _status(today: date, plan_synced: bool = False) -> dict:
     eps = injury.read_episodes(_episodes_path())
     plan = _read_plan()
@@ -59,8 +71,9 @@ def _status(today: date, plan_synced: bool = False) -> dict:
         for w in view["weeks"]
         if w.get("phase") in ("recon", "recovery_ramp") and str(w.get("end", "")) >= today.isoformat()
     ]
+    ramp = injury.return_ramp(view.get("unavailable_periods"), today)
     return {"episodes": eps, "active": active,
-            "return_ramp": injury.return_ramp(view.get("unavailable_periods"), today),
+            "return_ramp": ramp, "short_break": None if ramp else _short_break(eps, today),
             "ramp_weeks": ramp_weeks, "has_plan": plan is not None, "plan_synced": plan_synced,
             "method": injury.RETURN_METHOD, "note": injury.NOT_MEDICAL_ADVICE}
 

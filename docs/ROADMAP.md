@@ -73,7 +73,7 @@ Everything below is on branch `claude/peaceful-bell-wcwgkb`, not yet on `main`. 
 | #128 readiness | slice | Sleep trends and illness warning signs; runs/swims without an intervals.icu load count as zero. |
 | #129 export | slice | Restore is a stop-the-app command (`python -m backup restore`), not in the UI. |
 | #131 notifications | slice | No web-push or email; no per-event channel choice; failed ntfy posts are not retried. |
-| #115 gear | slice | Auto-assign from intervals.icu reads `gear.name` best-effort (the field is unverified here); no matching on `gear.id`; no bell/ntfy reminder or Home entry (due items show on `#/gear` only); gear not shown on the ride page; no nav link. |
+| #115 gear | slice | Auto-assign from intervals.icu reads `gear.name` best-effort (the field is unverified here); no matching on `gear.id`; a due item raises one bell notice (and ntfy) but has no Home entry; gear is not shown on the ride page. |
 | #124 sport balance | actuals only | Planner emphasis toward a limiter (needs the multi-sport planner decision); cross-sport load shares are indicative (each sport's load has its own scale). |
 | #11 planner audit | audit done, no planner change | The intensity-ceiling expectedFailure is still valid (7 of 864 property-test weeks): cause and two measured prototype fixes are in `docs/PLANNER_AUDIT.md`; choosing the floor-or-rail fix is an owner decision because it moves golden cases. Sealing is dormant in production. |
 | #10 typed API | slice | 8 UI-called routes remain without a model (7 file/image downloads and one 204), each with a stated reason; no service extraction yet. |
