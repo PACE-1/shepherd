@@ -1652,6 +1652,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/swim/activities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["swim_activities_api_swim_activities_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/swim/css": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["swim_css_api_swim_css_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/swim/css-test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["swim_css_test_api_swim_css_test_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/swim/open-water": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["open_water_list_api_swim_open_water_get"];
+        put?: never;
+        post: operations["open_water_add_api_swim_open_water_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/swim/open-water/{note_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["open_water_edit_api_swim_open_water__note_id__put"];
+        post?: never;
+        delete: operations["open_water_delete_api_swim_open_water__note_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/sync/progress": {
         parameters: {
             query?: never;
@@ -3802,6 +3882,51 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** OpenWaterNote */
+        OpenWaterNote: {
+            /** Activity Id */
+            activity_id?: string | null;
+            /**
+             * Conditions
+             * @default
+             */
+            conditions: string;
+            /**
+             * Course
+             * @default
+             */
+            course: string;
+            /** Date */
+            date: string;
+            /** Id */
+            id: string;
+            /**
+             * Note
+             * @default
+             */
+            note: string;
+            /**
+             * Sighting
+             * @default
+             */
+            sighting: string;
+            /** Water Temp C */
+            water_temp_c?: number | null;
+            /** Wetsuit */
+            wetsuit?: boolean | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** OpenWaterNotes */
+        OpenWaterNotes: {
+            /**
+             * Notes
+             * @default []
+             */
+            notes: components["schemas"]["OpenWaterNote"][];
+        } & {
+            [key: string]: unknown;
+        };
         /** PickerResult */
         PickerResult: {
             /**
@@ -5360,6 +5485,118 @@ export interface components {
             sports: {
                 [key: string]: components["schemas"]["SportLoadLine"];
             };
+        } & {
+            [key: string]: unknown;
+        };
+        /** SwimActivities */
+        SwimActivities: {
+            /** Confidence */
+            confidence: string;
+            /** Css S Per 100M */
+            css_s_per_100m?: number | null;
+            /** Method */
+            method: string;
+            /**
+             * Missing
+             * @default []
+             */
+            missing: string[];
+            /** Stroke Note */
+            stroke_note: string;
+            /**
+             * Swims
+             * @default []
+             */
+            swims: components["schemas"]["SwimActivity"][];
+        } & {
+            [key: string]: unknown;
+        };
+        /** SwimActivity */
+        SwimActivity: {
+            /** Avg Hr */
+            avg_hr?: number | null;
+            /** Date */
+            date?: string | null;
+            /** Distance M */
+            distance_m?: number | null;
+            /**
+             * Duration S
+             * @default 0
+             */
+            duration_s: number;
+            /** Icu Load */
+            icu_load?: number | null;
+            /** Id */
+            id: string;
+            /** Intensity */
+            intensity?: number | null;
+            /** Lengths */
+            lengths?: number | null;
+            /**
+             * Name
+             * @default
+             */
+            name: string;
+            /** Pace S Per 100M */
+            pace_s_per_100m?: number | null;
+            /** Pool Length M */
+            pool_length_m?: number | null;
+            /** Stroke Rate */
+            stroke_rate?: number | null;
+            /** Stss */
+            stss?: number | null;
+            /**
+             * Type
+             * @default
+             */
+            type: string;
+            /**
+             * Water
+             * @default unknown
+             */
+            water: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** SwimCss */
+        SwimCss: {
+            /** Confidence */
+            confidence: string;
+            /** Css S Per 100M */
+            css_s_per_100m?: number | null;
+            /**
+             * History
+             * @default []
+             */
+            history: components["schemas"]["SportThresholdEntry"][];
+            /** Method */
+            method: string;
+            /** Zones Note */
+            zones_note: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** SwimCssTest */
+        SwimCssTest: {
+            /** Anaerobic Distance M */
+            anaerobic_distance_m: number;
+            /** Confidence */
+            confidence: string;
+            /** Css M Per S */
+            css_m_per_s: number;
+            /** Css S Per 100M */
+            css_s_per_100m: number;
+            /** Method */
+            method: string;
+            /** N Trials */
+            n_trials: number;
+            /** R2 */
+            r2?: number | null;
+            /**
+             * Saved
+             * @default false
+             */
+            saved: boolean;
         } & {
             [key: string]: unknown;
         };
@@ -8370,6 +8607,146 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SportThresholds"];
+                };
+            };
+        };
+    };
+    swim_activities_api_swim_activities_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SwimActivities"];
+                };
+            };
+        };
+    };
+    swim_css_api_swim_css_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SwimCss"];
+                };
+            };
+        };
+    };
+    swim_css_test_api_swim_css_test_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SwimCssTest"];
+                };
+            };
+        };
+    };
+    open_water_list_api_swim_open_water_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpenWaterNotes"];
+                };
+            };
+        };
+    };
+    open_water_add_api_swim_open_water_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpenWaterNote"];
+                };
+            };
+        };
+    };
+    open_water_edit_api_swim_open_water__note_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpenWaterNote"];
+                };
+            };
+        };
+    };
+    open_water_delete_api_swim_open_water__note_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Ok"];
                 };
             };
         };
