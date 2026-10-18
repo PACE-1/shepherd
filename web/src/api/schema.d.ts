@@ -52,6 +52,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/balance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_balance_api_balance_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/balance/targets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["put_balance_targets_api_balance_targets_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/builder/preview": {
         parameters: {
             query?: never;
@@ -2275,6 +2307,114 @@ export interface components {
             state?: string | null;
             /** Task Id */
             task_id?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** Balance */
+        Balance: {
+            /** As Of */
+            as_of: string;
+            /**
+             * Has History
+             * @default false
+             */
+            has_history: boolean;
+            /**
+             * Has Targets
+             * @default false
+             */
+            has_targets: boolean;
+            /** Limiter */
+            limiter?: string | null;
+            /**
+             * Limiter Note
+             * @default
+             */
+            limiter_note: string;
+            /**
+             * Method
+             * @default
+             */
+            method: string;
+            /**
+             * Months
+             * @default []
+             */
+            months: components["schemas"]["BalanceBucket"][];
+            /** Single Sport */
+            single_sport?: string | null;
+            /**
+             * Sports Present
+             * @default []
+             */
+            sports_present: string[];
+            /** Targets */
+            targets?: {
+                [key: string]: number;
+            } | null;
+            /**
+             * Weeks
+             * @default []
+             */
+            weeks: components["schemas"]["BalanceBucket"][];
+        } & {
+            [key: string]: unknown;
+        };
+        /** BalanceBucket */
+        BalanceBucket: {
+            /** End */
+            end: string;
+            /** Gap Pp */
+            gap_pp?: {
+                [key: string]: number;
+            } | null;
+            /** Hours */
+            hours: {
+                [key: string]: number;
+            };
+            /** Hours Share */
+            hours_share: {
+                [key: string]: number | null;
+            };
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /** Load */
+            load: {
+                [key: string]: number;
+            };
+            /** Load Share */
+            load_share: {
+                [key: string]: number | null;
+            };
+            /** Start */
+            start: string;
+            /** Total Hours */
+            total_hours: number;
+            /** Total Load */
+            total_load: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** BalanceTargets */
+        BalanceTargets: {
+            /**
+             * Has Targets
+             * @default false
+             */
+            has_targets: boolean;
+            /** Limiter */
+            limiter?: string | null;
+            /**
+             * Limiter Note
+             * @default
+             */
+            limiter_note: string;
+            /** Targets */
+            targets?: {
+                [key: string]: number;
+            } | null;
         } & {
             [key: string]: unknown;
         };
@@ -6643,6 +6783,46 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["WeightTrend"];
+                };
+            };
+        };
+    };
+    get_balance_api_balance_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Balance"];
+                };
+            };
+        };
+    };
+    put_balance_targets_api_balance_targets_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BalanceTargets"];
                 };
             };
         };

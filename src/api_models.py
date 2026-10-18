@@ -1727,3 +1727,35 @@ class RaceDayPlan(_Model):
     expected_duration_h: Optional[float] = None
     power: RacePower
     fueling: str
+
+
+# ── weekly sport balance (#124, actuals half): routes_balance.py ─────────────────────────────────
+class BalanceBucket(_Model):
+    key: str
+    label: str
+    start: str
+    end: str
+    hours: dict[str, float]
+    load: dict[str, float]
+    total_hours: float
+    total_load: float
+    hours_share: dict[str, Optional[float]]
+    load_share: dict[str, Optional[float]]
+    gap_pp: Optional[dict[str, float]] = None    # actual share of hours minus target, percentage points
+
+
+class BalanceTargets(_Model):
+    targets: Optional[dict[str, float]] = None   # percent of weekly hours per sport, summing to 100; None = not set
+    has_targets: bool = False
+    limiter: Optional[str] = None
+    limiter_note: str = ""
+
+
+class Balance(BalanceTargets):
+    as_of: str
+    weeks: list[BalanceBucket] = []
+    months: list[BalanceBucket] = []
+    sports_present: list[str] = []
+    single_sport: Optional[str] = None
+    has_history: bool = False
+    method: str = ""

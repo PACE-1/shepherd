@@ -322,6 +322,241 @@
         "title": "BackfillStatus",
         "type": "object"
       },
+      "Balance": {
+        "additionalProperties": true,
+        "properties": {
+          "as_of": {
+            "title": "As Of",
+            "type": "string"
+          },
+          "has_history": {
+            "default": false,
+            "title": "Has History",
+            "type": "boolean"
+          },
+          "has_targets": {
+            "default": false,
+            "title": "Has Targets",
+            "type": "boolean"
+          },
+          "limiter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limiter"
+          },
+          "limiter_note": {
+            "default": "",
+            "title": "Limiter Note",
+            "type": "string"
+          },
+          "method": {
+            "default": "",
+            "title": "Method",
+            "type": "string"
+          },
+          "months": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/BalanceBucket"
+            },
+            "title": "Months",
+            "type": "array"
+          },
+          "single_sport": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Single Sport"
+          },
+          "sports_present": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Sports Present",
+            "type": "array"
+          },
+          "targets": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Targets"
+          },
+          "weeks": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/BalanceBucket"
+            },
+            "title": "Weeks",
+            "type": "array"
+          }
+        },
+        "required": [
+          "as_of"
+        ],
+        "title": "Balance",
+        "type": "object"
+      },
+      "BalanceBucket": {
+        "additionalProperties": true,
+        "properties": {
+          "end": {
+            "title": "End",
+            "type": "string"
+          },
+          "gap_pp": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gap Pp"
+          },
+          "hours": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Hours",
+            "type": "object"
+          },
+          "hours_share": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Hours Share",
+            "type": "object"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "load": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Load",
+            "type": "object"
+          },
+          "load_share": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Load Share",
+            "type": "object"
+          },
+          "start": {
+            "title": "Start",
+            "type": "string"
+          },
+          "total_hours": {
+            "title": "Total Hours",
+            "type": "number"
+          },
+          "total_load": {
+            "title": "Total Load",
+            "type": "number"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "start",
+          "end",
+          "hours",
+          "load",
+          "total_hours",
+          "total_load",
+          "hours_share",
+          "load_share"
+        ],
+        "title": "BalanceBucket",
+        "type": "object"
+      },
+      "BalanceTargets": {
+        "additionalProperties": true,
+        "properties": {
+          "has_targets": {
+            "default": false,
+            "title": "Has Targets",
+            "type": "boolean"
+          },
+          "limiter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limiter"
+          },
+          "limiter_note": {
+            "default": "",
+            "title": "Limiter Note",
+            "type": "string"
+          },
+          "targets": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Targets"
+          }
+        },
+        "title": "BalanceTargets",
+        "type": "object"
+      },
       "BanisterValidation": {
         "additionalProperties": true,
         "properties": {
@@ -10404,6 +10639,40 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/WeightTrend"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/balance": {
+      "get": {
+        "operationId": "get_balance_api_balance_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Balance"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/balance/targets": {
+      "put": {
+        "operationId": "put_balance_targets_api_balance_targets_put",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BalanceTargets"
                 }
               }
             },
