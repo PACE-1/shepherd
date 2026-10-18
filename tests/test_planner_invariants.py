@@ -139,13 +139,6 @@ def _cls(s):
 # moving the planner's constant cannot move the test (the same 18 % as
 # tests/test_tid_plan_properties.py MAX_Z3_PCT).
 MAX_Z5PLUS_SHARE = 0.18
-# Partial weeks (a 2-day stub before the taper) the rail runs on but cannot
-# fix: their only z5+ session is a class on its phase floor, which
-# _enforce_z5plus_share_ceiling never sheds.
-SHORT_WEEKS_OVER = {
-    f"{EVENT3}/generate-thu": [(13, "peak", 20.8)],
-    f"{EVENT3}/recalculate@21": [(13, "build2", 25.0)],
-}
 
 
 @pytest.mark.parametrize("case", CASES)
@@ -158,74 +151,102 @@ def test_no_full_load_week_ahead_breaches_the_z5plus_ceiling(plans, by_file, cas
     assert over == []
 
 
+# Until 2026-10-18 two 2-day stub weeks before the taper stayed over the line
+# (event/wkend3h generate-thu wk13 peak 20.8 %, recalculate@21 wk13 build2
+# 25.0 %): their only z5+ carrier was a class on its phase floor, which the
+# rail never shed. The owner chose "rail wins" (#11); both are now under it.
 @pytest.mark.parametrize("case", CASES)
-def test_short_weeks_over_the_ceiling_are_the_pinned_floor_cases(plans, by_file, case):
+def test_no_short_week_ahead_breaches_the_z5plus_ceiling(plans, by_file, case):
     weeks, _g, _r, today = plans[case]
-    over = []
-    for w in _ahead(weeks, today):
-        share, parts = tp._week_z5plus_share(w, by_file)
-        if _full(w) or share <= MAX_Z5PLUS_SHARE:
-            continue
-        over.append((w.week_num, w.phase, round(100 * share, 1)))
-        # The reason, not just the number: every z5+ carrier is a floor class.
-        floors = tp._PHASE_HARD_FLOORS.get(w.phase, {})
-        carriers = {_cls(w.sessions[i]) for z5, i in parts if z5 > 0}
-        assert carriers and carriers <= set(floors), (case, w.week_num, carriers)
-    assert over == SHORT_WEEKS_OVER.get(case, [])
+    over = [(w.week_num, w.phase, round(100 * tp._week_z5plus_share(w, by_file)[0], 1))
+            for w in _ahead(weeks, today)
+            if not _full(w) and tp._week_z5plus_share(w, by_file)[0] > MAX_Z5PLUS_SHARE]
+    assert over == []
 
 
-# The expectedFailure in tests/test_tid_plan_properties.py, reproduced with its
-# own construction (6 h shape, 300 TSS/week, CTL 50, seed 3, today 2026-09-14,
-# no athlete dict, blank athlete id as in the pytest sandbox), and its cause:
-# the phase-floor pass fills the whole vo2_short deficit in ONE week (every
+# The former expectedFailure in tests/test_tid_plan_properties.py, reproduced
+# with its own construction (6 h shape, 300 TSS/week, CTL 50, seed 3, today
+# 2026-09-14, no athlete dict, blank athlete id as in the pytest sandbox). The
+# phase-floor pass still fills the whole vo2_short deficit in ONE week (every
 # build2 week ties on HIT count and a HIT-for-HIT swap is always allowed, so
-# the greedy loop never leaves the first week), and the last-pass rail never
-# sheds a class sitting on its phase floor.
+# the greedy loop never leaves the first week). The last-pass rail now sheds
+# one of those floor-class sessions, so the phase ends one under its floor.
 CEILING_BREACHES = [
-    # (model, week, z5+ %, vo2_short in the week before -> after the floor pass)
+    # (model, week, z5+ % before the rail, vo2_short in the week before -> after the floor pass)
     ("pyramidal", 9, 20.7, 1, 3),
     ("threshold", 10, 18.4, 0, 3),
 ]
 
 
 @pytest.mark.parametrize("model,week,pct,before,after", CEILING_BREACHES)
-def test_the_ceiling_breach_is_the_floor_pass_concentrating_one_class(
+def test_the_rail_sheds_the_floor_class_the_floor_pass_concentrated(
         env, by_file, monkeypatch, model, week, pct, before, after):
     import test_tid_plan_properties as T
     monkeypatch.setattr(config, "ICU_ATHLETE_ID", "")
     env.at(T.PIN)
     seen = {}
-    orig = tp._enforce_build2_peak_hard_floor
+    floor_pass, rail = tp._enforce_build2_peak_hard_floor, tp._enforce_z5plus_share_ceiling
 
     def count(weeks):
         w = next(x for x in weeks if x.week_num == week)
         return sum(1 for s in w.sessions if _cls(s) == "vo2_short")
 
-    def spy(weeks, *a, **k):
+    def floor_spy(weeks, *a, **k):
         seen["before"] = count(weeks)
-        orig(weeks, *a, **k)
+        floor_pass(weeks, *a, **k)
         seen["after"] = count(weeks)
-    monkeypatch.setattr(tp, "_enforce_build2_peak_hard_floor", spy)
+
+    def rail_spy(weeks, *a, **k):
+        w = next(x for x in weeks if x.week_num == week)
+        seen["share"] = tp._week_z5plus_share(w, by_file)[0]
+        rail(weeks, *a, **k)
+    monkeypatch.setattr(tp, "_enforce_build2_peak_hard_floor", floor_spy)
+    monkeypatch.setattr(tp, "_enforce_z5plus_share_ceiling", rail_spy)
     weeks = tp.generate_plan(T._goal(T.SHAPES["6h"], distribution=model), seed_salt=3,
                              current_ctl=T.CTL, recent_weekly_tss=T.LOADS["6h"])[1]
     wk = next(w for w in weeks if w.week_num == week)
     assert (wk.phase, wk.is_stepback, _full(wk)) == ("build2", False, True)
-    assert round(100 * tp._week_z5plus_share(wk, by_file)[0], 1) == pct
     assert (seen["before"], seen["after"]) == (before, after)
-    # The whole phase holds exactly its floor, all of it in this week ...
+    assert after == tp._PHASE_HARD_FLOORS["build2"]["vo2_short"]
+    # Over the line when the rail starts, all of it on the floor class ...
+    assert round(100 * seen["share"], 1) == pct
+    # ... under it when the rail is done, by shedding one floor-class session.
+    assert tp._week_z5plus_share(wk, by_file)[0] <= MAX_Z5PLUS_SHARE
+    assert count(weeks) == after - 1
     phase_n = sum(1 for w in weeks if w.phase == "build2" and not w.is_stepback
                   for s in w.sessions if _cls(s) == "vo2_short")
-    assert phase_n == tp._PHASE_HARD_FLOORS["build2"]["vo2_short"] == after
-    # ... so the rail, run again, sheds nothing ...
+    assert phase_n == after - 1
+    # Run again, the rail is a fixed point.
     again = copy.deepcopy(wk)
-    tp._enforce_z5plus_share_ceiling([again], list(by_file.values()))
+    rail([again], list(by_file.values()))
     assert [s.zwo_file for s in again.sessions] == [s.zwo_file for s in wk.sessions]
-    # ... and the same week outside a floored phase is brought under the line.
-    unfloored = copy.deepcopy(wk)
-    unfloored.phase = "base"
-    assert "base" not in tp._PHASE_HARD_FLOORS
-    tp._enforce_z5plus_share_ceiling([unfloored], list(by_file.values()))
-    assert tp._week_z5plus_share(unfloored, by_file)[0] <= MAX_Z5PLUS_SHARE
+
+
+def test_no_full_load_week_breaches_the_ceiling_across_the_864_week_property_set(
+        env, by_file, monkeypatch):
+    """docs/PLANNER_AUDIT.md's property set: tests/test_tid_plan_properties.py's
+    construction (6 h, 12 h, 18 h x pyramidal, polarized, threshold) over seeds
+    1 to 8, full non-stepback weeks only. 7 of these 864 weeks breached before
+    the rail could shed a floor class (#11). About a minute."""
+    import test_tid_plan_properties as T
+    monkeypatch.setattr(config, "ICU_ATHLETE_ID", "")
+    env.at(T.PIN)
+    n, over = 0, []
+    for seed in range(1, 9):
+        for label, dmh in T.SHAPES.items():
+            for model in T.MODELS:
+                weeks = tp.generate_plan(T._goal(dmh, distribution=model), seed_salt=seed,
+                                         current_ctl=T.CTL,
+                                         recent_weekly_tss=T.LOADS[label])[1]
+                for w in weeks:
+                    if not _full(w) or w.is_stepback:
+                        continue
+                    n += 1
+                    share = tp._week_z5plus_share(w, by_file)[0]
+                    if share > MAX_Z5PLUS_SHARE:
+                        over.append((seed, label, model, w.week_num, round(100 * share, 1)))
+    assert n == 864
+    assert over == []
 
 
 # ── 2. the weekly hard-session cap ──────────────────────────────────────────

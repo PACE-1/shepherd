@@ -231,6 +231,54 @@ constraint (`hard_share`, notes/overhaul-plan.md Step 6).
 The docstring of the expected failure is stale (it names one week). It was left
 alone because that file is outside this change.
 
+## Resolution (2026-10-18): the rail wins
+
+**Decision (owner, #11):** the last-pass weekly intensity ceiling (at most 18 %
+of a week's minutes at z5+) overrides a phase's hard-session floor. This is
+candidate A, in its narrowest form.
+
+- `_enforce_z5plus_share_ceiling` still sheds classes above their phase floor
+  first. Only when no such session is left does it shed a class sitting on its
+  floor. A week the old rail could fix is fixed exactly as before.
+- `_enforce_build2_peak_hard_floor` is unchanged. It still concentrates the
+  floor in one week; the rail then takes one session back out.
+
+**Measured effect:**
+
+- **Property set:** 0 of 864 full weeks breach (was 7). Exactly those 7 weeks
+  changed, one `vo2_short` session each, demoted to a real tempo or z2 file.
+  The other 857 weeks are identical. The phase then ends one `vo2_short` under
+  its floor.
+- **Golden:** 3 cases moved, 2 in owner0 and 1 in owner1. All other cases are
+  unchanged (builders 49, owner0 77 of 79, owner1 78 of 79).
+  - `event/wkend3h/generate-thu` (owner0), week 13, the 2-day stub before the
+    taper: its anaerobic session becomes z2.
+  - `event/wkend3h/recalculate@21` (owner0 and owner1), week 13: its
+    vo2_short session becomes z2.
+  - Why: in each case that one session alone put the stub week over the line
+    (20.8 % and 25.0 %), and it was a class on its phase floor. Each case gains
+    `under_delivery:13`, because the stub now delivers less TSS than its target.
+- **Short weeks:** no short week in the 21 invariant cases is over the line
+  now. `SHORT_WEEKS_OVER` is gone.
+- **Tests:**
+  - `test_tid_plan_properties.py::test_no_week_breaches_the_intensity_ceiling`
+    is no longer an `expectedFailure`.
+  - `test_planner_invariants.py` checks the 864-week set directly (about a
+    minute).
+  - `test_planner_variety_bonus.py::TestBuild2PeakPhaseFloors::test_peak_phase_floors`
+    now checks the floors where the floor pass leaves them. It allows the
+    delivered plan to fall short only by sessions shed from a week that was
+    over the ceiling. Here, that is the peak's one anaerobic session, in its
+    2-day stub week.
+  - The continuous floor tests (`test_354_continuous_anaerobic_floor.py`,
+    `test_floor_every_start_day.py`) take the same allowance. On a Sunday start,
+    week 1 is that one day and the floor's 49-minute anaerobic ride alone is
+    19.4 % z5+, so the rail eases it. That plan then carries no anaerobic
+    session. No other start day is affected.
+
+Still open: making the weekly intensity budget a build-time constraint
+(`hard_share`), so the floor pass stops placing what the rail must then take out.
+
 ## 3. TrainingWeek sealing: what "non-strict" means in practice
 
 **In production nothing is ever sealed.**
@@ -295,8 +343,8 @@ Making it meaningful first needs:
 
 ## What stays open
 
-- **The intensity ceiling.** Choose floor or rail (candidate A), or make the
-  budget a build-time constraint. Either way it is a reviewed algorithm change.
+- **The intensity ceiling.** Resolved by the rail winning (see Resolution).
+  The build-time budget is still open.
 - **The enforcement passes are unobserved.** Add a characterization case where
   `_enforce_weekly_hit_cap` and the z5+ rail actually bind. Without one, the
   golden cannot see either pass removed.
@@ -309,5 +357,5 @@ Making it meaningful first needs:
   the tests). Whether that is acceptable is an owner decision.
 - **The day-cap check and overrides.** `check_daily_duration_cap` does not read
   per-day overrides.
-- **Docs.** REFACTOR-PLAN.md and the expected failure's docstring still carry
-  the 2026-10-16 numbers. Both were outside this change.
+- **Docs.** REFACTOR-PLAN.md and the former expected failure's docstring were
+  refreshed with the Resolution.

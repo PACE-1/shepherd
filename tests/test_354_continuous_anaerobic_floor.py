@@ -52,7 +52,26 @@ def _class_counts(weeks):
     return c
 
 
-def test_continuous_phase_floor_declares_anaerobic_and_neuromuscular():
+def _assert_floor_short_only_by_the_rail(goal, weeks, monkeypatch):
+    """Regenerate with the z5+ rail off (it runs last, so this is the plan the
+    floor pass left) and require the floor there; every week the rail changed
+    must have been over the ceiling, and must not be any more."""
+    with monkeypatch.context() as m:
+        m.setattr(tp, "_enforce_z5plus_share_ceiling", lambda *a, **k: None)
+        floored = tp.generate_plan(goal, current_ctl=CTL, recent_weekly_tss=RWT)[1]
+    c = _class_counts(floored)
+    assert c.get("anaerobic", 0) >= 1, f"no anaerobic placed by the floor: {dict(c)}"
+    assert c.get("neuromuscular", 0) >= 1, f"no neuromuscular placed by the floor: {dict(c)}"
+    lib = {r["File"]: r for r in tp.load_workout_library()}
+    changed = [(b, w) for b, w in zip(floored, weeks)
+               if _class_counts([b]) != _class_counts([w])]
+    assert changed
+    for b, w in changed:
+        assert tp._week_z5plus_share(b, lib)[0] > tp._MAX_Z5PLUS_SHARE, b.week_num
+        assert tp._week_z5plus_share(w, lib)[0] <= tp._MAX_Z5PLUS_SHARE, w.week_num
+
+
+def test_continuous_phase_floor_declares_anaerobic_and_neuromuscular(monkeypatch):
     # The floor table must carry a "continuous" row — this is the fix.
     # Reach it the same way generate_plan does: the dict is function-local, so
     # assert on observed output rather than the literal (below), but also pin
@@ -60,9 +79,15 @@ def test_continuous_phase_floor_declares_anaerobic_and_neuromuscular():
     goal = _goal()
     phases, weeks = tp.generate_plan(goal, current_ctl=CTL, recent_weekly_tss=RWT)
     assert [p.name for p in phases] == ["continuous"]
+    # #11 "rail wins" (owner, 2026-10-18): the z5+ ceiling may shed a floor
+    # class. This test runs on the real clock; on a Sunday week 1 is that one
+    # day, the floor's anaerobic ride alone is over 18 % of it at z5+, and the
+    # rail eases it. So the floor is checked in the plan the floor pass left
+    # (rail off), and the delivered plan may be short only by the rail's sheds.
     c = _class_counts(weeks)
-    assert c.get("anaerobic", 0) >= 1, f"no anaerobic in continuous plan: {dict(c)}"
-    assert c.get("neuromuscular", 0) >= 1, f"no neuromuscular in continuous plan: {dict(c)}"
+    if c.get("anaerobic", 0) >= 1 and c.get("neuromuscular", 0) >= 1:
+        return
+    _assert_floor_short_only_by_the_rail(goal, weeks, monkeypatch)
 
 
 def test_continuous_anaerobic_guarantee_holds_across_seeds():
