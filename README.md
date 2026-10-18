@@ -80,4 +80,4 @@ Everything is stored locally. The only outgoing calls are the ones you turn on: 
 
 ## Contributing and licence
 
-Python (FastAPI) back end, TypeScript (React) front end. Tests: `tools/gate.sh` for the full gate; `pnpm test` in `web/`. Apache License 2.0; derived from Domestique, see [NOTICE](NOTICE). Trademark guidance: [docs/TRADEMARKS.md](docs/TRADEMARKS.md).
+Please read [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md) first. Python (FastAPI) back end, TypeScript (React) front end. Tests: `tools/gate.sh` for the full gate; `pnpm test` in `web/`. Apache License 2.0; derived from Domestique, see [NOTICE](NOTICE). Trademark guidance: [docs/TRADEMARKS.md](docs/TRADEMARKS.md).
