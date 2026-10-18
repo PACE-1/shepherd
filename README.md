@@ -1,10 +1,13 @@
+<img src="https://img.shields.io/badge/Version-v1.0.1-brightgreen" alt="Version">
+
 # Shepherd
 
 A self-hosted training planner for endurance riders (and, increasingly, runners and swimmers). It builds a periodised plan from your goal, hours and fitness, adapts it as you ride, and shows what your data says: load, form, readiness, power curve, ride detail. Your data stays on your machine.
 
 Shepherd is derived from [Domestique](https://github.com/platypus45/domestique) (Apache License 2.0). See [LICENSE](LICENSE) and [NOTICE](NOTICE).
 
-- Latest release: [GitHub Releases](https://github.com/PACE-1/shepherd/releases/latest)
+Latest: **[v1.0.1 — One interface](https://github.com/PACE-1/shepherd/releases/latest)** (2026-10-17).
+
 - What changed: [CHANGELOG.md](CHANGELOG.md)
 - What is built, what is partial, and what is not: [docs/ROADMAP.md](docs/ROADMAP.md) ("Status and known gaps")
 
@@ -38,7 +41,7 @@ docker run -d --name shepherd \
 
 Open `http://127.0.0.1:22400/v2/` and sign in with the token. The image runs in server mode, which needs an access token and refuses to start without one. Put a TLS reverse proxy in front before exposing it beyond your machine: see [docs/SERVER.md](docs/SERVER.md) for the access policy, trusted origins, proxies, and installing it on a phone (needs HTTPS).
 
-The published image is built from release tags (`vX.Y.Z`, `X.Y`, `latest`); until the first tagged release is published, build it yourself: `docker build -t shepherd .`.
+The image is published to GitHub's container registry by the release workflow on each version tag (`vX.Y.Z`, `X.Y`, `latest`; prereleases get their exact tag only). The workflow has not run yet, and a newly published package is private until it is made public in the GitHub package settings, so until then build it yourself: `docker build -t shepherd .`. Details and rollback: [docs/SERVER.md](docs/SERVER.md).
 
 ### AppImage (desktop)
 
