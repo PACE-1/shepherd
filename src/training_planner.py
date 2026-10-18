@@ -10237,6 +10237,8 @@ def _enforce_z5plus_share_ceiling(weeks: list, library: list[dict],
     the line. For a week over it, the heaviest z5+ session is swapped for a real
     endurance (or tempo) library file, the same demotion the weekly HIT cap uses
     - a hard .zwo is never relabeled. Preserved rider state is never touched.
+    Sessions of a class above its phase floor go first; the rail then sheds a
+    floor class too (the safety line wins over the floor, #11).
     """
     if not weeks or not library:
         return
@@ -10258,22 +10260,22 @@ def _enforce_z5plus_share_ceiling(weeks: list, library: list[dict],
                 and not getattr(wk.sessions[i], "user_moved", False)
                 and (today_floor is None or wk.sessions[i].day >= today_floor)
             ]
-            # A class sitting exactly on its phase floor is not shed here: the
-            # floor is a training requirement and the safety pass runs after it.
+            # #11, owner decision 2026-10-18 ("rail wins"): the ceiling beats a
+            # phase's hard-session floor. A class sitting exactly on its floor
+            # is shed LAST, only once nothing above its floor is left to shed.
             floors = _PHASE_HARD_FLOORS.get(getattr(wk, "phase", "") or "", {})
             counts: dict[str, int] = {}
             for s_ in wk.sessions:
                 c_ = _content_class_for_zwo(s_.zwo_file or "") or s_.session_type or ""
                 counts[c_] = counts.get(c_, 0) + 1
-            victims = [
-                (z5, i) for z5, i in victims
-                if not (c_ := (_content_class_for_zwo(wk.sessions[i].zwo_file or "")
-                               or wk.sessions[i].session_type or "")) in floors
-                or counts.get(c_, 0) > floors[c_]
-            ]
+
+            def _above_floor(v) -> bool:
+                c_ = (_content_class_for_zwo(wk.sessions[v[1]].zwo_file or "")
+                      or wk.sessions[v[1]].session_type or "")
+                return c_ not in floors or counts.get(c_, 0) > floors[c_]
             if not victims:
                 break
-            _z5, i = max(victims)
+            _z5, i = max(victims, key=lambda v: (_above_floor(v), v))
             slot = wk.sessions[i]
             matched = None
             if slot.duration_min >= 60:
