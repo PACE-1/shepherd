@@ -20,6 +20,7 @@ import { NutritionSettings } from "@/screens/NutritionSettings"
 import { SportsCard } from "@/screens/SportsCard"
 import { RunZones } from "@/screens/RunZones"
 import { RacePredictor } from "@/screens/RacePredictor"
+import { SwimSessions } from "@/screens/SwimSessions"
 import { SwimZones } from "@/screens/SwimZones"
 import { YourData } from "@/screens/YourData"
 import { Panel, Row, useLoad } from "@/screens/panel"
@@ -290,6 +291,7 @@ export function Settings() {
       <div className="lg:col-span-2"><RunZones /></div>
       <div className="lg:col-span-2"><RacePredictor /></div>
       <div className="lg:col-span-2"><SwimZones /></div>
+      <div className="lg:col-span-2"><SwimSessions /></div>
       <div className="lg:col-span-2">
         <Diagnostics />
       </div>

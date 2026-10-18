@@ -2100,6 +2100,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/swim/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["swim_sessions_api_swim_sessions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/sync": {
         parameters: {
             query?: never;
@@ -6761,6 +6777,79 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** SwimSession */
+        SwimSession: {
+            /**
+             * Hard
+             * @default false
+             */
+            hard: boolean;
+            /** Id */
+            id: string;
+            /** Intent */
+            intent: string;
+            /** Kind */
+            kind: string;
+            /**
+             * Lines
+             * @default []
+             */
+            lines: string[];
+            /** Minutes */
+            minutes: number;
+            /** Minutes Max */
+            minutes_max: number;
+            /** Minutes Min */
+            minutes_min: number;
+            /** Name */
+            name: string;
+            /**
+             * Note
+             * @default
+             */
+            note: string;
+            /** Session Type */
+            session_type: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** SwimSessions */
+        SwimSessions: {
+            /** Css S Per 100M */
+            css_s_per_100m?: number | null;
+            /**
+             * Download Note
+             * @default
+             */
+            download_note: string;
+            /**
+             * Has Css
+             * @default false
+             */
+            has_css: boolean;
+            /**
+             * Not Validated
+             * @default
+             */
+            not_validated: string;
+            /**
+             * Pool M
+             * @default 25
+             */
+            pool_m: number;
+            /**
+             * Sessions
+             * @default []
+             */
+            sessions: components["schemas"]["SwimSession"][];
+            /**
+             * Source
+             * @default
+             */
+            source: string;
+        } & {
+            [key: string]: unknown;
+        };
         /** SyncProgress */
         SyncProgress: {
             /** Added */
@@ -10495,6 +10584,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Ok"];
+                };
+            };
+        };
+    };
+    swim_sessions_api_swim_sessions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SwimSessions"];
                 };
             };
         };

@@ -811,3 +811,21 @@ test("Companion sessions: a run and swim split puts runs and swims in the Plan w
   await expect(section.getByText(/· dismissed/).first()).toBeVisible()
   await request.put(base + "/api/balance/targets", { data: { targets: null, limiter: null } })
 })
+
+test("Swim sessions: the Settings card lists the sets for the saved CSS and offers a plain-text download", async ({ page, request }) => {
+  const base = "http://127.0.0.1:" + (process.env.E2E_PORT ?? 22488)
+  const saved = await request.post(base + "/api/swim/css-test", {
+    data: { trials: [{ distance_m: 400, time_s: 400 }, { distance_m: 200, time_s: 190 }], save: true },
+  })
+  expect(saved.ok()).toBeTruthy()
+  await page.goto("#/settings")
+  await expect(page.getByRole("heading", { name: "Swim sessions" })).toBeVisible()
+  await expect(page.getByText(/Sets are written for your CSS, 1:45 \/100 m/)).toBeVisible()
+  const sets = page.getByRole("list", { name: "CSS intervals sets" })
+  await expect(sets.getByText(/at CSS \(1:45 per 100 m\)/)).toBeVisible()
+  await expect(page.getByText(/no FIT or watch file/)).toBeVisible()
+  const href = await page.getByRole("link", { name: "Download CSS intervals as text" }).getAttribute("href")
+  const file = await request.get(base + (href ?? ""))
+  expect(file.headers()["content-disposition"]).toContain("swim-css-intervals.txt")
+  expect(await file.text()).toContain("Your CSS: 1:45 per 100 m")
+})
