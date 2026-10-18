@@ -138,9 +138,10 @@ def test_the_engine_places_library_templates(th):
                availability={"hours_per_week": 10.0, "weekday": {0: 0, 1: 2, 2: 2, 3: 2, 4: 2, 5: 4, 6: 4}, "date": {}},
                unavailable_periods=[], today=monday)
     ours = {t.id: t for t in sr.TEMPLATES}
-    assert w.companions and all(c.template_id in ours for c in w.companions)
-    assert any(c.hard for c in w.companions), "the library's hard templates get the free hard slot"
-    for c in w.companions:
+    comps = [c for c in w.companions if not mp.is_brick(c)]       # a brick run is the engine's own, not a library session
+    assert comps and all(c.template_id in ours for c in comps)
+    assert any(c.hard for c in comps), "the library's hard templates get the free hard slot"
+    for c in comps:
         t = ours[c.template_id]
         assert t.minutes[0] <= c.duration_min <= t.minutes[1]
         assert wb.validate(c.workout, wb.RUN_TARGETS)[0] == [] and wb.total_seconds(c.workout) == c.duration_min * 60
