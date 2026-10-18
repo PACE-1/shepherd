@@ -48,14 +48,17 @@ export function Plan() {
   const [swapping, setSwapping] = useState<{ day: string; type: string; minutes: number } | null>(null)
   const today = isoDay()
 
-  const run = useCallback(() => {
-    setLoad({ state: "loading" })
+  const load0 = useCallback(() => {
     getPlan().then(
       (plan) => setLoad({ state: "ok", plan }),
       (e: unknown) => setLoad({ state: "error", message: e instanceof Error ? e.message : String(e) }),
     )
   }, [])
-  useEffect(run, [run])
+  const run = useCallback(() => {
+    setLoad({ state: "loading" })
+    load0()
+  }, [load0])
+  useEffect(load0, [load0])
 
   // Re-read in place, without the loading flash (a drag on the calendar, an update).
   const reread = useCallback(async () => {

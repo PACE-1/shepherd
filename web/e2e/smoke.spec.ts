@@ -43,8 +43,10 @@ test("the new-profile wizard creates and activates a profile", async ({ page, re
 test("the picker lists riders and keyboard activation switches profile", async ({ page, request }) => {
   await page.goto("#/profile-picker")
   await expect(page.getByLabel("Ride as Anna")).toBeVisible()
-  await expect(page.getByLabel("Ride as Isaac")).toBeVisible()
-  await page.getByLabel("Ride as Isaac").focus()
+  // The first profile is named after the OS user, so read the name rather than assume it.
+  const first = (await (await api(request, "/api/profiles")).json()).profiles.find((p: { id: string }) => p.id === "default")
+  await expect(page.getByLabel(`Ride as ${first.name}`)).toBeVisible()
+  await page.getByLabel(`Ride as ${first.name}`).focus()
   await page.keyboard.press("Enter")
   await expect.poll(async () => (await (await api(request, "/api/profiles")).json()).active).toBe("default")
 })
@@ -289,7 +291,7 @@ test("syncing rides without intervals.icu says it is not connected", async ({ pa
   await expect(page.getByRole("status").filter({ hasText: /not connected/ })).toBeVisible()
 })
 
-test("Home takes a manual HRV reading and shows body and performance", async ({ page, request }) => {
+test("Home takes a manual HRV reading and shows body and performance", async ({ page }) => {
   await page.goto("#/home")
   await expect(page.getByRole("heading", { name: "Heart-rate variability" })).toBeVisible()
   await page.getByLabel(/Today’s rMSSD/).fill("64")

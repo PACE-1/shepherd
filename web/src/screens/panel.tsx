@@ -8,13 +8,16 @@ export type Load<T> = { state: "loading" } | { state: "ok"; data: T } | { state:
 // One independent request per card: a failure in one leaves the others usable and is retried alone.
 export function useLoad<T>(fetcher: () => Promise<T>) {
   const [value, setValue] = useState<Load<T>>({ state: "loading" })
-  const run = useCallback(() => {
-    setValue({ state: "loading" })
+  const load = useCallback(() => {
     fetcher().then(
       (data) => setValue({ state: "ok", data }),
       (e: unknown) => setValue({ state: "error", message: e instanceof Error ? e.message : String(e) }),
     )
   }, [fetcher])
+  const run = useCallback(() => {
+    setValue({ state: "loading" })
+    load()
+  }, [load])
   // Re-reads without flipping to "Loading…", so a card keeps its content (and any message in it) while it refreshes.
   const refresh = useCallback(() => {
     fetcher().then(
@@ -22,7 +25,7 @@ export function useLoad<T>(fetcher: () => Promise<T>) {
       () => {},
     )
   }, [fetcher])
-  useEffect(run, [run])
+  useEffect(load, [load])
   return [value, run, refresh] as const
 }
 

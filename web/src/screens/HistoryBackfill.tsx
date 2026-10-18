@@ -10,7 +10,7 @@ export function HistoryBackfill({ onFinished, pollMs = 2500 }: { onFinished: () 
   const [status, setStatus] = useState<BackfillHistoryStatus | null>(null)
   const [error, setError] = useState("")
   const finished = useRef(onFinished)
-  finished.current = onFinished
+  useEffect(() => { finished.current = onFinished })
 
   useEffect(() => {
     if (!task) return

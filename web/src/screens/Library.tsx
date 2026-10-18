@@ -32,6 +32,7 @@ export function Library() {
 
   useEffect(() => {
     let live = true
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- the loading flash on a new query or retry is intended
     setLoad({ state: "loading" })
     listWorkouts(applied).then(
       (r) => live && setLoad({ state: "ok", ...r }),
