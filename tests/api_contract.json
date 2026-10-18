@@ -2179,6 +2179,103 @@
         "title": "FtpUpdated",
         "type": "object"
       },
+      "GarminStatus": {
+        "additionalProperties": true,
+        "properties": {
+          "activities_imported": {
+            "default": 0,
+            "title": "Activities Imported",
+            "type": "integer"
+          },
+          "available": {
+            "default": false,
+            "title": "Available",
+            "type": "boolean"
+          },
+          "connected": {
+            "default": false,
+            "title": "Connected",
+            "type": "boolean"
+          },
+          "health_days": {
+            "default": 0,
+            "title": "Health Days",
+            "type": "integer"
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "last_sync_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Sync At"
+          },
+          "mfa_pending": {
+            "default": false,
+            "title": "Mfa Pending",
+            "type": "boolean"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "needs_login": {
+            "default": false,
+            "title": "Needs Login",
+            "type": "boolean"
+          },
+          "relay_to_icu": {
+            "default": false,
+            "title": "Relay To Icu",
+            "type": "boolean"
+          }
+        },
+        "title": "GarminStatus",
+        "type": "object"
+      },
+      "GarminSynced": {
+        "additionalProperties": true,
+        "properties": {
+          "activities_imported": {
+            "default": 0,
+            "title": "Activities Imported",
+            "type": "integer"
+          },
+          "health_days": {
+            "default": 0,
+            "title": "Health Days",
+            "type": "integer"
+          },
+          "skipped": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Skipped"
+          }
+        },
+        "title": "GarminSynced",
+        "type": "object"
+      },
       "HrvImported": {
         "additionalProperties": true,
         "properties": {
@@ -6753,6 +6850,106 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EventProjection"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/garmin": {
+      "delete": {
+        "operationId": "api_garmin_disconnect_api_garmin_delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GarminStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "operationId": "api_garmin_status_api_garmin_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GarminStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/garmin/login": {
+      "post": {
+        "operationId": "api_garmin_login_api_garmin_login_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GarminStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/garmin/mfa": {
+      "post": {
+        "operationId": "api_garmin_mfa_api_garmin_mfa_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GarminStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/garmin/settings": {
+      "post": {
+        "operationId": "api_garmin_settings_api_garmin_settings_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GarminStatus"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/garmin/sync": {
+      "post": {
+        "operationId": "api_garmin_sync_api_garmin_sync_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GarminSynced"
                 }
               }
             },

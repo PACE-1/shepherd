@@ -57,6 +57,12 @@ This product includes software developed by third parties:
   Used to emit .fit activity files for manual upload to Strava / Garmin /
   Karoo / Wahoo.
 
+- garminconnect (MIT License)
+  https://github.com/cyberjunky/python-garminconnect
+  Reads health data and activity files from Garmin Connect (src/garmin.py).
+  Its dependencies curl_cffi (MIT), requests (Apache-2.0) and ua-generator
+  (Apache-2.0) come with it.
+
 - httpx (BSD-3-Clause License)
   https://www.python-httpx.org/
 

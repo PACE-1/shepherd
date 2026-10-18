@@ -217,6 +217,7 @@ describe("Connect with an API key", () => {
     "/api/icu/connection": conn,
     "/api/sync/status": () => json({ wellness_records: 0, activity_records: 0 }),
     "/api/llm": () => json({ configured: false, provider: "", base_url: "", model: "", has_key: false }),
+    "/api/garmin": () => json({ available: true, connected: false, needs_login: false, mfa_pending: false, name: "", relay_to_icu: false, last_sync_at: null, last_error: null, health_days: 0, activities_imported: 0 }),
     "/api/version": () => json({ app: "shepherd", version: "1.0.1", data_dir: "/d" }),
     "/api/profile/ftp-history": () => json({ ftp_current: 250, history: [] }),
     "/api/icu/push": () => json({ connected: false, write_ok: false, sync_enabled: false, horizon_days: 14 }),

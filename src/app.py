@@ -694,6 +694,8 @@ async def lifespan(app):
     db.set_db_path(pm.db_path)
     db.init_db()
     db.start_background_sync()
+    garmin.fit_importer = _garmin_import_fit
+    garmin.start_background()
 
     # v1.6.2 — boot-time plan auto-restore. If current_plan.json is missing
     # or zero-bytes but at least one .bak* snapshot exists, restore from
@@ -825,6 +827,7 @@ from hr import (  # noqa: F401
 )
 
 import llm  # noqa: E402  (AI coach connection)
+import garmin  # noqa: E402  (Garmin Connect health and activities)
 
 
 # Request logging middleware — logs all API errors
@@ -6674,6 +6677,61 @@ def api_llm_delete():
     from profile_manager import ProfileManager
     llm.clear(ProfileManager.get().active_dir)
     return llm.public({})
+
+
+def _garmin_call(fn, *args):
+    try:
+        return fn(*args)
+    except garmin.GarminError as e:
+        raise HTTPException(status_code=e.status, detail=str(e))
+
+
+@app.get("/api/garmin", responses={200: {"model": api_models.GarminStatus}})
+def api_garmin_status():
+    return _garmin_call(garmin.status)
+
+
+@app.post("/api/garmin/login", responses={200: {"model": api_models.GarminStatus}})
+async def api_garmin_login(request: Request):
+    body = await _get_json_body(request)
+    # Garmin's sign-in is several blocking requests: keep it off the event loop.
+    return await run_in_threadpool(_garmin_call, garmin.login, body.get("email"), body.get("password"))
+
+
+@app.post("/api/garmin/mfa", responses={200: {"model": api_models.GarminStatus}})
+async def api_garmin_mfa(request: Request):
+    body = await _get_json_body(request)
+    return await run_in_threadpool(_garmin_call, garmin.submit_mfa, body.get("code"))
+
+
+@app.post("/api/garmin/settings", responses={200: {"model": api_models.GarminStatus}})
+async def api_garmin_settings(request: Request):
+    body = await _get_json_body(request)
+    if not isinstance(body.get("relay_to_icu"), bool):
+        raise HTTPException(status_code=400, detail="relay_to_icu must be true or false")
+    return _garmin_call(garmin.set_relay, body["relay_to_icu"])
+
+
+@app.post("/api/garmin/sync", responses={200: {"model": api_models.GarminSynced}})
+async def api_garmin_sync():
+    return await run_in_threadpool(_garmin_call, garmin.sync)
+
+
+@app.delete("/api/garmin", responses={200: {"model": api_models.GarminStatus}})
+def api_garmin_disconnect():
+    return _garmin_call(garmin.disconnect)
+
+
+def _garmin_import_fit(fit_path: Path) -> bool:
+    """garmin.fit_importer: the checks and sidecar POST /api/ride/import applies."""
+    import ride_storage as _rs
+    if _parse_fit_stats(fit_path).get("error") == "parse_failed":
+        return False
+    try:
+        _rs.write_fit_load_sidecar(fit_path)
+    except Exception as e:
+        log_ride_import.debug(f"garmin load sidecar skipped: {e}")
+    return True
 
 
 @app.post("/api/llm/test", responses={200: {"model": api_models.Insight}})

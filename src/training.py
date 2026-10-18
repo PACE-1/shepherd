@@ -363,7 +363,9 @@ def fetch_wellness(days: int = 42) -> list[dict]:
     )
     if not data:
         return []
-    return sorted(data, key=lambda r: r.get("id", ""))
+    # Garmin Connect, when connected, is the source of sleep, HRV and resting HR.
+    import garmin
+    return garmin.overlay_health(sorted(data, key=lambda r: r.get("id", "")))
 
 
 # ── activities ────────────────────────────────────────────────────────────────

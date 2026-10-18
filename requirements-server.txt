@@ -13,5 +13,7 @@ lxml>=5.0,<7
 packaging>=23,<27
 # Numerical fitting and week optimization.
 scipy>=1.13,<2
+# Garmin Connect health data and activity files (unofficial API; src/garmin.py).
+garminconnect>=0.3.19,<0.4
 # PNG report endpoints also run without a desktop GUI.
 Pillow>=10.0.0

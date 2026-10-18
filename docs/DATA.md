@@ -16,6 +16,7 @@ replace it.
 | `profiles/<id>/health_tracker.db` | SQLite (WAL): wellness, activities, daily log | `db` |
 | `profiles/<id>/plans/` | `current_plan.json` plus a rotating `.bak` chain | `training_planner` |
 | `profiles/<id>/rides/`, `rides/icu/`, `wellness/` | Imported FIT files, intervals.icu envelopes, load sidecars | `ride_storage` |
+| `profiles/<id>/garmin/` | Garmin Connect sign-in tokens (`garmin_tokens.json`, 0600 in a 0700 folder; never the password) and sync state | `garmin` |
 | `profiles/<id>/generated_workouts/` | Planner-synthesised workouts | `workout_gen` |
 | `.data_format` | Data-layout version (see below) | `backup` |
 | `logs/`, `cache/`, `update_check_cache.json` | Rebuildable; not backed up | various |
@@ -99,3 +100,27 @@ these rules keep what is already stored:
 - **Not done:** treating a withheld ride as a ride, telling affected riders, and
   the device or folder importer. They depend on what the API actually returns once
   the block lands, and on the new UI.
+
+## Garmin Connect (direct)
+
+Connect Garmin in Settings → Garmin Connect (email, password, and the MFA code
+when Garmin asks). Garmin is then the source of health data and activity files;
+intervals.icu stays the source of fitness numbers and the planning calendar.
+
+- **Health:** each sync (hourly, and on "Sync Garmin now") reads sleep time and
+  score, overnight HRV, resting HR, body battery, stress, steps and the morning
+  training readiness score for each day (30 days the first time, then the last 3).
+  Sleep, HRV and resting HR are written to the day's `wellness/<date>.json` and the
+  SQLite `wellness` row, and Garmin's value wins: every intervals.icu wellness
+  fetch has Garmin's stored values laid over it (`garmin.overlay_health`). The rest
+  is kept under the day's `garmin` key.
+- **Activities:** cycling, running, swimming and multisport activities are
+  downloaded as their original FIT to `rides/garmin-<activity id>.fit` and go
+  through the same checks as an uploaded FIT. A ride intervals.icu also has is
+  listed once (the intervals.icu copy). "Send new Garmin activities to
+  intervals.icu" relays each new file there, skipping rides it already has; leave
+  it off while intervals.icu still receives them from Garmin.
+- **Unofficial:** this uses `python-garminconnect`, which talks to the service
+  Garmin's own app uses. Garmin can change it without notice; when the saved
+  sign-in stops working, Settings asks you to sign in again. Disconnecting removes
+  the tokens and keeps the synced data.

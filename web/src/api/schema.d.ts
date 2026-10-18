@@ -100,6 +100,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/garmin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_garmin_status_api_garmin_get"];
+        put?: never;
+        post?: never;
+        delete: operations["api_garmin_disconnect_api_garmin_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/garmin/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_garmin_login_api_garmin_login_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/garmin/mfa": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_garmin_mfa_api_garmin_mfa_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/garmin/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_garmin_settings_api_garmin_settings_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/garmin/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_garmin_sync_api_garmin_sync_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/icu/connection": {
         parameters: {
             query?: never;
@@ -2431,6 +2511,72 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** GarminStatus */
+        GarminStatus: {
+            /**
+             * Activities Imported
+             * @default 0
+             */
+            activities_imported: number;
+            /**
+             * Available
+             * @default false
+             */
+            available: boolean;
+            /**
+             * Connected
+             * @default false
+             */
+            connected: boolean;
+            /**
+             * Health Days
+             * @default 0
+             */
+            health_days: number;
+            /** Last Error */
+            last_error?: string | null;
+            /** Last Sync At */
+            last_sync_at?: string | null;
+            /**
+             * Mfa Pending
+             * @default false
+             */
+            mfa_pending: boolean;
+            /**
+             * Name
+             * @default
+             */
+            name: string;
+            /**
+             * Needs Login
+             * @default false
+             */
+            needs_login: boolean;
+            /**
+             * Relay To Icu
+             * @default false
+             */
+            relay_to_icu: boolean;
+        } & {
+            [key: string]: unknown;
+        };
+        /** GarminSynced */
+        GarminSynced: {
+            /**
+             * Activities Imported
+             * @default 0
+             */
+            activities_imported: number;
+            /**
+             * Health Days
+             * @default 0
+             */
+            health_days: number;
+            /** Skipped */
+            skipped?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
         /** HrvImported */
         HrvImported: {
             /**
@@ -4561,6 +4707,126 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EventProjection"];
+                };
+            };
+        };
+    };
+    api_garmin_status_api_garmin_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GarminStatus"];
+                };
+            };
+        };
+    };
+    api_garmin_disconnect_api_garmin_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GarminStatus"];
+                };
+            };
+        };
+    };
+    api_garmin_login_api_garmin_login_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GarminStatus"];
+                };
+            };
+        };
+    };
+    api_garmin_mfa_api_garmin_mfa_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GarminStatus"];
+                };
+            };
+        };
+    };
+    api_garmin_settings_api_garmin_settings_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GarminStatus"];
+                };
+            };
+        };
+    };
+    api_garmin_sync_api_garmin_sync_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GarminSynced"];
                 };
             };
         };

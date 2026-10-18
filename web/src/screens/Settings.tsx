@@ -13,6 +13,7 @@ import { Folders } from "@/screens/Folders"
 import { ApiKeyConnect } from "@/screens/ApiKeyConnect"
 import { AiCoachSettings } from "@/screens/Coach"
 import { FtpHistory } from "@/screens/FtpHistory"
+import { Garmin } from "@/screens/Garmin"
 import { Panel, Row, useLoad } from "@/screens/panel"
 import { ZonesEditor } from "@/screens/ZonesEditor"
 
@@ -259,6 +260,7 @@ export function Settings() {
         <Rider />
       </div>
       <Sync />
+      <Garmin />
       <AiCoachSettings />
       <CalendarPush />
       <Folders />

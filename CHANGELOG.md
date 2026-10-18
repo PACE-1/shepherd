@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Garmin Connect.** Sign in to Garmin in Settings → Garmin Connect (with the MFA code when Garmin asks) and Shepherd reads your sleep, HRV, resting HR, body battery, stress, steps and training readiness straight from Garmin, plus your rides, runs and swims as their original FIT files. Garmin's sleep, HRV and resting HR replace the values intervals.icu has; intervals.icu still does the fitness numbers and the planning calendar. Only Garmin's sign-in tokens are stored, never your password. Optionally, new Garmin activities are sent on to intervals.icu. This uses an unofficial Garmin service, so a change on Garmin's side can stop it until an update.
 - **Fixed: changing the AI provider could send the old API key to the new server.** A saved key is now reused only for the same provider and address; otherwise you must enter one.
 - **Fixed: AI coach requests no longer freeze the rest of the app** while the model is answering.
 - **Fixed: editing a daily check-in no longer erases its saved notes.**

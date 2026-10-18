@@ -1080,6 +1080,25 @@ class LlmConnection(_Model):
     has_key: bool = False             # the key itself is never returned
 
 
+class GarminStatus(_Model):
+    available: bool = False           # the garminconnect package is installed
+    connected: bool = False
+    needs_login: bool = False         # Garmin stopped accepting the saved tokens
+    mfa_pending: bool = False         # a sign-in waits for the code Garmin sent
+    name: str = ""
+    relay_to_icu: bool = False
+    last_sync_at: Optional[str] = None
+    last_error: Optional[str] = None
+    health_days: int = 0              # days with health data in the last sync
+    activities_imported: int = 0      # all activities imported so far
+
+
+class GarminSynced(_Model):
+    health_days: int = 0
+    activities_imported: int = 0
+    skipped: Optional[str] = None
+
+
 class Insight(_Model):
     text: str
     model: str = ""

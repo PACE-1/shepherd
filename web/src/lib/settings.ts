@@ -1,4 +1,4 @@
-import type { BackfillHistoryStarted, BackfillHistoryStatus, DiagErrors, DiagHealth, IcuPushResult, IcuPushStatus, LogTail, SettingsRead, SettingsSaved, SyncStatus, UpdateCheck, VersionInfo, WorkoutFolders, ZonesSaved } from "@/api/types"
+import type { BackfillHistoryStarted, BackfillHistoryStatus, DiagErrors, DiagHealth, GarminStatus, GarminSynced, IcuPushResult, IcuPushStatus, LogTail, SettingsRead, SettingsSaved, SyncStatus, UpdateCheck, VersionInfo, WorkoutFolders, ZonesSaved } from "@/api/types"
 import { api } from "@/lib/api"
 
 export const getSettings = () => api<SettingsRead>("/api/settings")
@@ -56,6 +56,13 @@ export function diff(s: SettingsRead, f: RiderForm, limits: Limits = {}) {
 /** Signs in through intervals.icu and returns to Settings. */
 export const connectUrl = `/oauth/icu/start?return_to=${encodeURIComponent("/v2/?wizard=settings")}`
 export const disconnectIcu = () => api<{ ok: boolean }>("/api/icu/disconnect", { method: "POST" })
+export const getGarmin = () => api<GarminStatus>("/api/garmin")
+export const garminLogin = (email: string, password: string) =>
+  api<GarminStatus>("/api/garmin/login", { method: "POST", json: { email: email.trim(), password } })
+export const garminMfa = (code: string) => api<GarminStatus>("/api/garmin/mfa", { method: "POST", json: { code: code.trim() } })
+export const garminSync = () => api<GarminSynced>("/api/garmin/sync", { method: "POST" })
+export const garminRelay = (on: boolean) => api<GarminStatus>("/api/garmin/settings", { method: "POST", json: { relay_to_icu: on } })
+export const garminDisconnect = () => api<GarminStatus>("/api/garmin", { method: "DELETE" })
 export const getPush = () => api<IcuPushStatus>("/api/icu/push")
 /** `sync` turns the keep-in-sync switch on or off. */
 export const setPushSync = (sync: boolean) => api<IcuPushResult>("/api/icu/push", { method: "POST", json: { sync } })
