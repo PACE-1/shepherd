@@ -228,6 +228,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/injury": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["injury_status_api_injury_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/injury/episodes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["injury_add_api_injury_episodes_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/injury/episodes/{episode_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["injury_delete_api_injury_episodes__episode_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/injury/episodes/{episode_id}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["injury_resolve_api_injury_episodes__episode_id__resolve_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/injury/ramp-rate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["injury_ramp_rate_api_injury_ramp_rate_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/insights/ask": {
         parameters: {
             query?: never;
@@ -2975,6 +3055,105 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** InjuryEpisode */
+        InjuryEpisode: {
+            /**
+             * Body Area
+             * @default
+             */
+            body_area: string;
+            /** End */
+            end?: string | null;
+            /** Id */
+            id: string;
+            /**
+             * Note
+             * @default
+             */
+            note: string;
+            /**
+             * Sport
+             * @default all
+             */
+            sport: string;
+            /** Start */
+            start: string;
+            /** Type */
+            type: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** InjuryRampWeek */
+        InjuryRampWeek: {
+            /**
+             * Easy Only
+             * @default false
+             */
+            easy_only: boolean;
+            /** End */
+            end: string;
+            /** Phase */
+            phase: string;
+            /** Start */
+            start: string;
+            /**
+             * Tss Target
+             * @default 0
+             */
+            tss_target: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** InjuryReturn */
+        InjuryReturn: {
+            /** Absence Days */
+            absence_days: number;
+            /** End */
+            end: string;
+            /** Episode Days */
+            episode_days: number;
+            /** Episode Id */
+            episode_id: string;
+            /** Start */
+            start: string;
+            /** Type */
+            type: string;
+            /** Weeks Done */
+            weeks_done: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** InjuryStatus */
+        InjuryStatus: {
+            active?: components["schemas"]["InjuryEpisode"] | null;
+            /**
+             * Episodes
+             * @default []
+             */
+            episodes: components["schemas"]["InjuryEpisode"][];
+            /**
+             * Has Plan
+             * @default false
+             */
+            has_plan: boolean;
+            /** Method */
+            method: string;
+            /** Note */
+            note: string;
+            /**
+             * Plan Synced
+             * @default false
+             */
+            plan_synced: boolean;
+            /**
+             * Ramp Weeks
+             * @default []
+             */
+            ramp_weeks: components["schemas"]["InjuryRampWeek"][];
+            return_ramp?: components["schemas"]["InjuryReturn"] | null;
+        } & {
+            [key: string]: unknown;
+        };
         /** Insight */
         Insight: {
             /**
@@ -3818,6 +3997,53 @@ export interface components {
             regen_info?: {
                 [key: string]: unknown;
             } | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RampRate */
+        RampRate: {
+            /** As Of */
+            as_of: string;
+            combined: components["schemas"]["RampRateLine"];
+            /** Confidence */
+            confidence: string;
+            /** High */
+            high: number;
+            /** Method */
+            method: string;
+            /** Note */
+            note: string;
+            /**
+             * Sports
+             * @default {}
+             */
+            sports: {
+                [key: string]: components["schemas"]["RampRateLine"];
+            };
+            /** Threshold */
+            threshold: number;
+            /** Warn */
+            warn: boolean;
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: string[];
+        } & {
+            [key: string]: unknown;
+        };
+        /** RampRateLine */
+        RampRateLine: {
+            /** Change Pct */
+            change_pct?: number | null;
+            /** Level */
+            level: string;
+            /** Prev 4Wk Avg */
+            prev_4wk_avg: number;
+            /** Ratio */
+            ratio?: number | null;
+            /** Week Load */
+            week_load: number;
         } & {
             [key: string]: unknown;
         };
@@ -5431,6 +5657,106 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["IcuRaces"];
+                };
+            };
+        };
+    };
+    injury_status_api_injury_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InjuryStatus"];
+                };
+            };
+        };
+    };
+    injury_add_api_injury_episodes_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InjuryStatus"];
+                };
+            };
+        };
+    };
+    injury_delete_api_injury_episodes__episode_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InjuryStatus"];
+                };
+            };
+        };
+    };
+    injury_resolve_api_injury_episodes__episode_id__resolve_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InjuryStatus"];
+                };
+            };
+        };
+    };
+    injury_ramp_rate_api_injury_ramp_rate_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RampRate"];
                 };
             };
         };

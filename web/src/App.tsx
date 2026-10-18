@@ -4,6 +4,7 @@ import { AppShell, isTab } from "@/components/AppShell"
 import { Analysis } from "@/screens/Analysis"
 import { Dfa } from "@/screens/Dfa"
 import { Home } from "@/screens/Home"
+import { Injury } from "@/screens/Injury"
 import { Library } from "@/screens/Library"
 import { Onboarding } from "@/screens/Onboarding"
 import { Plan } from "@/screens/Plan"
@@ -44,6 +45,7 @@ export function App() {
         <WorkoutBuilder file={rest.length ? decodeURIComponent(rest.join("/")) : undefined} />
       </AppShell>
     )
+  if (head === "injury") return <AppShell tab="plan"><Injury /></AppShell>
   const tab = isTab(route) ? route : "home"
   return (
     <AppShell tab={tab}>

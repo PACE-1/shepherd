@@ -13327,8 +13327,13 @@ def build_recovery_ramp(
     current_ctl: float,
     absence_days: int,
     goal: "Goal",
+    skip_weeks: int = 0,
 ) -> list[PlannedWeek]:
     """Duration-dependent recovery ramp with ACWR < 1.3 guardrail (Gabbett 2016).
+
+    ``skip_weeks`` (#113) drops that many ramp weeks from the front, so a ramp
+    already under way continues from today instead of starting again. 0, the
+    default, is the ramp as it always was.
 
     1 week off  → 3 weeks at 75/85/95%
     3-4 weeks off → 5 weeks at 50/60/70/80/90%
@@ -13352,6 +13357,9 @@ def build_recovery_ramp(
     else:
         ramp_pcts = [0.40, 0.50, 0.60, 0.70, 0.80, 0.90]
         z2_only_weeks = 2
+    if skip_weeks > 0:
+        ramp_pcts = ramp_pcts[skip_weeks:]
+        z2_only_weeks = max(0, z2_only_weeks - skip_weeks)
 
     recovery_weeks = []
     start = clock.today()
@@ -13501,6 +13509,26 @@ def regenerate_from_today(
 
     # 4. Build recovery ramp if needed
     recovery_weeks = build_recovery_ramp(current_ctl, absence_days, goal)
+
+    # 4a. #113 injury/illness: a recently ended episode brings the same ramp,
+    # sized by the episode and continued if already under way (see injury.py
+    # for the sources and the "not medical advice" caveat). Only time-off rows
+    # written by injury.py carry "episode_id": every other plan skips this.
+    import injury
+    _return = injury.return_ramp(unavailable_periods, today)
+    if _return:
+        _ep_ramp = build_recovery_ramp(current_ctl, _return["absence_days"], goal,
+                                       skip_weeks=_return["weeks_done"])
+        if len(_ep_ramp) > len(recovery_weeks):
+            recovery_weeks = _ep_ramp
+    # An episode's days are rest inside the ramp too (the build weeks below
+    # already rest every unavailable day).
+    _ep_days = injury.episode_days(unavailable_periods)
+    for rw in recovery_weeks if _ep_days else ():
+        for _s in rw.sessions:
+            if _s.day in _ep_days:
+                _s.session_type, _s.duration_min, _s.tss_estimate = "rest", 0, 0
+                _s.description = "Unavailable (planned leave/injury)"
 
     # FC5d (v2.5.0, L3-6): the ramp must never plow training weeks past the
     # event — cap it at race + 2 weeks (post-race recovery riding is fine; a
@@ -13866,6 +13894,8 @@ def regenerate_from_today(
         # None (no custom split) — the write-site stamps this into plan meta.
         "phase_weeks_status": getattr(adjusted_goal, "_phase_weeks_status", None),
     }
+    if _return:
+        regen_info["injury_return"] = _return
 
     # B2 (v2.1.0): re-assert the F4 event-eve taper on this adaptation path too —
     # generate_plan applies it at first build, but regenerate/reforecast/refit

@@ -1273,3 +1273,63 @@ class RunActivities(_Model):
     missing: list[str] = []
     method: str
     confidence: str
+# ── #113 injury and illness (routes_injury.py) ──────────────────────────────
+
+class InjuryEpisode(_Model):
+    id: str
+    type: str                            # injury | illness
+    start: str
+    end: Optional[str] = None            # None while the episode is open
+    sport: str = "all"                   # all | cycling | running | swimming | other
+    body_area: str = ""
+    note: str = ""
+
+
+class InjuryReturn(_Model):
+    episode_id: str
+    type: str
+    start: str
+    end: str
+    episode_days: int
+    absence_days: int                    # what sizes the planner's ramp (at least 7)
+    weeks_done: int                      # ramp weeks already behind the rider
+
+
+class InjuryRampWeek(_Model):
+    start: str
+    end: str
+    phase: str                           # recon (easy only) | recovery_ramp
+    tss_target: float = 0
+    easy_only: bool = False
+
+
+class InjuryStatus(_Model):
+    episodes: list[InjuryEpisode] = []
+    active: Optional[InjuryEpisode] = None
+    return_ramp: Optional[InjuryReturn] = None
+    ramp_weeks: list[InjuryRampWeek] = []
+    has_plan: bool = False
+    plan_synced: bool = False            # the plan's time off changed: rebuild it
+    method: str
+    note: str
+
+
+class RampRateLine(_Model):
+    week_load: float
+    prev_4wk_avg: float
+    ratio: Optional[float] = None
+    change_pct: Optional[int] = None
+    level: str                           # ok | elevated | high | no_base
+
+
+class RampRate(_Model):
+    as_of: str
+    threshold: float
+    high: float
+    combined: RampRateLine
+    sports: dict[str, RampRateLine] = {}
+    warn: bool
+    warnings: list[str] = []
+    method: str
+    confidence: str
+    note: str
