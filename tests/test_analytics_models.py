@@ -109,6 +109,16 @@ def test_history_fits_each_month_end_window_and_skips_runs():
     assert h[0]["status"] == "insufficient"
 
 
+def test_history_carries_5_and_20_minute_power_and_w_per_kg():
+    rides = [ride(1, day(10), {300: 350, 1200: 280})]
+    h = cp_model.history(rides, TODAY, {"ftp": 250, "weight_kg": 70, "max_hr": 190}, months=2, window_days=90,
+                         weight_at=lambda d: 70.0)
+    assert (h[-1]["w_5min"], h[-1]["w_20min"]) == (350, 280)
+    assert (h[-1]["w_per_kg_5min"], h[-1]["w_per_kg_20min"]) == (5.0, 4.0)
+    nw = cp_model.history(rides, TODAY, {"ftp": 250, "weight_kg": 70, "max_hr": 190}, months=2, window_days=90)
+    assert nw[-1]["w_5min"] == 350 and nw[-1]["w_per_kg_5min"] is None   # no weight known: watts only
+
+
 # ── ride comparison ─────────────────────────────────────────────────────────
 def rec(rid, watts, hr, n, bucket=1, **summary):
     t = list(range(0, n, bucket))

@@ -114,9 +114,12 @@ def window_bests(rides: list[dict], end: date, days: int, profile: dict) -> tupl
     return best, best.get(1) or best.get(5)
 
 
-def history(rides: list[dict], today: date, profile: dict, months: int = 12, window_days: int = 90) -> list[dict]:
+def history(rides: list[dict], today: date, profile: dict, months: int = 12, window_days: int = 90,
+            weight_at=None) -> list[dict]:
     """CP, W' and Pmax from the ``window_days`` before each month end over the
-    last ``months`` months (the current month ends today)."""
+    last ``months`` months (the current month ends today), plus the best 5 and
+    20 minute power in the same window and, when ``weight_at(iso_date)`` gives a
+    trend weight, those as W/kg."""
     ends, d = [], today
     for _ in range(months):
         ends.append(d)
@@ -125,6 +128,11 @@ def history(rides: list[dict], today: date, profile: dict, months: int = 12, win
     for end in reversed(ends):
         best, pmax = window_bests(rides, end, window_days, profile)
         f = fit_cp(best)
+        kg = weight_at(end.isoformat()) if weight_at else None
+        w5, w20 = best.get(300), best.get(1200)
         out.append({"end_date": end.isoformat(), "status": f["status"], "cp_w": f["cp_w"],
-                    "wprime_j": f["wprime_j"], "cp_ci95_w": f["cp_ci95_w"], "pmax_w": pmax})
+                    "wprime_j": f["wprime_j"], "cp_ci95_w": f["cp_ci95_w"], "pmax_w": pmax,
+                    "w_5min": w5, "w_20min": w20,
+                    "w_per_kg_5min": round(w5 / kg, 2) if w5 and kg else None,
+                    "w_per_kg_20min": round(w20 / kg, 2) if w20 and kg else None})
     return out

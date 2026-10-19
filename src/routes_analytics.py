@@ -70,8 +70,11 @@ def power_model(window_days: int = Query(90, ge=28, le=365)):
         max_hr = int(ProfileManager.get().max_hr) or None
     except Exception:
         max_hr = None
+    span = 365 + WARMUP_DAYS
+    trend = wt.ewma_trend(wt.merge_readings(db.query_metric_history("weight", days=span), _synced_weights(span)))
     hist = cp_model.history(power_curve._load_cached_rides(), clock.today(),
-                            {"ftp": ftp, "weight_kg": weight, "max_hr": max_hr}, months=12, window_days=window_days)
+                            {"ftp": ftp, "weight_kg": weight, "max_hr": max_hr}, months=12, window_days=window_days,
+                            weight_at=lambda day: wt._at([(r["date"], r["trend_kg"]) for r in trend], day))
     return {
         "window_days": window_days,
         "n_rides": curve["n_rides"],

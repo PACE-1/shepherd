@@ -1794,6 +1794,50 @@
             "title": "Status",
             "type": "string"
           },
+          "w_20min": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "W 20Min"
+          },
+          "w_5min": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "W 5Min"
+          },
+          "w_per_kg_20min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "W Per Kg 20Min"
+          },
+          "w_per_kg_5min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "W Per Kg 5Min"
+          },
           "wprime_j": {
             "anyOf": [
               {
