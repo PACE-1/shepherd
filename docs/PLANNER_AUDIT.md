@@ -1,5 +1,7 @@
 # Planner audit: shared invariants by entry point (#11)
 
+> **Historical, measured at `24ab59e`.** Later, the rail was made to win over the floor (`_enforce_z5plus_share_ceiling` sheds a floor class last, not never) and the intensity-ceiling `expectedFailure` was removed. "No planner behaviour was changed" and the section 2 counts describe `24ab59e`, not `main`.
+
 Measured on 2026-10-18 at `24ab59e` (branch `claude/peaceful-bell-wcwgkb`).
 **No planner behaviour was changed.** `src/training_planner.py` is identical to
 `24ab59e`, the characterization golden is unchanged (49 builders, 79 owner0,

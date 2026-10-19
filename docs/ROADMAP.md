@@ -84,7 +84,7 @@ Remaining scope on #110 (send to the watch through Garmin; run and swim targets)
 Remaining scope on #118–#127 (the gaps in the tables below), each through the science rule. Turning companion sessions into real per-sport plan sessions needs #24. If the plan file changes in a way older versions can't load, that release is **5.0.0**.
 
 ### Ongoing (one slice per release)
-#10 typed API (one error shape merged in #157; service extraction remains) · #23 (one FIT power reader merged in #167), #24 planner and calculation consolidation · #11 intensity ceiling (owner decision: floor or rail fix, moves golden cases) · #94 desktop parity · #9 browser tests · #13 server access (remote OAuth callback unverified) · #132 rebrand (naming search, fork detach: owner actions).
+#10 typed API (one error shape merged in #157; service extraction remains) · #23 (one FIT power reader merged in #167), #24 planner and calculation consolidation · #94 desktop parity · #9 browser tests · #13 server access (remote OAuth callback unverified) · #132 rebrand (naming search, fork detach: owner actions).
 
 ## Owner decisions (2026-10-18)
 - #147 stays merged; the roadmap is re-planned around `main`. #158 and #151 are closed, so `main`'s multi-sport model and palettes are the ones going forward.
@@ -117,7 +117,7 @@ Everything below shipped on `main` with #147 (merged 2026-10-18) and goes out in
 | #131 notifications | slice | No web-push or email; no per-event channel choice; a failed ntfy post is retried 3 times (5 s, 30 s, 5 min) but retries are not kept across a restart. |
 | #115 gear | slice | Auto-assign from intervals.icu reads `gear.name` best-effort (the field is unverified here); no matching on `gear.id`; a due item raises one bell notice (and ntfy) but has no Home entry; gear is not shown on the ride page. |
 | #124 sport balance | actuals only | Planner emphasis toward a limiter (needs the multi-sport planner decision); cross-sport load shares are indicative (each sport's load has its own scale). |
-| #11 planner audit | audit done, no planner change | The intensity-ceiling expectedFailure is still valid (7 of 864 property-test weeks): cause and two measured prototype fixes are in `docs/PLANNER_AUDIT.md`; choosing the floor-or-rail fix is an owner decision because it moves golden cases. Sealing is dormant in production. |
+| #11 planner audit | done | The intensity ceiling now wins over a phase's hard-session floor (rail wins, owner decision 2026-10-18 and confirmed 2026-10-19); `test_no_week_breaches_the_intensity_ceiling` passes and is no longer an expected failure. `docs/PLANNER_AUDIT.md` section 2 records the earlier measurements and is historical. Sealing is dormant in production. |
 | #10 typed API | slice | 8 UI-called routes remain without a model (7 file/image downloads and one 204), each with a stated reason; no service extraction yet. |
 | #26/#16 release | decided | macOS/Windows retired; Linux (Docker, AppImage) only; GitHub is the release identity. No Docker image publish step yet (registry and tag policy to decide). Final cleanup/lint pass planned before the next major version. |
 
