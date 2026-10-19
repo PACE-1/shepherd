@@ -125,6 +125,27 @@ def cs_predictions(cs_m_per_s: float, d_prime_m: float) -> list[dict]:
     return out
 
 
+def target_gap(race: str, target_s: float, best: dict | None, cs: dict | None) -> dict:
+    """What would have to change to run ``target_s`` over ``race``, per model (the inverse of each formula).
+
+    Riegel: the time the best run would have to have been, so the gain is how much faster it must be.
+    Critical speed (D' held fixed): CS = (D - D') / T; only 5K and 10K, inside the model's 2 to 30 minute range.
+    """
+    dist = next((d for k, _, d in RACES if k == race), None)
+    if dist is None or target_s <= 0:
+        raise ValueError("unknown race or non-positive target time")
+    out = {"race": race, "target_time_s": target_s, "riegel": None, "critical_speed": None}
+    if best:
+        need = target_s / (dist / best["distance_m"]) ** RIEGEL_EXPONENT
+        out["riegel"] = {"needed_time_s": round(need, 1), "current_time_s": best["time_s"],
+                         "faster_pct": round((1 - need / best["time_s"]) * 100, 1)}
+    if cs and race not in LONG_RACES and CS_MIN_S <= target_s <= CS_MAX_S and dist > cs["d_prime_m"]:
+        need = (dist - cs["d_prime_m"]) / target_s
+        out["critical_speed"] = {"needed_cs_m_per_s": round(need, 3), "current_cs_m_per_s": cs["cs_m_per_s"],
+                                 "higher_pct": round((need / cs["cs_m_per_s"] - 1) * 100, 1)}
+    return out
+
+
 def predict(runs: list[dict], cs: dict | None) -> dict:
     """Predictions from recent runs ({distance_m, time_s, ...}) and an optional {cs_m_per_s, d_prime_m}."""
     best = best_effort(runs)
