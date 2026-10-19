@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState, type ReactNode } from "react"
 
 import type { PlanRead, PlanWeek } from "@/api/types"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -33,6 +33,20 @@ const statusLabel = (status: string) =>
 
 const dayLabel = (iso: string) =>
   new Date(`${iso}T00:00:00`).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })
+
+/** On a phone a session's many actions sit behind one button; from md up they show in the row as before. */
+function SessionActions({ editing, children }: { editing: boolean; children: ReactNode }) {
+  const [open, setOpen] = useState(false)
+  const shown = open || editing
+  return (
+    <>
+      <Button size="sm" variant="outline" className="md:hidden" aria-expanded={shown} onClick={() => setOpen(!shown)}>
+        {shown ? "Hide actions" : "Actions"}
+      </Button>
+      <div className={shown ? "flex w-full flex-wrap items-center gap-2 md:contents" : "hidden md:contents"}>{children}</div>
+    </>
+  )
+}
 
 export function Plan() {
   const [load, setLoad] = useState<Load>({ state: "loading" })
@@ -261,115 +275,117 @@ export function Plan() {
                       <span className="text-muted-foreground">
                         {fmtMinutes(s.duration_min)} · {Math.round(s.tss_estimate)} TSS{extra ? ` · ${extra}` : ""}
                       </span>
-                      {canToggle && !dismissed && moving?.day !== s.day && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          aria-label={`Move ${dayLabel(s.day)}`}
-                          onClick={() => setMoving({ day: s.day, to: "" })}
-                        >
-                          Move
-                        </Button>
-                      )}
-                      {canToggle && !dismissed && swapping?.day !== s.day && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          aria-label={`Change type ${dayLabel(s.day)}`}
-                          onClick={() => setSwapping({ day: s.day, type: s.session_type, minutes: s.duration_min })}
-                        >
-                          Change type
-                        </Button>
-                      )}
-                      {canToggle && !dismissed && redrawing !== s.day && (
-                        <Button size="sm" variant="ghost" aria-label={`Other workout ${dayLabel(s.day)}`} onClick={() => setRedrawing(s.day)}>
-                          Other workout
-                        </Button>
-                      )}
-                      {redrawing === s.day && (
-                        <PlanRedraw day={s.day} onDone={async () => { setRedrawing(null); setLoad({ state: "ok", plan: await getPlan() }) }} onCancel={() => setRedrawing(null)} />
-                      )}
-                      {canToggle && !dismissed && s.session_type === "ftp_test" && (
-                        <NativeSelect
-                          aria-label={`Test type ${dayLabel(s.day)}`}
-                          className="text-sm"
-                          value={String((s as { ftp_test_type?: string }).ftp_test_type ?? "")}
-                          disabled={busy === s.day}
-                          onChange={(e) => change(s.day, () => setFtpTestType(s.day, e.target.value))}
-                        >
-                          <option value="" disabled>
-                            Test type…
-                          </option>
-                          {FTP_TEST_TYPES.map(([id, label]) => (
-                            <option key={id} value={id}>
-                              {label}
-                            </option>
-                          ))}
-                        </NativeSelect>
-                      )}
-                      {swapping?.day === s.day && (
-                        <span className="flex flex-wrap items-center gap-2">
-                          <NativeSelect
-                            aria-label="New type"
-                            className="text-sm"
-                            value={swapping.type}
-                            onChange={(e) => setSwapping({ ...swapping, type: e.target.value })}
+                      <SessionActions editing={moving?.day === s.day || swapping?.day === s.day || redrawing === s.day}>
+                        {canToggle && !dismissed && moving?.day !== s.day && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            aria-label={`Move ${dayLabel(s.day)}`}
+                            onClick={() => setMoving({ day: s.day, to: "" })}
                           >
-                            {SWAP_TYPES.map(([id, label]) => (
+                            Move
+                          </Button>
+                        )}
+                        {canToggle && !dismissed && swapping?.day !== s.day && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            aria-label={`Change type ${dayLabel(s.day)}`}
+                            onClick={() => setSwapping({ day: s.day, type: s.session_type, minutes: s.duration_min })}
+                          >
+                            Change type
+                          </Button>
+                        )}
+                        {canToggle && !dismissed && redrawing !== s.day && (
+                          <Button size="sm" variant="ghost" aria-label={`Other workout ${dayLabel(s.day)}`} onClick={() => setRedrawing(s.day)}>
+                            Other workout
+                          </Button>
+                        )}
+                        {redrawing === s.day && (
+                          <PlanRedraw day={s.day} onDone={async () => { setRedrawing(null); setLoad({ state: "ok", plan: await getPlan() }) }} onCancel={() => setRedrawing(null)} />
+                        )}
+                        {canToggle && !dismissed && s.session_type === "ftp_test" && (
+                          <NativeSelect
+                            aria-label={`Test type ${dayLabel(s.day)}`}
+                            className="text-sm"
+                            value={String((s as { ftp_test_type?: string }).ftp_test_type ?? "")}
+                            disabled={busy === s.day}
+                            onChange={(e) => change(s.day, () => setFtpTestType(s.day, e.target.value))}
+                          >
+                            <option value="" disabled>
+                              Test type…
+                            </option>
+                            {FTP_TEST_TYPES.map(([id, label]) => (
                               <option key={id} value={id}>
                                 {label}
                               </option>
                             ))}
                           </NativeSelect>
-                          <Input
-                            type="number"
-                            aria-label="Minutes"
-                            className="w-20 text-sm"
-                            min={30}
-                            max={300}
-                            value={swapping.minutes}
-                            onChange={(e) => setSwapping({ ...swapping, minutes: Number(e.target.value) })}
-                          />
-                          <Button size="sm" disabled={busy === s.day || swapping.minutes < 30} onClick={confirmSwap}>
-                            Apply
+                        )}
+                        {swapping?.day === s.day && (
+                          <span className="flex flex-wrap items-center gap-2">
+                            <NativeSelect
+                              aria-label="New type"
+                              className="text-sm"
+                              value={swapping.type}
+                              onChange={(e) => setSwapping({ ...swapping, type: e.target.value })}
+                            >
+                              {SWAP_TYPES.map(([id, label]) => (
+                                <option key={id} value={id}>
+                                  {label}
+                                </option>
+                              ))}
+                            </NativeSelect>
+                            <Input
+                              type="number"
+                              aria-label="Minutes"
+                              className="w-20 text-sm"
+                              min={30}
+                              max={300}
+                              value={swapping.minutes}
+                              onChange={(e) => setSwapping({ ...swapping, minutes: Number(e.target.value) })}
+                            />
+                            <Button size="sm" disabled={busy === s.day || swapping.minutes < 30} onClick={confirmSwap}>
+                              Apply
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => setSwapping(null)}>
+                              Cancel
+                            </Button>
+                          </span>
+                        )}
+                        {moving?.day === s.day && (
+                          <span className="flex items-center gap-2">
+                            <Input
+                              type="date"
+                              aria-label="Move to"
+                              className="text-sm"
+                              min={today}
+                              value={moving.to}
+                              onChange={(e) => setMoving({ day: s.day, to: e.target.value })}
+                            />
+                            <Button size="sm" disabled={!moving.to || busy === s.day} onClick={confirmMove}>
+                              Move here
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => setMoving(null)}>
+                              Cancel
+                            </Button>
+                          </span>
+                        )}
+                        {s.zwo_file && !dismissed && (
+                          <SessionExport file={s.zwo_file} day={s.day} name={s.zwo_name || s.session_type} type={s.session_type} minutes={s.duration_min} />
+                        )}
+                        {canToggle && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            disabled={busy === s.day}
+                            aria-label={`${dismissed ? "Restore" : "Dismiss"} ${dayLabel(s.day)}`}
+                            onClick={() => toggleDismissed(s.day, dismissed)}
+                          >
+                            {dismissed ? "Restore" : "Dismiss"}
                           </Button>
-                          <Button size="sm" variant="ghost" onClick={() => setSwapping(null)}>
-                            Cancel
-                          </Button>
-                        </span>
-                      )}
-                      {moving?.day === s.day && (
-                        <span className="flex items-center gap-2">
-                          <Input
-                            type="date"
-                            aria-label="Move to"
-                            className="text-sm"
-                            min={today}
-                            value={moving.to}
-                            onChange={(e) => setMoving({ day: s.day, to: e.target.value })}
-                          />
-                          <Button size="sm" disabled={!moving.to || busy === s.day} onClick={confirmMove}>
-                            Move here
-                          </Button>
-                          <Button size="sm" variant="ghost" onClick={() => setMoving(null)}>
-                            Cancel
-                          </Button>
-                        </span>
-                      )}
-                      {s.zwo_file && !dismissed && (
-                        <SessionExport file={s.zwo_file} day={s.day} name={s.zwo_name || s.session_type} type={s.session_type} minutes={s.duration_min} />
-                      )}
-                      {canToggle && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          disabled={busy === s.day}
-                          aria-label={`${dismissed ? "Restore" : "Dismiss"} ${dayLabel(s.day)}`}
-                          onClick={() => toggleDismissed(s.day, dismissed)}
-                        >
-                          {dismissed ? "Restore" : "Dismiss"}
-                        </Button>
-                      )}
+                        )}
+                      </SessionActions>
                       {!dismissed && !s.status.startsWith("done") && (
                         <SessionWeather day={s.day} onSwap={canToggle ? () => setSwapping({ day: s.day, type: s.session_type, minutes: s.duration_min }) : undefined} />
                       )}

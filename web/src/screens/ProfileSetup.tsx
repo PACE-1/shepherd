@@ -298,6 +298,7 @@ export function ProfileSetup() {
                     <Button onClick={connect}>{linkState === "error" ? "Try again" : "Sign in to intervals.icu"}</Button>
                     <Button
                       variant="outline"
+                      className="max-md:min-h-11"
                       render={<a href="https://intervals.icu/signup" target="_blank" rel="noopener noreferrer" />}
                     >
                       Create a free account

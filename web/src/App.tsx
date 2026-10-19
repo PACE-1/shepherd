@@ -47,7 +47,10 @@ export function App() {
   if (head === "builder")
     return (
       <AppShell tab="library">
-        <WorkoutBuilder file={rest.length ? decodeURIComponent(rest.join("/")) : undefined} />
+        <WorkoutBuilder
+          file={rest.length ? decodeURIComponent(rest[rest.length - 1]) : undefined}
+          copy={rest[0] === "copy"}
+        />
       </AppShell>
     )
   if (head === "injury") return <AppShell tab="plan"><Injury /></AppShell>
