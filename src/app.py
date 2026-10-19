@@ -13642,7 +13642,8 @@ def _auto_apply_missed_moves(plan: dict, today: date) -> list[dict]:
     return applied
 
 
-@app.post("/api/plan/move-session", responses={200: {"model": api_models.SessionMoved}})
+@app.post("/api/plan/move-session", responses={200: {"model": api_models.SessionMoved}},
+          openapi_extra=api_models.request_body(api_models.MoveSessionBody))
 async def api_plan_move_session(request: Request):
     """Move a session from one date to another (fix26 §6.2).
 
@@ -16224,7 +16225,8 @@ def _swap_session_type_apply(plan: dict, day_iso: str, new_type: str, new_dur: i
             "sessions_modified": sessions_modified}
 
 
-@app.post("/api/plan/swap-type", responses={200: {"model": api_models.SessionSwapped}})
+@app.post("/api/plan/swap-type", responses={200: {"model": api_models.SessionSwapped}},
+          openapi_extra=api_models.request_body(api_models.SwapTypeBody))
 async def api_plan_swap_type(request: Request):
     """v2.3.0 — swap a single day to a DIFFERENT training type + duration, then
     reforecast the rest. The swapped day is pinned; Rematch still works after.
@@ -16311,7 +16313,8 @@ _FTP_TEST_PREFERRED_FILE = {
 }
 
 
-@app.post("/api/plan/ftp-test-type", responses={200: {"model": api_models.FtpTestTypeSet}})
+@app.post("/api/plan/ftp-test-type", responses={200: {"model": api_models.FtpTestTypeSet}},
+          openapi_extra=api_models.request_body(api_models.FtpTestTypeBody))
 async def api_plan_ftp_test_type(request: Request):
     """v3.2.0 — per-session FTP-test choice. The rider picks ramp or 20-min in
     the workout modal (no global setting); this swaps THAT ftp_test session's
@@ -16387,7 +16390,8 @@ async def api_plan_ftp_test_type(request: Request):
         return JSONResponse({"detail": "ftp-test-type failed"}, 500)
 
 
-@app.post("/api/plan/dismiss-session", responses={200: {"model": api_models.SessionDismissed}})
+@app.post("/api/plan/dismiss-session", responses={200: {"model": api_models.SessionDismissed}},
+          openapi_extra=api_models.request_body(api_models.DismissSessionBody))
 async def api_plan_dismiss_session(request: Request):
     """Dismiss a session (§6.8 — stays visible greyed; §6.11 never auto).
 

@@ -13602,6 +13602,32 @@
     "/api/plan/dismiss-session": {
       "post": {
         "operationId": "api_plan_dismiss_session_api_plan_dismiss_session_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "properties": {
+                  "date": {
+                    "title": "Date",
+                    "type": "string"
+                  },
+                  "undo": {
+                    "default": false,
+                    "title": "Undo",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "date"
+                ],
+                "title": "DismissSessionBody",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "content": {
@@ -13636,6 +13662,32 @@
     "/api/plan/ftp-test-type": {
       "post": {
         "operationId": "api_plan_ftp_test_type_api_plan_ftp_test_type_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "properties": {
+                  "date": {
+                    "title": "Date",
+                    "type": "string"
+                  },
+                  "test_type": {
+                    "title": "Test Type",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "date",
+                  "test_type"
+                ],
+                "title": "FtpTestTypeBody",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "content": {
@@ -13687,6 +13739,32 @@
     "/api/plan/move-session": {
       "post": {
         "operationId": "api_plan_move_session_api_plan_move_session_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "properties": {
+                  "date": {
+                    "title": "Date",
+                    "type": "string"
+                  },
+                  "new_date": {
+                    "title": "New Date",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "date",
+                  "new_date"
+                ],
+                "title": "MoveSessionBody",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "content": {
@@ -13806,6 +13884,37 @@
     "/api/plan/swap-type": {
       "post": {
         "operationId": "api_plan_swap_type_api_plan_swap_type_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "properties": {
+                  "date": {
+                    "title": "Date",
+                    "type": "string"
+                  },
+                  "duration_min": {
+                    "title": "Duration Min",
+                    "type": "integer"
+                  },
+                  "session_type": {
+                    "title": "Session Type",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "date",
+                  "session_type",
+                  "duration_min"
+                ],
+                "title": "SwapTypeBody",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "content": {

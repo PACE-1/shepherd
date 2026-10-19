@@ -28,6 +28,16 @@ class Ok(_Model):
     ok: bool = True
 
 
+def request_body(model: type[BaseModel]) -> dict:
+    """``openapi_extra`` that documents a JSON request body without validating it.
+
+    The handlers still read the raw body and answer their own 400s, so the status
+    codes and messages stay as they were. Use flat models: the schema is inlined.
+    """
+    return {"requestBody": {"required": True, "content": {"application/json": {
+        "schema": model.model_json_schema(mode="validation")}}}}
+
+
 # ── profiles ────────────────────────────────────────────────────────────────
 class ProfileEntry(_Model):
     id: str
@@ -269,6 +279,27 @@ class RiderStats(_Model):
     load: Optional[dict] = None
     body: Optional[dict] = None
     season: Optional[dict] = None
+
+
+class DismissSessionBody(_Model):
+    date: str                            # YYYY-MM-DD; every session on that date
+    undo: bool = False                   # true restores a dismissed session
+
+
+class MoveSessionBody(_Model):
+    date: str
+    new_date: str
+
+
+class SwapTypeBody(_Model):
+    date: str
+    session_type: str
+    duration_min: int
+
+
+class FtpTestTypeBody(_Model):
+    date: str
+    test_type: str                       # ramp | coggan_20min | sixty_min | cp_test
 
 
 class SessionDismissed(_Model):
