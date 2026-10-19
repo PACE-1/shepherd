@@ -1,0 +1,36 @@
+name: Breaking change check
+
+# A pull request that removes a route or response field from
+# tests/api_contract.json, or a SHEPHERD_* variable from src/ or the Dockerfile
+# (a rename counts), fails unless it carries the `breaking` label. A MAJOR
+# change cannot slip into a MINOR (docs/DEVELOPMENT.md, "Versioning").
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+
+jobs:
+  breaking:
+    name: Breaking change label
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Compare against the merge base
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          LABELLED: ${{ contains(github.event.pull_request.labels.*.name, 'breaking') }}
+        run: |
+          set -uo pipefail
+          out="$(python3 tools/check_breaking.py "$(git merge-base "origin/$BASE_REF" HEAD)")"
+          status=$?
+          [ -z "$out" ] || echo "$out"
+          if [ "$status" -ne 0 ] && [ "$LABELLED" != "true" ]; then
+            echo "::error::breaking public-API change without the 'breaking' label"
+            exit 1
+          fi
