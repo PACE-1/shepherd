@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Fixed: opening a ride no longer parses its FIT file four times (#163).** Stats, device info, RR intervals, sport and the sample streams now share one cached parse per file (keyed by path, mtime and size), so ride detail and Compare load faster.
 - **Added: failed ntfy notifications are retried (#131).** A post that fails is tried again after 5 seconds, 30 seconds and 5 minutes before Shepherd gives up (one log line, never the address). The in-app notice is unaffected. Retries still waiting when Shepherd stops are dropped.
 - **Breaking: `POST /api/workouts/bulk-segments` is removed (#23).** Nothing in the web UI called it (the Library list no longer draws the mini power profile it fed). A script that posted a list of workout files to it should call `GET /api/workout/{category}/{filename}` per file instead.
 - **Added: race predictor says what it would take to hit a target time (#121).** `GET /api/run/predict?target_race=5k&target_time_s=1200` also returns how much faster your best recent run (Riegel) or how much higher your critical speed (5K and 10K only, hyperbolic model with D′ held fixed) would have to be. Same published models and limits as the predictions; no interface yet.

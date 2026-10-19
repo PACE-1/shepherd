@@ -21,6 +21,8 @@ from __future__ import annotations
 import clock  # the one clock every module reads (see src/clock.py)
 import hashlib
 import logging
+import threading
+from collections import OrderedDict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
@@ -68,6 +70,35 @@ _GARMIN_PRODUCT_NAMES: dict[int, str] = {
 # (Garmin reuses some product IDs across regions / "Asia" variants), we trust
 # our table — it's keyed by the model name the rider sees in the README's
 # device-by-device path table.
+
+
+_FIT_CACHE: "OrderedDict[tuple, object]" = OrderedDict()
+_FIT_CACHE_LOCK = threading.Lock()
+_FIT_CACHE_MAX = 4  # ponytail: a ride-detail request + a Compare pair; raise if more rides open at once
+
+
+def load_fit(fit_path: Path):
+    """#163 — parse a FIT once; later readers of the same unchanged file reuse it.
+
+    Keyed by path + mtime + size, so a rewritten file re-parses. Raises what
+    ``FitFile.from_file`` raises; callers keep their own failure handling.
+    """
+    from fit_tool.fit_file import FitFile
+    try:
+        st = Path(fit_path).stat()
+        key = (str(fit_path), st.st_mtime_ns, st.st_size)
+    except OSError:
+        return FitFile.from_file(str(fit_path))
+    with _FIT_CACHE_LOCK:
+        if key in _FIT_CACHE:
+            _FIT_CACHE.move_to_end(key)
+            return _FIT_CACHE[key]
+    ff = FitFile.from_file(str(fit_path))
+    with _FIT_CACHE_LOCK:
+        _FIT_CACHE[key] = ff
+        while len(_FIT_CACHE) > _FIT_CACHE_MAX:
+            _FIT_CACHE.popitem(last=False)
+    return ff
 
 
 def fit_field(msg, name):
@@ -124,7 +155,7 @@ def parse_device_info(fit_path: Path) -> dict | None:
         return None
 
     try:
-        ff = FitFile.from_file(str(fit_path))
+        ff = load_fit(fit_path)
     except Exception as e:
         log.warning(f"parse_device_info({fit_path}) FIT parse failed: {e}")
         return None
@@ -214,7 +245,7 @@ def parse_rr_intervals(fit_path: Path) -> list[float]:
         return []
 
     try:
-        ff = FitFile.from_file(str(fit_path))
+        ff = load_fit(fit_path)
     except Exception as e:
         log.warning(f"parse_rr_intervals({fit_path}) FIT parse failed: {e}")
         return []
@@ -276,7 +307,7 @@ def read_session_sport(fit_path: Path) -> "str | None":
     except Exception:
         return None
     try:
-        ff = FitFile.from_file(str(fit_path))
+        ff = load_fit(fit_path)
     except Exception:
         return None
     try:
@@ -329,7 +360,7 @@ def parse_record_streams(fit_path: Path) -> "dict | None":
         return None
 
     try:
-        ff = FitFile.from_file(str(fit_path))
+        ff = load_fit(fit_path)
     except Exception as e:
         log.warning(f"parse_record_streams({fit_path}) FIT parse failed: {e}")
         return None

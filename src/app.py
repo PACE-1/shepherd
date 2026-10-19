@@ -41,7 +41,7 @@ for _env_path in _env_candidates:
 
 import asyncio
 import logging
-from fit_activity import fit_field as _fit_val  # v3.11.3 fit-tool compat reader
+from fit_activity import fit_field as _fit_val, load_fit  # v3.11.3 fit-tool compat reader
 
 import tls_trust  # v3.11.4 — OS-native verifier on Windows, OpenSSL+certifi elsewhere
 
@@ -16725,7 +16725,7 @@ def _parse_fit_stats(fit_path: Path) -> dict:
 
     Reads duration, distance, avg/max power, avg/max HR, avg cadence,
     TSS (if the producing app stored it), sport, and record count.
-    Uses ``fit_tool.FitFile.from_file`` so the same dependency that
+    Uses ``fit_activity.load_fit`` (one cached parse per file) so the same dependency that
     writes FIT exports also reads them.
     """
     try:
@@ -16735,7 +16735,7 @@ def _parse_fit_stats(fit_path: Path) -> dict:
         return {"error": "fit_tool_unavailable"}
 
     try:
-        ff = FitFile.from_file(str(fit_path))
+        ff = load_fit(fit_path)
     except Exception as e:
         log_ride_import.warning(f"FIT parse failed ({fit_path.name}): {e}")
         return {"error": "parse_failed", "detail": str(e)[:160]}
@@ -18883,7 +18883,7 @@ def _build_fit_samples(fit_path: Path) -> dict:
         return {"t_s": [], "power_w": [], "hr_bpm": [], "cadence_rpm": [], "elevation_m": []}
 
     try:
-        ff = FitFile.from_file(str(fit_path))
+        ff = load_fit(fit_path)
     except Exception:
         return {"t_s": [], "power_w": [], "hr_bpm": [], "cadence_rpm": [], "elevation_m": []}
 
@@ -19158,7 +19158,7 @@ def _fit_power_series_1hz(fit_path: Path) -> list[int]:
     """1 Hz power series from a FIT (same record walk + resampling the
     detector uses) — for the FTP-test analysis view only."""
     from fit_tool.fit_file import FitFile
-    ff = FitFile.from_file(str(fit_path))
+    ff = load_fit(fit_path)
     ts, pw = [], []
     for rec in ff.records:
         msg = rec.message
