@@ -1426,6 +1426,10 @@ class CpHistoryPoint(_Model):
     wprime_j: Optional[int] = None
     cp_ci95_w: Optional[list[float]] = None
     pmax_w: Optional[int] = None
+    w_5min: Optional[int] = None             # best 5 and 20 minute power in the same window
+    w_20min: Optional[int] = None
+    w_per_kg_5min: Optional[float] = None    # over the trend weight at end_date; null when no weight is known
+    w_per_kg_20min: Optional[float] = None
 
 
 class PowerModel(_Model):
