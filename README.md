@@ -39,9 +39,9 @@ docker run -d --name shepherd \
   ghcr.io/pace-1/shepherd:latest
 ```
 
-Open `http://127.0.0.1:22400/v2/` and sign in with the token. The image runs in server mode, which needs an access token and refuses to start without one. Put a TLS reverse proxy in front before exposing it beyond your machine: see [docs/SERVER.md](docs/SERVER.md) for the access policy, trusted origins, proxies, and installing it on a phone (needs HTTPS).
+Open `http://127.0.0.1:22400/v2/` and sign in with the token. The image runs in server mode, which needs an access token of at least 24 characters and refuses to start without one. Five wrong tokens in a minute from one address are throttled, and sign-in cookies expire after 30 days. The container runs as UID 10001, not root, and takes one process per data volume. Upgrading a volume written by an earlier (root) image needs a one-time `chown`: see "Upgrading to 4.0 from a root-owned volume" in [docs/SERVER.md](docs/SERVER.md). Put a TLS reverse proxy in front before exposing it beyond your machine: see [docs/SERVER.md](docs/SERVER.md) for the access policy, trusted origins, proxies, and installing it on a phone (needs HTTPS).
 
-The image is published to GitHub's container registry by the release workflow on each version tag (`vX.Y.Z`, `X.Y`, `latest`; prereleases get their exact tag only). The workflow has not run yet, and a newly published package is private until it is made public in the GitHub package settings, so until then build it yourself: `docker build -t shepherd .`. Details and rollback: [docs/SERVER.md](docs/SERVER.md).
+The image is published to GitHub's container registry by the release workflow on each version tag (`vX.Y.Z`, `X.Y`, `latest`; a pre-release such as `v4.0.0-beta.1` gets its exact tag and `beta`, and is never `latest`). The workflow has not run yet, and a newly published package is private until it is made public in the GitHub package settings, so until then build it yourself: `docker build -t shepherd .`. Details and rollback: [docs/SERVER.md](docs/SERVER.md).
 
 ### AppImage (desktop)
 

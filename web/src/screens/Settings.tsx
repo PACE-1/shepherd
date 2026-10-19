@@ -263,28 +263,63 @@ function About() {
   )
 }
 
+// Settings is one long page; on a phone this bar jumps to the main groups (it is hidden from md up).
+const JUMPS = [
+  ["settings-rider", "Rider"],
+  ["settings-look", "Look"],
+  ["settings-sync", "Sync"],
+  ["settings-alerts", "Alerts"],
+  ["settings-files", "Files"],
+  ["settings-data", "Your data"],
+  ["settings-sports", "Sports"],
+  ["settings-health", "Health check"],
+] as const
+
+function JumpBar() {
+  return (
+    <nav aria-label="Jump to" className="sticky top-0 z-30 -mx-4 flex gap-2 overflow-x-auto bg-background px-4 py-2 md:hidden lg:col-span-2">
+      {JUMPS.map(([id, label]) => (
+        <Button key={id} size="sm" variant="outline" className="min-h-11 shrink-0" onClick={() => document.getElementById(id)?.scrollIntoView({ block: "start" })}>
+          {label}
+        </Button>
+      ))}
+    </nav>
+  )
+}
+
 export function Settings() {
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2" aria-label="Settings">
+      <JumpBar />
       <p className="text-sm lg:col-span-2">New here, or want to check your setup? <a className="underline" href="#/onboarding">Run the guided setup</a>.</p>
-      <div className="lg:col-span-2">
+      <div id="settings-rider" className="scroll-mt-16 lg:col-span-2">
         <Rider />
       </div>
-      <Appearance />
-      <Sync />
+      <div id="settings-look" className="scroll-mt-16">
+        <Appearance />
+      </div>
+      <div id="settings-sync" className="scroll-mt-16">
+        <Sync />
+      </div>
       <AiCoachSettings />
       <NutritionSettings />
-      <NotificationsSettings />
+      <div id="settings-alerts" className="scroll-mt-16">
+        <NotificationsSettings />
+      </div>
       <CalendarPush />
-      <Folders />
+      <div id="settings-files" className="scroll-mt-16">
+        <Folders />
+      </div>
       <FolderImport />
       <LocationCard />
       <About />
-      <YourData />
+      <div id="settings-data" className="scroll-mt-16">
+        <YourData />
+      </div>
       <div className="lg:col-span-2">
         <FtpHistory />
       </div>
-      <div className="lg:col-span-2">
+      <div id="settings-sports" className="scroll-mt-16 lg:col-span-2">
         <SportsCard />
       </div>
       <p className="text-sm lg:col-span-2">Bikes, shoes and components: <a className="underline" href="#/gear">Gear and service reminders</a>.</p>
@@ -293,7 +328,7 @@ export function Settings() {
       <div className="lg:col-span-2"><RacePredictor /></div>
       <div className="lg:col-span-2"><SwimZones /></div>
       <div className="lg:col-span-2"><SwimSessions /></div>
-      <div className="lg:col-span-2">
+      <div id="settings-health" className="scroll-mt-16 lg:col-span-2">
         <Diagnostics />
       </div>
     </div>

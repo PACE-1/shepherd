@@ -40,6 +40,21 @@ async function phoneAudit(page: Page) {
 for (const phone of PHONES) {
   test.describe(`phone ${phone.width}px`, () => {
     test.use({ viewport: phone })
+    test("a plan session's actions sit behind one button and open in place", async ({ page, request }) => {
+      test.setTimeout(120_000) // a cold first build also classifies the workout library
+      const gen = await request.post(BASE + "/api/plan/generate", {
+        timeout: 100_000,
+        data: { goal_type: "ftp", hours_per_week: 8, plan_weeks: 8, available_days: [0, 1, 2, 3, 4, 5, 6], rest_days: [] },
+      })
+      expect(gen.ok()).toBeTruthy()
+      await page.goto("#/plan")
+      await expect(page.getByRole("button", { name: "Weeks" })).toBeVisible()
+      await expect(page.getByRole("button", { name: /^Move / }).first()).toBeHidden()
+      await page.getByRole("button", { name: "Actions" }).first().click()
+      await expect(page.getByRole("button", { name: /^Move / }).first()).toBeVisible()
+      await page.getByRole("button", { name: "Hide actions" }).first().click()
+      await expect(page.getByRole("button", { name: /^Move / }).first()).toBeHidden()
+    })
     for (const route of ["home", "plan", "library", "analysis", "settings", "picker", "dfa"]) {
       test(`${route} has no sideways scroll and thumb-sized controls`, async ({ page }) => {
         await page.goto(`#/${route}`)
@@ -101,6 +116,20 @@ test("on a phone Home is the glance and the check-in, and the rest is one tap aw
   await expect(page.getByRole("button", { name: "Show less" })).toBeVisible() // remembered on this device
   await page.getByRole("button", { name: "Show less" }).click()
   await expect(page.getByRole("heading", { name: "Fitness" })).toBeHidden()
+})
+
+test("on a phone Settings has a jump bar that scrolls to a group, and a desktop has none", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto("#/settings")
+  const jump = page.getByRole("navigation", { name: "Jump to" })
+  await expect(jump).toBeVisible()
+  await page.waitForLoadState("networkidle")
+  await expect(page.getByText(/Loading…/)).toHaveCount(0) // cards that load late change the page height under the scroll
+  await jump.getByRole("button", { name: "Health check" }).click()
+  await expect(page.getByRole("heading", { name: "Diagnostics" })).toBeInViewport()
+  await expect(jump).toBeInViewport() // it stays pinned while scrolling
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await expect(jump).toBeHidden()
 })
 
 test("on a desktop the section bar stays at the top and More is not shown", async ({ page }) => {
