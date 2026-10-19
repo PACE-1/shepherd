@@ -29,10 +29,11 @@ Keep the descriptor with the name wherever it can be searched ("Shepherd trainin
 
 GitHub's documentation describes detaching as self-service ("Leave fork network" in the repository's Settings, Danger Zone): public repository, under 1 GB, no child forks, **permanent**. The documentation summary found while writing this says issues, pull requests, stars and watchers are not carried over to the detached repository, while git history is kept. This repository's roadmap lives in its issues, so read GitHub's page ("Detaching a fork") and export the issues before doing it. Detaching changes only the "forked from" label; the attribution that matters is in `NOTICE`.
 
-## Owner actions still open for #132
+## Owner decisions for #132 (2026-10-19)
 
-Nothing here can be done from the repository:
+1. The register, domain and app-store search in "Not checked" is done by the owner and found no issues.
+2. The owner decided to detach the fork network (see above). The detach itself is a GitHub account action and is not done by this repository's tooling. Export the issues first.
 
-1. Search the trademark registers in "Not checked" item 1, and the domain and app-store results in items 2 and 3, then record the outcome in this file.
-2. Decide whether to detach the fork network (above). It is permanent: export the issues first.
+Still open:
+
 3. intervals.icu `User-Agent` and OAuth client registration still name the upstream project (`docs/code-bloat/release-identity.md`). Changing them needs the provider, so leave them until then.
