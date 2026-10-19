@@ -132,3 +132,28 @@ def test_a_corrupt_saved_test_is_ignored(client):
     import routes_run
     routes_run._cs_path().write_text('{"cs_m_per_s": "fast", "d_prime_m": 240}')
     assert client.get("/api/run/predict").json()["critical_speed"] is None
+
+
+# ── target gap: the inverse of each formula ──────────────────────────────────
+def test_target_gap_inverts_riegel_and_cs():
+    best = {"distance_m": 5000, "time_s": 1200}
+    g = rp.target_gap("10k", 2501.9 * 0.95, best, {"cs_m_per_s": 4.0, "d_prime_m": 240})
+    assert g["riegel"]["faster_pct"] == pytest.approx(5.0, abs=0.1)
+    assert g["riegel"]["needed_time_s"] == pytest.approx(1200 * 0.95, abs=0.2)
+    # 5K in 19:00 (1140 s) with D' 240 m: CS = 4760 / 1140 = 4.1754 m/s, 4.4 % above 4.0
+    g = rp.target_gap("5k", 1140, best, {"cs_m_per_s": 4.0, "d_prime_m": 240})
+    assert g["critical_speed"] == {"needed_cs_m_per_s": 4.175, "current_cs_m_per_s": 4.0, "higher_pct": 4.4}
+    # CS gives nothing for the marathon or outside 2 to 30 minutes; no inputs give nothing
+    assert rp.target_gap("marathon", 12000, best, {"cs_m_per_s": 4.0, "d_prime_m": 240})["critical_speed"] is None
+    assert rp.target_gap("10k", 3000, best, {"cs_m_per_s": 4.0, "d_prime_m": 240})["critical_speed"] is None
+    assert rp.target_gap("5k", 1200, None, None)["riegel"] is None
+    with pytest.raises(ValueError):
+        rp.target_gap("1mile", 400, best, None)
+
+
+def test_predict_endpoint_target(client):
+    assert client.get("/api/run/predict").json()["target"] is None
+    r = client.get("/api/run/predict", params={"target_race": "5k", "target_time_s": 1200})
+    assert r.status_code == 200 and r.json()["target"]["race"] == "5k"
+    assert client.get("/api/run/predict", params={"target_race": "1mile", "target_time_s": 400}).status_code == 422
+    assert client.get("/api/run/predict", params={"target_race": "5k"}).status_code == 422

@@ -133,6 +133,7 @@ def test_post_sends_plain_text_with_a_title_and_short_timeout(monkeypatch):
 
 
 def test_a_delivery_failure_still_leaves_the_notice_in_the_list(tmp_path, monkeypatch):
+    monkeypatch.setattr(n, "_sleep", lambda s: None)
     monkeypatch.setattr(n, "post_ntfy", lambda *a: (False, "nope"))
     n.save_settings(tmp_path, SECRET)
     assert n.check_readiness(tmp_path, TODAY, NOON, READY, PLANNED) is True
@@ -251,3 +252,34 @@ def test_a_due_bike_raises_the_bell_notice_from_the_real_gear_file(tmp_path, mon
     assert n.check_gear_due(tmp_path, TODAY, NOON, lambda: n._gear_items(tmp_path)) == 1
     item = n.listing(tmp_path)["items"][0]
     assert item["event"] == "gear_due" and "Road bike" in item["title"]
+
+
+def test_a_failed_post_is_retried_until_it_goes_through(tmp_path, monkeypatch, caplog):
+    waits, tries = [], []
+    monkeypatch.setattr(n, "_spawn", lambda fn: fn())
+    monkeypatch.setattr(n, "_sleep", waits.append)
+    monkeypatch.setattr(n, "post_ntfy", lambda *a: (tries.append(1) or (len(tries) == 3, "down")))
+    n.save_settings(tmp_path, SECRET)
+    with caplog.at_level("INFO", logger="shepherd.notifications"):
+        assert n.notify(tmp_path, "readiness", "2026-10-18", "t", "b") is True
+    assert len(tries) == 3 and waits == [5, 30] and "ntfy_failed" not in caplog.text
+
+
+def test_giving_up_after_the_last_retry_logs_once_without_the_url(tmp_path, monkeypatch, caplog):
+    waits, tries = [], []
+    monkeypatch.setattr(n, "_spawn", lambda fn: fn())
+    monkeypatch.setattr(n, "_sleep", waits.append)
+    monkeypatch.setattr(n, "post_ntfy", lambda *a: (tries.append(1) or (False, "The server answered 503.")))
+    n.save_settings(tmp_path, SECRET)
+    with caplog.at_level("INFO", logger="shepherd.notifications"):
+        n.notify(tmp_path, "readiness", "2026-10-18", "t", "b")
+    assert len(tries) == 4 and waits == [5, 30, 300]
+    assert caplog.text.count("EVENT=ntfy_failed") == 1 and "attempts=4" in caplog.text and "s3cret" not in caplog.text
+    assert n.listing(tmp_path)["unread"] == 1          # the in-app notice is unaffected
+
+
+def test_a_first_try_success_waits_for_nothing(tmp_path, inline_spawn, monkeypatch):
+    monkeypatch.setattr(n, "_sleep", lambda s: pytest.fail("slept"))
+    n.save_settings(tmp_path, SECRET)
+    n.notify(tmp_path, "readiness", "2026-10-18", "t", "b")
+    assert len(inline_spawn) == 1

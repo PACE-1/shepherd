@@ -2,7 +2,8 @@
 
 Two channels. Every notice lands in an in-app list (the bell). If the rider
 set an ntfy-compatible URL (ntfy.sh or self-hosted), the same notice is also
-POSTed there: plain-text body, ``Title`` header. No SDK, no web-push.
+POSTed there: plain-text body, ``Title`` header; a failed post is retried a few times
+in the background. No SDK, no web-push.
 
 Storage, per profile directory:
   ``notifications.json``        settings, mode 0600 (the URL may hold a topic secret)
@@ -20,6 +21,7 @@ import json
 import logging
 import re
 import threading
+import time
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Callable, Optional
@@ -33,6 +35,8 @@ log = logging.getLogger("shepherd.notifications")
 
 EVENTS = ("readiness", "missed", "sync_failure", "gear_due")
 POST_TIMEOUT_S = 5
+# ponytail: retries live in the sending thread, so a restart drops the ones still waiting; persist a queue if that bites
+RETRY_DELAYS_S = (5, 30, 300)   # waits before the 2nd, 3rd and 4th try of a failed ntfy post
 MAX_ITEMS = 100
 KEEP_DAYS = 60            # dedupe keys older than this are dropped
 _DEFAULT = {"ntfy_url": "", "events": {e: True for e in EVENTS}, "readiness_time": ""}
@@ -144,6 +148,21 @@ def _spawn(fn: Callable[[], None]) -> None:
     threading.Thread(target=fn, name="ntfy-post", daemon=True).start()
 
 
+def _sleep(seconds: float) -> None:
+    time.sleep(seconds)     # tests replace this
+
+
+def _send_with_retries(url: str, title: str, body: str, event: str) -> None:
+    """Post, and on failure try again after each wait in RETRY_DELAYS_S; log once if every try failed."""
+    for attempt, wait in enumerate((0, *RETRY_DELAYS_S), start=1):
+        if wait:
+            _sleep(wait)
+        ok, why = post_ntfy(url, title, body)
+        if ok:
+            return
+    log.info("EVENT=ntfy_failed event=%s attempts=%d reason=%s", event, attempt, why)
+
+
 def notify(pd: Path, event: str, day: str, title: str, body: str, now: Optional[datetime] = None,
            key: Optional[str] = None) -> bool:
     """Record one notice and send it, once per (event, day) or per ``key``. False when off or already sent."""
@@ -175,11 +194,7 @@ def notify(pd: Path, event: str, day: str, title: str, body: str, now: Optional[
     if s["ntfy_url"]:
         url = s["ntfy_url"]
 
-        def send() -> None:
-            ok, why = post_ntfy(url, title, body)
-            if not ok:
-                log.info("EVENT=ntfy_failed event=%s reason=%s", event, why)
-        _spawn(send)
+        _spawn(lambda: _send_with_retries(url, title, body, event))
     return True
 
 

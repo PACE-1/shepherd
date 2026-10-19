@@ -114,7 +114,7 @@ Everything below shipped on `main` with #147 (merged 2026-10-18) and goes out in
 | #122/#126 swim | slice | No swim pace zones (no citable exact percentages); sTSS uses average speed (low to moderate confidence); no stroke count or SWOLF in intervals.icu data; open-water notes are not surfaced in race-week planning (needs the planner). |
 | #128 readiness | slice | Sleep trends and illness warning signs; runs/swims without an intervals.icu load count as zero. |
 | #129 export | slice | Restore from the UI stages a verified backup and applies it at the next start (no in-place swap while running). |
-| #131 notifications | slice | No web-push or email; no per-event channel choice; failed ntfy posts are not retried. |
+| #131 notifications | slice | No web-push or email; no per-event channel choice; a failed ntfy post is retried 3 times (5 s, 30 s, 5 min) but retries are not kept across a restart. |
 | #115 gear | slice | Auto-assign from intervals.icu reads `gear.name` best-effort (the field is unverified here); no matching on `gear.id`; a due item raises one bell notice (and ntfy) but has no Home entry; gear is not shown on the ride page. |
 | #124 sport balance | actuals only | Planner emphasis toward a limiter (needs the multi-sport planner decision); cross-sport load shares are indicative (each sport's load has its own scale). |
 | #11 planner audit | audit done, no planner change | The intensity-ceiling expectedFailure is still valid (7 of 864 property-test weeks): cause and two measured prototype fixes are in `docs/PLANNER_AUDIT.md`; choosing the floor-or-rail fix is an owner decision because it moves golden cases. Sealing is dormant in production. |

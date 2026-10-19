@@ -28,6 +28,16 @@ class Ok(_Model):
     ok: bool = True
 
 
+def request_body(model: type[BaseModel]) -> dict:
+    """``openapi_extra`` that documents a JSON request body without validating it.
+
+    The handlers still read the raw body and answer their own 400s, so the status
+    codes and messages stay as they were. Use flat models: the schema is inlined.
+    """
+    return {"requestBody": {"required": True, "content": {"application/json": {
+        "schema": model.model_json_schema(mode="validation")}}}}
+
+
 # ── profiles ────────────────────────────────────────────────────────────────
 class ProfileEntry(_Model):
     id: str
@@ -269,6 +279,27 @@ class RiderStats(_Model):
     load: Optional[dict] = None
     body: Optional[dict] = None
     season: Optional[dict] = None
+
+
+class DismissSessionBody(_Model):
+    date: str                            # YYYY-MM-DD; every session on that date
+    undo: bool = False                   # true restores a dismissed session
+
+
+class MoveSessionBody(_Model):
+    date: str
+    new_date: str
+
+
+class SwapTypeBody(_Model):
+    date: str
+    session_type: str
+    duration_min: int
+
+
+class FtpTestTypeBody(_Model):
+    date: str
+    test_type: str                       # ramp | coggan_20min | sixty_min | cp_test
 
 
 class SessionDismissed(_Model):
@@ -1405,6 +1436,10 @@ class CpHistoryPoint(_Model):
     wprime_j: Optional[int] = None
     cp_ci95_w: Optional[list[float]] = None
     pmax_w: Optional[int] = None
+    w_5min: Optional[int] = None             # best 5 and 20 minute power in the same window
+    w_20min: Optional[int] = None
+    w_per_kg_5min: Optional[float] = None    # over the trend weight at end_date; null when no weight is known
+    w_per_kg_20min: Optional[float] = None
 
 
 class PowerModel(_Model):
@@ -1485,8 +1520,28 @@ class RacePrediction(_Model):
     notes: list[str] = []
 
 
+class RiegelGap(_Model):
+    needed_time_s: float
+    current_time_s: float
+    faster_pct: float                        # negative when the target is already slower than the best run implies
+
+
+class CsGap(_Model):
+    needed_cs_m_per_s: float
+    current_cs_m_per_s: float
+    higher_pct: float
+
+
+class RaceTargetGap(_Model):
+    race: str
+    target_time_s: float
+    riegel: Optional[RiegelGap] = None
+    critical_speed: Optional[CsGap] = None
+
+
 class RacePredictor(_Model):
     window_days: int
+    target: Optional[RaceTargetGap] = None
     best_run: Optional[RaceInputRun] = None
     longest_run_m: Optional[float] = None
     critical_speed: Optional[RaceInputCs] = None
