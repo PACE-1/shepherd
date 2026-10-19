@@ -3309,6 +3309,14 @@ export interface components {
             pmax_w?: number | null;
             /** Status */
             status: string;
+            /** W 20Min */
+            w_20min?: number | null;
+            /** W 5Min */
+            w_5min?: number | null;
+            /** W Per Kg 20Min */
+            w_per_kg_20min?: number | null;
+            /** W Per Kg 5Min */
+            w_per_kg_5min?: number | null;
             /** Wprime J */
             wprime_j?: number | null;
         } & {
@@ -3340,6 +3348,17 @@ export interface components {
              * @default []
              */
             warnings: string[];
+        } & {
+            [key: string]: unknown;
+        };
+        /** CsGap */
+        CsGap: {
+            /** Current Cs M Per S */
+            current_cs_m_per_s: number;
+            /** Higher Pct */
+            higher_pct: number;
+            /** Needed Cs M Per S */
+            needed_cs_m_per_s: number;
         } & {
             [key: string]: unknown;
         };
@@ -5825,6 +5844,7 @@ export interface components {
             riegel_confidence: string;
             /** Riegel Method */
             riegel_method: string;
+            target?: components["schemas"]["RaceTargetGap"] | null;
             /** Window Days */
             window_days: number;
         } & {
@@ -5866,6 +5886,17 @@ export interface components {
              * @default 0
              */
             tss_target: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RaceTargetGap */
+        RaceTargetGap: {
+            critical_speed?: components["schemas"]["CsGap"] | null;
+            /** Race */
+            race: string;
+            riegel?: components["schemas"]["RiegelGap"] | null;
+            /** Target Time S */
+            target_time_s: number;
         } & {
             [key: string]: unknown;
         };
@@ -6336,6 +6367,17 @@ export interface components {
              * @default 0
              */
             total: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** RiegelGap */
+        RiegelGap: {
+            /** Current Time S */
+            current_time_s: number;
+            /** Faster Pct */
+            faster_pct: number;
+            /** Needed Time S */
+            needed_time_s: number;
         } & {
             [key: string]: unknown;
         };

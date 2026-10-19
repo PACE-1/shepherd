@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Added: the race predictor card takes a target time (#204).** Pick a race and a time (19:50, 1:46:39) to see how much faster your best recent run, or how much higher your critical speed, would have to be. The card also re-reads right after a critical-speed test is saved, without reloading Settings. Checking predictions against real race results is still open.
 ## v4.0.0-beta.2 — Docker image build fixed (2026-10-19)
 
 Pre-release. `v4.0.0-beta.1` has an AppImage but no Docker image: its build failed because `node:26` no longer ships corepack. Use beta.2.

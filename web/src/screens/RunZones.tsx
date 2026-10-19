@@ -183,12 +183,13 @@ function Runs({ data }: { data: RunActivities }) {
 }
 
 /** Run zones from the current thresholds, a critical-speed test, grade-adjusted pace and per-run load (#118, #119). */
-export function RunZones() {
+export function RunZones({ onCriticalSpeedSaved }: { onCriticalSpeedSaved?: () => void }) {
   const [zones, retryZones, refreshZones] = useLoad<Zones>(getRunZones)
   const [runs, retryRuns, refreshRuns] = useLoad<RunActivities>(getRunActivities)
   const saved = () => {
     refreshZones()
     refreshRuns()
+    onCriticalSpeedSaved?.()
   }
   return (
     <div className="grid gap-4 md:grid-cols-2">

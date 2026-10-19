@@ -110,7 +110,7 @@ Everything below shipped on `main` with #147 (merged 2026-10-18) and goes out in
 | #114/#116 analytics | slice | W/kg for 5- and 20-minute power over time; cadence/speed/elevation/zone comparison; runs. |
 | #117 weather | slice | Every non-rest session counts as outdoor (plans have no indoor flag); the whole riding day is rated (sessions have no time of day); thresholds are heuristic defaults; extra-rider wizard has no location step. |
 | #118/#119 run | slice | Run pace/gradient streams are not stored, so rTSS uses average pace (low on hilly or interval runs); grade adjustment only in the converter; nothing checked against real recorded runs; cadence only, no ground-contact time. |
-| #121 race predictor | slice | "What fitness change reaches a target time"; checking predictions against real race results; the card does not refresh after a critical-speed save until Settings reloads. |
+| #121 race predictor | slice | Checking predictions against real race results (needs recorded races). The target-time field and the refresh after a critical-speed save shipped in #204. |
 | #122/#126 swim | slice | No swim pace zones (no citable exact percentages); sTSS uses average speed (low to moderate confidence); no stroke count or SWOLF in intervals.icu data; open-water notes are not surfaced in race-week planning (needs the planner). |
 | #128 readiness | slice | Sleep trends and illness warning signs; runs/swims without an intervals.icu load count as zero. |
 | #129 export | slice | Restore is a stop-the-app command (`python -m backup restore`), not in the UI. |
