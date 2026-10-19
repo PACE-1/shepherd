@@ -391,6 +391,9 @@ jobs:
           files: ${{ env.APPIMAGE }}
           fail_on_unmatched_files: true
           tag_name: ${{ inputs.tag || github.ref_name }}
+          # vX.Y.Z-beta.N is a pre-release: never "latest", so the in-app
+          # update check (releases/latest) does not offer it to stable users.
+          prerelease: ${{ contains(inputs.tag || github.ref_name, '-') }}
 
   # ───────────────────────────────────────────────────────────────────
   # Linux clean-room check — also non-blocking, also uncoupled from mac/win.
