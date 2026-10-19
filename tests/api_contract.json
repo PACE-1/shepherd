@@ -438,6 +438,52 @@
         "title": "BackfillStatus",
         "type": "object"
       },
+      "BackupStaged": {
+        "additionalProperties": true,
+        "description": "A restore waiting for the next start (#129); only ``pending`` is set when there is none.",
+        "properties": {
+          "app_version": {
+            "default": "",
+            "title": "App Version",
+            "type": "string"
+          },
+          "created_at": {
+            "default": "",
+            "title": "Created At",
+            "type": "string"
+          },
+          "data_format": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Format"
+          },
+          "files": {
+            "default": 0,
+            "title": "Files",
+            "type": "integer"
+          },
+          "pending": {
+            "title": "Pending",
+            "type": "boolean"
+          },
+          "secrets_excluded": {
+            "default": false,
+            "title": "Secrets Excluded",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "pending"
+        ],
+        "title": "BackupStaged",
+        "type": "object"
+      },
       "Balance": {
         "additionalProperties": true,
         "properties": {
@@ -13109,6 +13155,53 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/IcuRaces"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/import/backup": {
+      "delete": {
+        "operationId": "api_backup_cancel_api_import_backup_delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackupStaged"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "operationId": "api_backup_pending_api_import_backup_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackupStaged"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "operationId": "api_backup_stage_api_import_backup_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackupStaged"
                 }
               }
             },

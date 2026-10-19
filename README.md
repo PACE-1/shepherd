@@ -68,7 +68,7 @@ Settings in the app cover almost everything. These environment variables matter 
 ## Update and back up
 
 - Replace the AppImage, or pull a newer image and recreate the container on the same volume. Your data is untouched: see [docs/upgrading.md](docs/upgrading.md).
-- Back up from Settings ("Your data"), or with `python -m backup create backup.tar.gz`; restore with `python -m backup restore`. The download leaves out your intervals.icu and AI keys. Details: [docs/DATA.md](docs/DATA.md).
+- Back up from Settings ("Your data"), or with `python -m backup create backup.tar.gz`; restore from the same screen (applied at the next start) or with `python -m backup restore`. The download leaves out your intervals.icu and AI keys. Details: [docs/DATA.md](docs/DATA.md).
 
 ## Privacy
 

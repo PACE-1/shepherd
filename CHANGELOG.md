@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Added: restore a backup from Settings > Your data (#129).** Choose a backup file; Shepherd checks every checksum and the data format and stages it, then replaces your data at the next start (restart the app or container). "Cancel restore" drops a staged backup. A backup made without keys keeps the intervals.icu and AI keys already on disk. `python -m backup restore` still works.
 ## v4.0.0-beta.2 — Docker image build fixed (2026-10-19)
 
 Pre-release. `v4.0.0-beta.1` has an AppImage but no Docker image: its build failed because `node:26` no longer ships corepack. Use beta.2.
