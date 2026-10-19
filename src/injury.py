@@ -247,6 +247,14 @@ def return_ramp(periods: list | None, today: date) -> dict | None:
             "weeks_done": ((today - end).days - 1) // 7}
 
 
+def ramp_rebuild_due(plan: dict, today: date) -> bool:
+    """True when an episode's return ramp is due in ``plan`` but the plan was built before it: the episode
+    ended after the last rebuild (``injury_ramp_built`` names the episode the plan was last built for).
+    The daily adapt then rebuilds the plan once, instead of waiting for the rider to press Update plan."""
+    ramp = return_ramp(plan.get("unavailable_periods"), today)
+    return bool(ramp) and plan.get("injury_ramp_built") != ramp["episode_id"]
+
+
 # ── ramp-rate warning ───────────────────────────────────────────────────────────────────────────────
 def _rate(week: float, prev: list[float]) -> dict:
     base = sum(prev) / len(prev)

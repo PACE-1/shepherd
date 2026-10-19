@@ -304,3 +304,39 @@ def test_the_preference_defaults_off_and_never_goes_stale():
     before = tp.match_zwo(slot(), lib, week_num=3, day_idx=2).zwo_file
     tp.match_zwo(slot(), lib, week_num=3, day_idx=2, micro_only=True)
     assert tp.match_zwo(slot(), lib, week_num=3, day_idx=2).zwo_file == before
+
+
+# ── #113: an episode that ended since the plan was built brings its return ramp, once ───────────────
+
+def _episode_plan(days, kind="injury", ended_days_ago=3):
+    w1, w2, w3, w4 = _past_starts()
+    plan = _base_plan([_mkweek(1, w1, 300), _mkweek(2, w2, 300), _mkweek(3, w3, 300),
+                       _mkweek(4, w4, 300), _mkweek(5, T + timedelta(days=7), 300),
+                       _mkweek(6, T + timedelta(days=14), 300)])
+    end = T - timedelta(days=ended_days_ago)
+    plan["unavailable_periods"] = [{
+        "start": (end - timedelta(days=days - 1)).isoformat(), "end": end.isoformat(), "type": kind,
+        "daily_tss": 0, "reason": "", "episode_id": "ep1", "open": False}]
+    return plan, _full_adherence_activities([w1, w2, w3])
+
+
+def test_a_finished_episode_rebuilds_the_plan_once_with_its_return_ramp():
+    plan, acts = _episode_plan(20)
+    pd, action, info, _s = _apply(plan, ctl=50, tsb=-5, activities=acts)
+    assert action == "rebuilt" and info["regen_info"].get("recovery_ramp_weeks", 0) > 0
+    assert pd["injury_ramp_built"] == "ep1"
+    _pd2, action2, _i2, _s2 = _apply(pd, ctl=50, tsb=-5, activities=acts)
+    assert action2 == "rebalanced", "rebuilt twice for one episode"
+
+
+def test_no_rebuild_for_a_short_illness_or_without_an_episode():
+    plan, acts = _episode_plan(5, kind="illness")
+    assert _apply(plan, ctl=50, tsb=-5, activities=acts)[1] == "rebalanced"
+    plan, acts = _episode_plan(20)
+    plan.pop("unavailable_periods")
+    assert _apply(plan, ctl=50, tsb=-5, activities=acts)[1] == "rebalanced"
+
+
+def test_an_episode_still_going_does_not_rebuild():
+    plan, acts = _episode_plan(20, ended_days_ago=-2)
+    assert _apply(plan, ctl=50, tsb=-5, activities=acts)[1] == "rebalanced"

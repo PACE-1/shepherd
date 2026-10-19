@@ -46,9 +46,23 @@ function mockApi(over: Record<string, () => Response> = {}) {
   return calls
 }
 
-afterEach(() => { cleanup(); vi.unstubAllGlobals() })
+afterEach(() => { cleanup(); vi.unstubAllGlobals(); localStorage.clear() })
 
 describe("Home", () => {
+  it("offers Show all details on a phone and remembers the choice", async () => {
+    mockApi()
+    const { unmount } = render(<Home />)
+    const button = screen.getByRole("button", { name: "Show all details" })
+    expect(button.getAttribute("aria-expanded")).toBe("false")
+    await userEvent.click(button)
+    expect(screen.getByRole("button", { name: "Show less" }).getAttribute("aria-expanded")).toBe("true")
+    expect(localStorage.getItem("home-details")).toBe("1")
+    unmount()
+    mockApi()
+    render(<Home />)
+    expect(screen.getByRole("button", { name: "Show less" })).toBeTruthy()
+  })
+
   it("shows the latest DFA α1", async () => {
     mockApi()
     render(<Home />)

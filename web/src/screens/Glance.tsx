@@ -4,6 +4,7 @@ import {
   dayStatus,
   isDone,
   nextStep,
+  planProgress,
   sessionWords,
   todayPlan,
   weekProgress,
@@ -53,6 +54,7 @@ export function Glance({ plan, stats }: { plan: Load<PlanRead>; stats: Load<Ride
     today: tp.kind === "sessions" ? "session" : tp.kind === "rest" ? "rest" : tp.kind === "none" ? "no-plan" : "unknown",
   })
   const progress = weekProgress(pw, ok(week)?.planned_days_done)
+  const where = planProgress(p?.plan_json, pw, today)
   const step = nextStep({
     connected: conn.state === "ok" ? conn.data.connected : null,
     riderSet: settings.state === "ok" ? settings.data.lthr_is_set : null,
@@ -109,6 +111,26 @@ export function Glance({ plan, stats }: { plan: Load<PlanRead>; stats: Load<Ride
             )}
           </section>
         </div>
+
+        {where && (
+          <section aria-label="Your plan">
+            <h3 className="text-xs font-semibold text-muted-foreground">Your plan</h3>
+            <p className="text-sm">
+              Week <b>{where.week}</b> of {where.weeks}
+              {where.daysToEvent !== null && (
+                <>
+                  {" "}· {where.daysToEvent === 0 ? "event day is today" : `${where.daysToEvent} ${where.daysToEvent === 1 ? "day" : "days"} to ${where.eventName || "your event"}`}
+                </>
+              )}
+            </p>
+            <progress className="h-2 w-full" max={where.weeks} value={where.week} aria-label="Weeks of your plan so far" />
+            {where.words && (
+              <p className="text-xs text-muted-foreground">
+                This is a {where.phase.replace(/\d+$/, "").toLowerCase()} phase: {where.words}.
+              </p>
+            )}
+          </section>
+        )}
 
         {step && (
           <p className="rounded-lg bg-muted p-3 text-sm">

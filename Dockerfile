@@ -8,7 +8,8 @@
 
 FROM node:26-slim AS web
 WORKDIR /web
-RUN corepack enable && corepack prepare pnpm@12.11.2 --activate
+# node 25+ no longer ships corepack
+RUN npm install -g pnpm@12.11.2
 COPY web/package.json web/pnpm-lock.yaml web/pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 COPY web/ ./

@@ -41,7 +41,7 @@ for _env_path in _env_candidates:
 
 import asyncio
 import logging
-from fit_activity import fit_field as _fit_val  # v3.11.3 fit-tool compat reader
+from fit_activity import fit_field as _fit_val, load_fit  # v3.11.3 fit-tool compat reader
 
 import tls_trust  # v3.11.4 — OS-native verifier on Windows, OpenSSL+certifi elsewhere
 
@@ -70,6 +70,7 @@ from sleep import get_sleep_metrics
 from readiness import compute_readiness
 import config
 import db
+import injury
 import zones as _zones_mod
 import training_planner as tp  # module-level: every plan endpoint uses tp.plan_write_lock()
 from workout_facts import planned_power_np_fraction as _np_fraction_from_samples
@@ -11729,6 +11730,11 @@ def _regenerate_plan_dict(
     # P4.2 (v3.0.0) — refresh the drift snapshot: a regen re-anchors the plan
     # on live fitness, so the chip's baseline moves with it.
     plan_dict["ctl_snapshot"] = tp.plan_ctl_snapshot(current_ctl, _recent_wtss)
+    # #113: remember which episode's return ramp this build carries, so the daily adapt
+    # (injury.ramp_rebuild_due) does not rebuild for it again.
+    _ret = injury.return_ramp(plan_dict.get("unavailable_periods"), clock.today())
+    if _ret:
+        plan_dict["injury_ramp_built"] = _ret["episode_id"]
     return plan_dict, regen_info
 
 
@@ -11995,6 +12001,10 @@ def _apply_plan_update(
     # consecutive-missed branch must additionally be a RECENT episode (gate
     # against an old recovered gap nagging forever).
     needs_regen_now = (ctl_gap > 15) or (consecutive >= 2 and episode is not None)
+    # #113: an injury/illness episode whose end date has passed since the plan was built brings its
+    # return ramp now, once (the plan records the episode it was built for).
+    injury_due = injury.ramp_rebuild_due(plan, today)
+    needs_regen_now = needs_regen_now or injury_due
 
     # EVENT-TAPER guard: never silently recompute an event taper from a
     # background adaptation. Inside the taper window we reforecast + flag.
@@ -12027,7 +12037,7 @@ def _apply_plan_update(
         episode_key = f"{episode[0]}:{_ramp_band(episode_weeks * 7)}"
     else:
         episode_key = f"ctl:{round(ctl_gap / 5.0) * 5}"
-    latched = (plan.get("gap_regen_latch", {}) or {}).get("key") == episode_key
+    latched = (plan.get("gap_regen_latch", {}) or {}).get("key") == episode_key and not injury_due
 
     do_regen = (
         needs_regen_now and allow_regen and not taper_blocks
@@ -16730,7 +16740,7 @@ def _parse_fit_stats(fit_path: Path) -> dict:
 
     Reads duration, distance, avg/max power, avg/max HR, avg cadence,
     TSS (if the producing app stored it), sport, and record count.
-    Uses ``fit_tool.FitFile.from_file`` so the same dependency that
+    Uses ``fit_activity.load_fit`` (one cached parse per file) so the same dependency that
     writes FIT exports also reads them.
     """
     try:
@@ -16740,7 +16750,7 @@ def _parse_fit_stats(fit_path: Path) -> dict:
         return {"error": "fit_tool_unavailable"}
 
     try:
-        ff = FitFile.from_file(str(fit_path))
+        ff = load_fit(fit_path)
     except Exception as e:
         log_ride_import.warning(f"FIT parse failed ({fit_path.name}): {e}")
         return {"error": "parse_failed", "detail": str(e)[:160]}
@@ -18888,7 +18898,7 @@ def _build_fit_samples(fit_path: Path) -> dict:
         return {"t_s": [], "power_w": [], "hr_bpm": [], "cadence_rpm": [], "elevation_m": []}
 
     try:
-        ff = FitFile.from_file(str(fit_path))
+        ff = load_fit(fit_path)
     except Exception:
         return {"t_s": [], "power_w": [], "hr_bpm": [], "cadence_rpm": [], "elevation_m": []}
 
@@ -19163,7 +19173,7 @@ def _fit_power_series_1hz(fit_path: Path) -> list[int]:
     """1 Hz power series from a FIT (same record walk + resampling the
     detector uses) — for the FTP-test analysis view only."""
     from fit_tool.fit_file import FitFile
-    ff = FitFile.from_file(str(fit_path))
+    ff = load_fit(fit_path)
     ts, pw = [], []
     for rec in ff.records:
         msg = rec.message

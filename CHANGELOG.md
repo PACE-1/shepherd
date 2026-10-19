@@ -3,8 +3,20 @@
 ## Unreleased
 
 - **Added: restore a backup from Settings > Your data (#129).** Choose a backup file; Shepherd checks every checksum and the data format and stages it, then replaces your data at the next start (restart the app or container). "Cancel restore" drops a staged backup. A backup made without keys keeps the intervals.icu and AI keys already on disk. `python -m backup restore` still works.
+## v4.0.0-beta.2 — Docker image build fixed (2026-10-19)
+
+Pre-release. `v4.0.0-beta.1` has an AppImage but no Docker image: its build failed because `node:26` no longer ships corepack. Use beta.2.
+
+- **Fixed: the Docker image builds again.** The web stage installs pnpm with `npm install -g` instead of corepack.
+
+## v4.0.0-beta.1 — First beta of the fork (2026-10-19)
+
+Pre-release. Back up your data folder before installing; downgrades are not promised. Docker image runs as UID 10001: see the volume ownership note below.
+
+- **Fixed: opening a ride no longer parses its FIT file four times (#163).** Stats, device info, RR intervals, sport and the sample streams now share one cached parse per file (keyed by path, mtime and size), so ride detail and Compare load faster.
 - **Added: failed ntfy notifications are retried (#131).** A post that fails is tried again after 5 seconds, 30 seconds and 5 minutes before Shepherd gives up (one log line, never the address). The in-app notice is unaffected. Retries still waiting when Shepherd stops are dropped.
 - **Breaking: `POST /api/workouts/bulk-segments` is removed (#23).** Nothing in the web UI called it (the Library list no longer draws the mini power profile it fed). A script that posted a list of workout files to it should call `GET /api/workout/{category}/{filename}` per file instead.
+- **Fixed: the plan now rebuilds itself with the return ramp once an injury or illness ends (#113).** Before, a plan built while the episode was still going stayed without the ramp until you pressed Update plan. The daily adapt rebuilds it once per episode; a short illness (under 15 days) still gets no forced ramp.
 - **Added: race predictor says what it would take to hit a target time (#121).** `GET /api/run/predict?target_race=5k&target_time_s=1200` also returns how much faster your best recent run (Riegel) or how much higher your critical speed (5K and 10K only, hyperbolic model with D′ held fixed) would have to be. Same published models and limits as the predictions; no interface yet.
 - **Added: best 5 and 20 minute power, and the same as W/kg, per month in the power-model history (#114).** `GET /api/analytics/power-model` history points gain `w_5min`, `w_20min`, `w_per_kg_5min` and `w_per_kg_20min` (W/kg over the 7-day trend weight at each month end; null when no weight is known). Same ride filters as the power curve; no new model.
 - **Fixed: two Shepherd processes can no longer share one data folder (#154).** The app takes an exclusive lock on `.lock` in the data folder at startup and exits with a clear message if another process (a second container on the same volume, `--workers 2`, an overlapping restart) already holds it.

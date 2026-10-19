@@ -1,4 +1,4 @@
-<img src="https://img.shields.io/badge/Version-v1.0.1-brightgreen" alt="Version">
+<img src="https://img.shields.io/badge/Version-v4.0.0--beta.2-orange" alt="Version">
 
 # Shepherd
 
@@ -6,7 +6,7 @@ A self-hosted training planner for endurance riders (and, increasingly, runners 
 
 Shepherd is derived from [Domestique](https://github.com/platypus45/domestique) (Apache License 2.0). See [LICENSE](LICENSE) and [NOTICE](NOTICE).
 
-Latest: **[v1.0.1 — One interface](https://github.com/PACE-1/shepherd/releases/latest)** (2026-10-17).
+Latest: **[v4.0.0-beta.2 — Docker image build fixed](https://github.com/PACE-1/shepherd/releases/tag/v4.0.0-beta.2)** (2026-10-19, pre-release; stable is v1.0.1).
 
 - What changed: [CHANGELOG.md](CHANGELOG.md)
 - What is built, what is partial, and what is not: [docs/ROADMAP.md](docs/ROADMAP.md) ("Status and known gaps")
