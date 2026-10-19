@@ -10,6 +10,9 @@ name: Tests
 on:
   pull_request:
     branches: [main]
+  # A merge can break main in ways its pull request did not show (v4.0.0-beta.1's Docker build).
+  push:
+    branches: [main]
   workflow_dispatch:
 
 # A new push to a pull request cancels the run it supersedes.
