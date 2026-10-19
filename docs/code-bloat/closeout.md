@@ -1,5 +1,7 @@
 # Cleanup closeout review
 
+> **Historical record, measured at `0e3a10c2`. Not current status.** Since then the legacy `src/templates` were removed and the web UI replaced them, so the template line counts and the "UI consolidation" row below no longer describe `main`. Re-measure with `tools/arch/report.py` before quoting a number.
+
 Reviewed merged `clean-main` at `0e3a10c2` (PRs #32–#52). The initial dead-code
 batches are complete. The broader reduction/consolidation effort remains open;
 merged PR count is not a completion metric.
