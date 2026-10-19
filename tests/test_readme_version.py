@@ -21,7 +21,7 @@ def _version() -> str:
 def test_readme_version_badge_matches_version_file():
     ver = _version()
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    assert f"Version-v{ver}-" in readme, (
+    assert f"Version-v{ver.replace('-', '--')}-" in readme, (
         f"README version badge is stale — expected the shields.io badge to read "
         f"v{ver} (matching the VERSION file). Bump it on every release."
     )
