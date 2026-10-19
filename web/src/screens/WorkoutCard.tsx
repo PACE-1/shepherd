@@ -5,6 +5,9 @@ import { buttonVariants } from "@/components/ui/button"
 import { downloadUrl, getWorkout, minutes, type Outdoor } from "@/lib/library"
 import { fitWorkoutUrl } from "@/lib/plan"
 
+// Builder-made workouts are saved as builder_<slug>.zwo; only those have an editable model.
+const isBuilt = (file: string) => /^builder_.+\.zwo$/.test(file)
+
 /** The workout as bars: width is time, height is % of FTP. */
 export function PowerProfile({ detail }: { detail: WorkoutDetail }) {
   const total = detail.total_seconds || 1
@@ -63,6 +66,16 @@ export function WorkoutCard({ w, outdoor }: { w: WorkoutRow; outdoor?: Outdoor }
             <a href={fitWorkoutUrl(w.File, w.display_name || w.Name, w.content_class || "endurance", w["Duration(min)"])} download className={buttonVariants({ size: "sm", variant: "outline" })}>
               Download .fit
             </a>
+            {isBuilt(w.File) && (
+              <>
+                <a href={`#/builder/${encodeURIComponent(w.File)}`} className={buttonVariants({ size: "sm", variant: "outline" })}>
+                  Edit
+                </a>
+                <a href={`#/builder/copy/${encodeURIComponent(w.File)}`} className={buttonVariants({ size: "sm", variant: "outline" })}>
+                  Duplicate
+                </a>
+              </>
+            )}
           </div>
         </div>
       )}
