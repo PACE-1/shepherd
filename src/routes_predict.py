@@ -53,7 +53,7 @@ def run_predict(target_race: str | None = None, target_time_s: float | None = No
     With ``target_race`` and ``target_time_s``, also says how much faster or higher each model needs you to be.
     """
     cs = _saved_cs()
-    out = {"window_days": WINDOW_DAYS, "critical_speed": cs, **rp.predict(_recent_runs(), cs)}
+    out = {"window_days": WINDOW_DAYS, "critical_speed": cs, **rp.predict(_recent_runs(), cs), "target": None}
     if target_race is not None or target_time_s is not None:
         try:
             out["target"] = rp.target_gap(target_race or "", target_time_s or 0, out["best_run"], cs)
