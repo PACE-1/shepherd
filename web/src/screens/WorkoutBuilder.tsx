@@ -134,11 +134,12 @@ function StepEditor({ i, n, s, problems, onChange, onMove, onDelete }: {
 }
 
 /** Build a structured cycling workout, see its intensity profile, save it to the Library, and send it to the intervals.icu calendar. */
-export function WorkoutBuilder({ file: editing }: { file?: string }) {
+export function WorkoutBuilder({ file: editing, copy = false }: { file?: string; copy?: boolean }) {
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const [steps, setSteps] = useState<UiStep[]>(startingSteps)
-  const [file, setFile] = useState(editing)
+  // A copy starts from the loaded model but saves as a new file.
+  const [file, setFile] = useState(copy ? undefined : editing)
   const [date, setDate] = useState(tomorrow)
   const [prev, setPrev] = useState<BuilderPreview | null>(null)
   const [prevError, setPrevError] = useState("")
@@ -153,14 +154,14 @@ export function WorkoutBuilder({ file: editing }: { file?: string }) {
       (r) => {
         if (!live) return
         const w = r.workout as { name?: string; description?: string; steps?: Step[] }
-        setName(w.name ?? "")
+        setName(copy ? `${w.name ?? ""} (copy)` : (w.name ?? ""))
         setDescription(w.description ?? "")
         setSteps((w.steps ?? []).map(withUid))
       },
       (e: unknown) => live && setLoadError(errMsg(e)),
     )
     return () => { live = false }
-  }, [editing])
+  }, [editing, copy])
 
   // The preview follows the edits after a short pause; a slower answer to an older edit is dropped.
   const seq = useRef(0)
@@ -219,7 +220,7 @@ export function WorkoutBuilder({ file: editing }: { file?: string }) {
         <CardContent className="space-y-3 p-4">
           <div className="flex items-center justify-between gap-2">
             <h2 className="text-sm font-semibold">{editing ? "Edit workout" : "New workout"}</h2>
-            <Button size="sm" variant="ghost" render={<a href="#/library" />}>Back to the library</Button>
+            <Button size="sm" variant="ghost" className="max-md:min-h-11" render={<a href="#/library" />}>Back to the library</Button>
           </div>
           {loadError && <p role="alert" className="text-sm">Couldn’t open that workout: {loadError}</p>}
           <div className="flex flex-wrap gap-2 text-sm">
