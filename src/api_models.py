@@ -1184,6 +1184,16 @@ class NotificationSettings(_Model):
 class NotificationTest(_Model):
     ok: bool
     error: str = ""
+
+
+class BackupStaged(_Model):
+    """A restore waiting for the next start (#129); only ``pending`` is set when there is none."""
+    pending: bool
+    files: int = 0
+    data_format: Optional[int] = None
+    app_version: str = ""
+    created_at: str = ""
+    secrets_excluded: bool = False
 # ── Workout builder (#110, cycling slice) ────────────────────────────────────
 class BuilderProblem(_Model):
     path: str = ""

@@ -48,11 +48,13 @@ from pathlib import Path
 DATA_FORMAT = 1
 MARKER = ".data_format"
 MANIFEST = "manifest.json"
+PENDING = ".restore-pending.tar.gz"   # a verified archive staged from the UI, applied at the next start
 _EXCLUDED_DIRS = {"logs", "cache", "__pycache__"}
 _EXCLUDED_NAMES = {"update_check_cache.json"}
 _SECRET_NAMES = {".env", "llm.json", "nutrition_sparkyfitness.json"}  # intervals.icu credentials, the AI provider and SparkyFitness keys
 _EXCLUDED_SUFFIXES = (".tmp", ".part", "-wal", "-shm", ".lock")
 _SQLITE_SUFFIXES = (".db", ".sqlite", ".sqlite3")
+_KEEP_IN_PLACE = {".lock", PENDING, PENDING + ".part"}   # the data-folder lock and staged upload are not data
 
 
 class BackupError(RuntimeError):
@@ -230,17 +232,49 @@ def _remove(path: Path) -> None:
             pass
 
 
-def restore_backup(archive: Path, home: Path, *, force: bool = False) -> dict:
+def _check_format(manifest: dict) -> None:
+    if int(manifest.get("data_format", 1)) > DATA_FORMAT:
+        raise BackupError(
+            f"this backup uses data format {manifest['data_format']}; this build understands up to "
+            f"{DATA_FORMAT}. Restoring it here could corrupt it.")
+
+
+def _carry_over_secrets(old: Path, home: Path) -> None:
+    """Copy the credential files of the replaced home back into the restored one (where its profile exists)."""
+    for p in old.rglob("*"):
+        if p.is_file() and p.name in _SECRET_NAMES:
+            dest = home / p.relative_to(old)
+            if dest.parent.is_dir() and not dest.exists():
+                shutil.copy2(p, dest)
+
+
+def stage_restore(home: Path, upload: Path) -> dict:
+    """Verify ``upload`` and stage it for the next start (a running app cannot be restored in place)."""
+    manifest = verify_backup(upload)
+    _check_format(manifest)
+    os.replace(upload, Path(home) / PENDING)
+    return manifest
+
+
+def apply_pending(home: Path) -> dict | None:
+    """Startup, before anything opens the data: apply a staged restore. The staged file is removed either way."""
+    pending = Path(home) / PENDING
+    if not pending.is_file():
+        return None
+    try:
+        return restore_backup(pending, home, force=True, keep_secrets=True)
+    finally:
+        pending.unlink(missing_ok=True)
+
+
+def restore_backup(archive: Path, home: Path, *, force: bool = False, keep_secrets: bool = False) -> dict:
     """Restore ``archive`` into ``home``. A Docker volume is a mount point and
     cannot be renamed, so an existing home is never renamed: its entries are
     moved aside, the new ones moved in, and the old ones restored if anything
     fails part-way."""
     home = Path(home)
     manifest = verify_backup(archive)                  # nothing is touched until this passes
-    if int(manifest.get("data_format", 1)) > DATA_FORMAT:
-        raise BackupError(
-            f"this backup uses data format {manifest['data_format']}; this build understands up to "
-            f"{DATA_FORMAT}. Restoring it here could corrupt it.")
+    _check_format(manifest)
     if home.exists() and not home.is_dir():
         raise BackupError(f"{home} exists and is not a directory")
     if not home.exists():
@@ -253,7 +287,7 @@ def restore_backup(archive: Path, home: Path, *, force: bool = False) -> dict:
             _remove(stage)
             raise
         return manifest
-    existing = list(home.iterdir())
+    existing = [p for p in home.iterdir() if p.name not in _KEEP_IN_PLACE]
     if existing and not force:
         raise BackupError(f"{home} is not empty; pass --force to replace its contents")
     stage = Path(tempfile.mkdtemp(prefix=".restore-new-", dir=str(home)))
@@ -270,6 +304,8 @@ def restore_backup(archive: Path, home: Path, *, force: bool = False) -> dict:
         for p in list(stage.iterdir()):
             os.replace(p, home / p.name)
             moved_new.append(p.name)
+        if keep_secrets and manifest.get("secrets_excluded") and existing:
+            _carry_over_secrets(old, home)   # a backup without keys must not wipe the ones in use
     except BaseException:
         for name in moved_new:
             _remove(home / name)

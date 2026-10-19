@@ -71,9 +71,13 @@ python -m backup restore backup.tar.gz [--home DIR] [--force]
 Settings > Your data downloads the activities, wellness and check-in tables as CSV
 and a full backup (`/api/export/backup`). The download omits each profile's `.env`
 and `llm.json` (intervals.icu and AI keys) because the server may be reachable by
-others; the manifest records `secrets_excluded`. Restoring stays a stop-the-app
-command (`python -m backup restore`), since replacing files under a running
-database is not safe.
+others; the manifest records `secrets_excluded`. Restoring works from the same screen: choose a backup file and Shepherd checks every
+checksum and the data format, then stages it (`/api/import/backup`). Nothing changes while
+the app runs, since replacing files under a running database is not safe; the staged
+archive replaces the data at the next start (`backup.apply_pending`, before anything opens
+the data), and "Cancel restore" drops it. A backup made without keys keeps the keys
+already on disk. If a staged archive fails at start, the app logs it and starts on the
+data it had.
 
 ### Docker
 

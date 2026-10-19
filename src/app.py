@@ -579,6 +579,11 @@ async def lifespan(app):
     # #19: never run against data written by a newer layout; stamp it on first use.
     import backup as _backup
     from user_home import shepherd_home as _home
+    try:
+        if _backup.apply_pending(_home()):   # a restore staged from the UI (#129), before anything opens the data
+            logging.getLogger("shepherd").info("EVENT=backup_restored")
+    except Exception:  # noqa: BLE001 - a bad staged archive must not stop the app starting on the data it has
+        logging.getLogger("shepherd").exception("EVENT=backup_restore_failed")
     _backup.check_data_format(_home())
     # ── Profile system: migrate + init ──────────────────────────────────
     # Order matters: ProfileManager.get() runs the v3 data-dir rename
@@ -2060,7 +2065,7 @@ def api_profile_ftp_history():
 
 @app.get("/api/export/backup")
 def api_export_backup():
-    """A backup archive of all profiles without credentials (intervals.icu key, AI key); restore is `python -m backup restore` (#129)."""
+    """A backup archive of all profiles without credentials (intervals.icu key, AI key); restore is the Your data screen or `python -m backup restore` (#129)."""
     import backup as _backup
     import shutil, tempfile
     from starlette.background import BackgroundTask
