@@ -1,7 +1,7 @@
 name: Breaking change check
 
 # A pull request that removes a route or response field from
-# tests/api_contract.json, or a SHEPHERD_* variable from src/ or the Dockerfile
+# tests/api_contract.json, a route decorator from src/, or a SHEPHERD_* variable from src/ or the Dockerfile
 # (a rename counts), fails unless it carries the `breaking` label. A MAJOR
 # change cannot slip into a MINOR (docs/DEVELOPMENT.md, "Versioning").
 on:
@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Compare against the merge base

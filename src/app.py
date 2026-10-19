@@ -6303,83 +6303,6 @@ def api_workout_detail(category: str, filename: str, view: str | None = Query(No
     return out
 
 
-@app.post("/api/workouts/bulk-segments")
-async def api_bulk_segments(request: Request):
-    """Fetch segments for multiple workouts in one request.
-    Body: {"files": ["cat/file.zwo", ...]}
-    Returns: {"results": {"cat/file.zwo": {segments: [...]}, ...}}
-    """
-    body = await _get_json_body(request)
-    if not isinstance(body, dict):
-        raise HTTPException(status_code=400, detail="expected object with 'files' key")
-    files = body.get("files", [])
-    if not isinstance(files, list):
-        raise HTTPException(status_code=400, detail="'files' must be an array")
-    results = {}
-    ftp = config.ATHLETE_FTP_W
-    # Cap at 200 per request to bound response size. Warn when truncation
-    # happens so a caller that silently relied on an unbounded list gets a
-    # log signal instead of a mystery "missing file" downstream.
-    if len(files) > 200:
-        log.warning(
-            "bulk-segments: truncating %d extra files (received %d, cap 200)",
-            len(files) - 200, len(files),
-        )
-    for f in files[:200]:
-        # Accept both flat ("file.zwo") and legacy ("category/file.zwo") forms
-        if "/" in f:
-            parts = f.split("/", 1)
-            cat, fname = parts
-        else:
-            cat, fname = "", f
-        # Flat lookup first; fall back to legacy category subdir
-        path = _workout_file(fname) if fname else None
-        if (not path or not path.exists()) and cat:
-            path = _workout_file(cat, fname)
-        if not path or not path.exists():
-            continue
-        try:
-            tree = ET.parse(path)
-            root = tree.getroot()
-            workout_el = root.find("workout")
-            if workout_el is None:
-                continue
-            segs = []
-            cursor = 0
-            for el in workout_el:
-                tag = el.tag
-                # Float-first int conversion — same ZWO "Duration can be
-                # a float string" defensive read as the single-workout path.
-                dur = int(float(el.get("Duration", 0) or 0))
-                if tag in ("Warmup", "Cooldown", "Ramp"):
-                    plo = float(el.get("PowerLow", 0.5))
-                    phi = float(el.get("PowerHigh", 0.7))
-                    segs.append({"type": tag, "start": cursor, "duration": dur,
-                                 "power_low": round(plo * ftp), "power_high": round(phi * ftp)})
-                    cursor += dur
-                elif tag == "SteadyState":
-                    pw = float(el.get("Power", 0.65))
-                    segs.append({"type": tag, "start": cursor, "duration": dur, "power": round(pw * ftp)})
-                    cursor += dur
-                elif tag == "IntervalsT":
-                    reps = int(el.get("Repeat", 1))
-                    on_d = int(el.get("OnDuration", 0))
-                    off_d = int(el.get("OffDuration", 0))
-                    on_p = float(el.get("OnPower", 0.95))
-                    off_p = float(el.get("OffPower", 0.50))
-                    segs.append({"type": tag, "start": cursor, "duration": reps * (on_d + off_d),
-                                 "repeats": reps, "on_duration": on_d, "off_duration": off_d,
-                                 "on_power": round(on_p * ftp), "off_power": round(off_p * ftp)})
-                    cursor += reps * (on_d + off_d)
-                elif tag == "FreeRide":
-                    segs.append({"type": tag, "start": cursor, "duration": dur})
-                    cursor += dur
-            results[f] = {"segments": segs}
-        except Exception:
-            continue
-    return {"results": results, "ftp": ftp}
-
-
 @app.get("/api/picker", responses={200: {"model": api_models.PickerResult}})
 def api_picker(subjective: float = Query(7), duration: int = Query(75)):
     """Workout-of-the-day picker.
@@ -13719,7 +13642,8 @@ def _auto_apply_missed_moves(plan: dict, today: date) -> list[dict]:
     return applied
 
 
-@app.post("/api/plan/move-session", responses={200: {"model": api_models.SessionMoved}})
+@app.post("/api/plan/move-session", responses={200: {"model": api_models.SessionMoved}},
+          openapi_extra=api_models.request_body(api_models.MoveSessionBody))
 async def api_plan_move_session(request: Request):
     """Move a session from one date to another (fix26 §6.2).
 
@@ -16301,7 +16225,8 @@ def _swap_session_type_apply(plan: dict, day_iso: str, new_type: str, new_dur: i
             "sessions_modified": sessions_modified}
 
 
-@app.post("/api/plan/swap-type", responses={200: {"model": api_models.SessionSwapped}})
+@app.post("/api/plan/swap-type", responses={200: {"model": api_models.SessionSwapped}},
+          openapi_extra=api_models.request_body(api_models.SwapTypeBody))
 async def api_plan_swap_type(request: Request):
     """v2.3.0 — swap a single day to a DIFFERENT training type + duration, then
     reforecast the rest. The swapped day is pinned; Rematch still works after.
@@ -16388,7 +16313,8 @@ _FTP_TEST_PREFERRED_FILE = {
 }
 
 
-@app.post("/api/plan/ftp-test-type", responses={200: {"model": api_models.FtpTestTypeSet}})
+@app.post("/api/plan/ftp-test-type", responses={200: {"model": api_models.FtpTestTypeSet}},
+          openapi_extra=api_models.request_body(api_models.FtpTestTypeBody))
 async def api_plan_ftp_test_type(request: Request):
     """v3.2.0 — per-session FTP-test choice. The rider picks ramp or 20-min in
     the workout modal (no global setting); this swaps THAT ftp_test session's
@@ -16464,7 +16390,8 @@ async def api_plan_ftp_test_type(request: Request):
         return JSONResponse({"detail": "ftp-test-type failed"}, 500)
 
 
-@app.post("/api/plan/dismiss-session", responses={200: {"model": api_models.SessionDismissed}})
+@app.post("/api/plan/dismiss-session", responses={200: {"model": api_models.SessionDismissed}},
+          openapi_extra=api_models.request_body(api_models.DismissSessionBody))
 async def api_plan_dismiss_session(request: Request):
     """Dismiss a session (§6.8 — stays visible greyed; §6.11 never auto).
 

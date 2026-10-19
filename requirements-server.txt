@@ -1,17 +1,17 @@
 # Python 3.12 server/runtime profile. Constrain with requirements-linux-py312.lock.
-fastapi>=0.119.0,<0.140
-uvicorn>=0.30.0,<0.40
-jinja2>=3.1.0,<4
-httpx>=0.27.0,<1
-truststore>=0.10,<1
+fastapi>=0.143.2,<0.144
+uvicorn>=0.54.0,<0.55
+jinja2>=3.1.6,<4
+httpx>=0.28.1,<1
+truststore>=0.10.5,<1
 # FIT duration scaling differs in 0.9.15/0.9.16; coordinate with app.py duration_time.
 fit-tool==0.9.16
-pydantic>=2.0,<3
-starlette>=0.49.1,<2.0
-python-multipart>=0.0.9,<1
-lxml>=5.0,<7
-packaging>=23,<27
+pydantic>=2.14.1,<3
+starlette>=1.8.0,<2.0
+python-multipart>=0.0.32,<1
+lxml>=6.1.3,<7
+packaging>=26.3,<27
 # Numerical fitting and week optimization.
-scipy>=1.13,<2
+scipy>=1.18.1,<2
 # PNG report endpoints also run without a desktop GUI.
-Pillow>=10.0.0,<13
+Pillow>=12.3.0,<13

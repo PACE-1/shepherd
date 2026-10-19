@@ -123,6 +123,20 @@ describe("WorkoutBuilder", () => {
     expect(screen.getByRole("group", { name: "Step 1: Work" })).toBeTruthy()
     expect(calls[0].url).toBe("/api/builder/workout?file=builder_x.zwo")
   })
+
+  it("opens a copy that saves as a new file", async () => {
+    const calls = mock((url) =>
+      url.startsWith("/api/builder/workout")
+        ? json({ ok: true, file: "builder_x.zwo", workout: { name: "Saved one", description: "d", steps: [{ kind: "work", duration_s: 600, cadence_note: "", target: { kind: "power", lo: 88, hi: 94 } }] } })
+        : url === "/api/builder/save" ? json({ ok: true, file: "builder_saved-one-copy.zwo", created: true })
+        : json(OK))
+    render(<WorkoutBuilder file="builder_x.zwo" copy />)
+    await waitFor(() => expect((screen.getByLabelText("Name") as HTMLInputElement).value).toBe("Saved one (copy)"))
+    await waitFor(() => expect((screen.getByRole("button", { name: "Save to library" }) as HTMLButtonElement).disabled).toBe(false))
+    await userEvent.click(screen.getByRole("button", { name: "Save to library" }))
+    await waitFor(() => expect(calls.some((c) => c.url === "/api/builder/save")).toBe(true))
+    expect(calls.find((c) => c.url === "/api/builder/save")!.body.file).toBeUndefined()
+  })
 })
 
 describe("Library entry point", () => {
@@ -130,5 +144,16 @@ describe("Library entry point", () => {
     mock(() => json([]))
     render(<Library />)
     expect(screen.getByRole("link", { name: "New workout" }).getAttribute("href")).toBe("#/builder")
+  })
+
+  it("offers Edit and Duplicate only on workouts the builder made", async () => {
+    const row = (File: string) => ({ Category: "own", File, Name: File, display_name: File, "Duration(min)": 30, TSS: 30, IF: 0.8, content_class: "endurance" })
+    mock((url) => url.startsWith("/api/workout/") ? json({ total_seconds: 60, segments: [], description: "d" })
+      : json(url.startsWith("/api/workouts?") ? [row("builder_x.zwo"), row("other.zwo")] : []))
+    render(<Library />)
+    for (const b of await screen.findAllByRole("button", { name: /\.zwo/ })) await userEvent.click(b)
+    expect(screen.getAllByRole("link", { name: "Edit" })).toHaveLength(1)
+    expect(screen.getByRole("link", { name: "Edit" }).getAttribute("href")).toBe("#/builder/builder_x.zwo")
+    expect(screen.getByRole("link", { name: "Duplicate" }).getAttribute("href")).toBe("#/builder/copy/builder_x.zwo")
   })
 })
