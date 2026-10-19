@@ -76,18 +76,19 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 These guidelines layer on top of the four principles above:
 
-- **Multi-wave agent pattern:** large features go through Wave 0 research → Wave 1/2 grill+impl → Wave 3 QA → Wave 4 fix-forward → Wave 5 ship+tag+DMG. Don't dispatch agents ad-hoc.
+- **Multi-wave agent pattern:** large features go through Wave 0 research → Wave 1/2 grill+impl → Wave 3 QA → Wave 4 fix-forward → Wave 5 ship+tag (Docker image and Linux AppImage; no DMG, macOS and Windows are retired). Don't dispatch agents ad-hoc.
 - **Agent lifecycle (no senseless waiting):** implementation briefs MUST order gate + commit in the SAME agent turn (foreground pytest, never "arm a monitor and wait" — that's the waiter-death mode). Never kill or take over an agent on quiet-file/idle-CPU heuristics; the completion notification is the only end-of-agent truth. Takeover only when processes exited + no commit ≥5min + finished work visible in the tree — then the coordinator commits the tree itself. One watchdog max per agent (post-gate commit window only), stopped when answered. Single-writer-per-file checked at dispatch. Full rules: multi-wave-agents skill "Agent lifecycle" + memory dispatch-in-turn-lesson.
 - **Sparse coordinator output:** when an agent reports back, give the user a one-line status — never echo the agent's full report. Full detail goes to `/tmp/*.md`.
 - **MASTER_DECISIONS docs override per-domain plans on conflict.** Write to `/tmp/MASTER_DECISIONS_*.md` and force agents to read it first.
 - **File ownership contracts:** when parallel agents touch overlapping areas, lock who owns which file BEFORE Wave 2. No two agents edit the same file in the same wave.
-- **Tests must pass at each wave boundary.** Pytest baseline at `clean-main` HEAD must not regress.
+- **Tests must pass at each wave boundary.** Pytest baseline at `main` HEAD must not regress.
 - **Adversarial role split (loops):** the implementer never grades its own work — a separate evaluator must try to *prove* the change is broken (run it, read the diff). Self-grading → sycophancy → slop.
 - **Contract before code (loops):** lock a checklist of *testable* assertions (the IP / `MASTER_DECISIONS`, grilled) BEFORE implementing; the contract is what gets graded, and ≤10 assertions usually means the grill rubber-stamped.
 - **Restart over patch (loops):** when a run goes sideways, revert + redo rather than patch-the-patch; escalate to the user only when the *contract* is wrong, not when a build is.
 - **Debug from traces; prune the harness (loops):** read the transcript / `*.jsonl` to find where judgment diverged before re-running; re-read CLAUDE.md + skills each model release and cut what the model now does for free. The bottleneck always moves (coding → planning → verification → taste). Full discipline: the `/loops` skill.
-- **Trainer subsystem is gone since v4.0.0-alpha.** Don't add `bleak`, `pycycling`, `_on_real_trainer_*`, FTMS, ERG, FE-C, or anything that talks to a hardware trainer. Shepherd is planner + library + post-ride viewer.
-- **Workout classification is content-based, not filename-based** (since v4.1.2). Read `workouts/.content_classification.json` for the canonical type. Filename rules are fallback only.
+- **Versioning:** the fork uses semantic versioning and its next release is 4.0.0 (`docs/ROADMAP.md`, `docs/DEVELOPMENT.md`). Every `vX.Y` / `vX.Y.Z` number in this file and in code comments (v4.4.0, v4.6.6, v4.1.2 and similar) is an upstream-lineage number, not a fork release. `docs/ROADMAP.md` wins over this file on rules and versioning.
+- **Trainer subsystem is gone since the upstream project's v4.0.0-alpha.** Don't add `bleak`, `pycycling`, `_on_real_trainer_*`, FTMS, ERG, FE-C, or anything that talks to a hardware trainer. Shepherd is planner + library + post-ride viewer.
+- **Workout classification is content-based, not filename-based** (since the upstream project's v4.1.2). Read `workouts/.content_classification.json` for the canonical type. Filename rules are fallback only.
 
 ---
 
