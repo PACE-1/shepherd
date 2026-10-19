@@ -6,7 +6,7 @@
 # Publish on loopback and put TLS in front of it for remote access.
 # Single worker is required: per-process caches and one sync owner.
 
-FROM node:24-slim AS web
+FROM node:26-slim AS web
 WORKDIR /web
 RUN corepack enable && corepack prepare pnpm@12.11.2 --activate
 COPY web/package.json web/pnpm-lock.yaml web/pnpm-workspace.yaml ./
@@ -14,7 +14,7 @@ RUN pnpm install --frozen-lockfile
 COPY web/ ./
 RUN pnpm build
 
-FROM python:3.12-slim
+FROM python:3.14-slim
 WORKDIR /app
 COPY requirements-server.txt requirements-linux-py312.lock ./
 RUN pip install --no-cache-dir -r requirements-server.txt -c requirements-linux-py312.lock
