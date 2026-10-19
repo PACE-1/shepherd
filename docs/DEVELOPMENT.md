@@ -101,7 +101,8 @@ Release plumbing:
 - Docker: `:X.Y.Z` always; `:X.Y` and `:latest` for the newest stable tag;
   `:beta` for the newest pre-release.
 - `breaking-change.yml` fails a pull request that removes a route or field from
-  `tests/api_contract.json`, or a `SHEPHERD_*` variable from `src/` or the
+  `tests/api_contract.json`, a route decorator from `src/` (so routes without a
+  response model are covered too), or a `SHEPHERD_*` variable from `src/` or the
   Dockerfile (a rename counts), unless it has the `breaking` label. Run
   `python3 tools/check_breaking.py origin/main` to see what it would report.
 
