@@ -1,7 +1,7 @@
-import { cleanup, render, screen, within } from "@testing-library/react"
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
-import { raceTime } from "@/lib/predict"
+import { parseRaceTime, raceTime } from "@/lib/predict"
 import { RacePredictor } from "@/screens/RacePredictor"
 
 const json = (b: unknown, status = 200) => new Response(JSON.stringify(b), { status })
@@ -53,5 +53,50 @@ describe("RacePredictor", () => {
     render(<RacePredictor />)
     expect(await screen.findByText(/No run of 3 km or more/)).toBeTruthy()
     expect(screen.queryByRole("table")).toBeNull()
+  })
+
+  it("asks for a target and shows how far each model is from it", async () => {
+    const fetchMock = vi.fn(async (url: string) => json({
+      ...BASE, predictions: [], missing: [],
+      best_run: { id: "r1", date: "2026-10-15", name: "Tempo", distance_m: 10000, time_s: 2900, pace_s_per_km: 290 },
+      critical_speed: { cs_m_per_s: 4, d_prime_m: 240, date: "2026-10-10" },
+      target: url.includes("target_race=5k&target_time_s=1190")
+        ? { race: "5k", target_time_s: 1190, riegel: { needed_time_s: 2800, current_time_s: 2900, faster_pct: 3.4 }, critical_speed: { needed_cs_m_per_s: 4.2, current_cs_m_per_s: 4, higher_pct: 5 } }
+        : null,
+    }))
+    vi.stubGlobal("fetch", fetchMock)
+    render(<RacePredictor />)
+    const input = await screen.findByLabelText("Target time", { selector: "input" })
+    fireEvent.change(input, { target: { value: "19:50" } })
+    fireEvent.click(screen.getByRole("button", { name: "Check" }))
+    const gap = await screen.findByLabelText("Target gap")
+    expect(within(gap).getByText(/best recent run would have to be 3.4% faster \(48:20 to 46:40\) to predict 19:50/)).toBeTruthy()
+    expect(within(gap).getByText(/Critical speed: it would have to be 5% higher/)).toBeTruthy()
+    expect(fetchMock).toHaveBeenCalledWith("/api/run/predict?target_race=5k&target_time_s=1190", expect.anything())
+  })
+
+  it("rejects a target that is not a time without calling the API again", async () => {
+    const fetchMock = vi.fn(async () => json({ ...BASE, predictions: [], missing: [] }))
+    vi.stubGlobal("fetch", fetchMock)
+    render(<RacePredictor />)
+    fireEvent.change(await screen.findByLabelText("Target time", { selector: "input" }), { target: { value: "fast" } })
+    fireEvent.click(screen.getByRole("button", { name: "Check" }))
+    expect(await screen.findByRole("alert")).toBeTruthy()
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+  })
+
+  it("reads again when a critical-speed save bumps refreshKey", async () => {
+    const fetchMock = vi.fn(async () => json({ ...BASE, predictions: [], missing: [] }))
+    vi.stubGlobal("fetch", fetchMock)
+    const { rerender } = render(<RacePredictor refreshKey={0} />)
+    await screen.findByLabelText("Target time", { selector: "input" })
+    rerender(<RacePredictor refreshKey={1} />)
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2))
+  })
+})
+
+describe("parseRaceTime", () => {
+  it("reads m:ss and h:mm:ss, nothing else", () => {
+    expect([parseRaceTime("19:50"), parseRaceTime("1:46:39"), parseRaceTime("0:00"), parseRaceTime("fast"), parseRaceTime("19:75")]).toEqual([1190, 6399, null, null, null])
   })
 })

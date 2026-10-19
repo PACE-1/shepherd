@@ -288,6 +288,8 @@ function JumpBar() {
 }
 
 export function Settings() {
+  // Bumped when a critical-speed test is saved, so the race predictor re-reads without a reload.
+  const [csSaves, setCsSaves] = useState(0)
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2" aria-label="Settings">
       <JumpBar />
@@ -324,8 +326,8 @@ export function Settings() {
       </div>
       <p className="text-sm lg:col-span-2">Bikes, shoes and components: <a className="underline" href="#/gear">Gear and service reminders</a>.</p>
       <p className="text-sm lg:col-span-2">Strength and mobility sessions for your plan: <a className="underline" href="#/strength">Browse and print</a>.</p>
-      <div className="lg:col-span-2"><RunZones /></div>
-      <div className="lg:col-span-2"><RacePredictor /></div>
+      <div className="lg:col-span-2"><RunZones onCriticalSpeedSaved={() => setCsSaves((n) => n + 1)} /></div>
+      <div className="lg:col-span-2"><RacePredictor refreshKey={csSaves} /></div>
       <div className="lg:col-span-2"><SwimZones /></div>
       <div className="lg:col-span-2"><SwimSessions /></div>
       <div id="settings-health" className="scroll-mt-16 lg:col-span-2">
