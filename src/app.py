@@ -70,6 +70,7 @@ from sleep import get_sleep_metrics
 from readiness import compute_readiness
 import config
 import db
+import injury
 import zones as _zones_mod
 import training_planner as tp  # module-level: every plan endpoint uses tp.plan_write_lock()
 from workout_facts import planned_power_np_fraction as _np_fraction_from_samples
@@ -11724,6 +11725,11 @@ def _regenerate_plan_dict(
     # P4.2 (v3.0.0) — refresh the drift snapshot: a regen re-anchors the plan
     # on live fitness, so the chip's baseline moves with it.
     plan_dict["ctl_snapshot"] = tp.plan_ctl_snapshot(current_ctl, _recent_wtss)
+    # #113: remember which episode's return ramp this build carries, so the daily adapt
+    # (injury.ramp_rebuild_due) does not rebuild for it again.
+    _ret = injury.return_ramp(plan_dict.get("unavailable_periods"), clock.today())
+    if _ret:
+        plan_dict["injury_ramp_built"] = _ret["episode_id"]
     return plan_dict, regen_info
 
 
@@ -11990,6 +11996,10 @@ def _apply_plan_update(
     # consecutive-missed branch must additionally be a RECENT episode (gate
     # against an old recovered gap nagging forever).
     needs_regen_now = (ctl_gap > 15) or (consecutive >= 2 and episode is not None)
+    # #113: an injury/illness episode whose end date has passed since the plan was built brings its
+    # return ramp now, once (the plan records the episode it was built for).
+    injury_due = injury.ramp_rebuild_due(plan, today)
+    needs_regen_now = needs_regen_now or injury_due
 
     # EVENT-TAPER guard: never silently recompute an event taper from a
     # background adaptation. Inside the taper window we reforecast + flag.
@@ -12022,7 +12032,7 @@ def _apply_plan_update(
         episode_key = f"{episode[0]}:{_ramp_band(episode_weeks * 7)}"
     else:
         episode_key = f"ctl:{round(ctl_gap / 5.0) * 5}"
-    latched = (plan.get("gap_regen_latch", {}) or {}).get("key") == episode_key
+    latched = (plan.get("gap_regen_latch", {}) or {}).get("key") == episode_key and not injury_due
 
     do_regen = (
         needs_regen_now and allow_regen and not taper_blocks
