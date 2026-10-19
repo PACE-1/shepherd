@@ -2,7 +2,7 @@
 
 ## TL;DR
 
-Replace the AppImage with the new one, or pull the new Docker image and recreate the container on the same data volume. Everything in your data folder (`~/.shepherd/`, or `/data` in Docker) is left alone — rides, current and archived plans, FTP history, wellness logs, ICU credentials, and athlete profile all survive every install. Only the application itself (code, ZWO library, virtual routes, templates) is replaced.
+Replace the AppImage with the new one, or pull the new Docker image and recreate the container on the same data volume. Everything in your data folder (`~/.shepherd/`, or `/data` in Docker) is left alone — rides, current and archived plans, FTP history, wellness logs, ICU credentials, and athlete profile all survive every install. Only the application itself (code, ZWO library, web UI) is replaced.
 
 ---
 
@@ -19,17 +19,18 @@ All user state lives under `~/.shepherd/` (`/data` in the Docker image), outside
 | Activity DB | `profiles/<id>/health_tracker.db` | wellness, activities, daily Hooper log, athlete metrics, blood markers |
 | Current plan | `profiles/<id>/plans/current_plan.json` | active periodised plan |
 | Archived plans | `profiles/<id>/plans/*.json` | rotated previous plans |
-| Rides archive | `rides/*.fit` | imported FIT files (shared across profiles) |
-| ICU per-ride summaries | `rides/icu/*.json` | pulled from intervals.icu |
-| Wellness logs | `wellness/YYYY-MM-DD.json` | HRV, RHR, sleep records |
-| Path overrides | `user_paths.json` | optional `WORKOUT_DIR` / `GPX_DIR` |
+| Rides archive | `profiles/<id>/rides/*.fit` | imported FIT files (per profile) |
+| ICU per-ride summaries | `profiles/<id>/rides/icu/*.json` | pulled from intervals.icu |
+| Wellness logs | `profiles/<id>/wellness/YYYY-MM-DD.json` | HRV, RHR, sleep records |
+| Path overrides | `profiles/<id>/user_paths.json` | optional workout folder |
+| Data format stamp | `.data_format` | layout version; an older build refuses newer data |
 | Boot logs | `logs/*.log` | rotated logs |
 
 ---
 
 ## What gets replaced
 
-The AppImage file, or the Docker image. That holds the Python code, bundled ZWO library, virtual routes, and templates. Replaced wholesale. macOS and Windows builds are retired.
+The AppImage file, or the Docker image. That holds the Python code, the bundled ZWO library and the web UI. Replaced wholesale. macOS and Windows builds are retired.
 
 ---
 
@@ -42,9 +43,9 @@ On first launch after a version bump you'll see a one-off toast naming the from�
 ## What if something looks wrong?
 
 - Check `~/.shepherd/last_run_version.txt` — it should match the version in Settings.
-- The only legacy delete path is `migrate_profiles.py:295-300`, which ran once during the v3.x→v4 layout migration after copying files into `profiles/default/`. No-op on v1.x installs.
-- Nothing in v1.x deletes user data automatically. Profile deletion is user-initiated only.
-- Missing ride or plan? Files are plain `.fit` / `.json` under `~/.shepherd/rides/` and `~/.shepherd/profiles/<id>/plans/`.
+- The only automatic delete path is the legacy-layout migration in `migrate_profiles.py` (`migrate_archives_to_profiles` and the move into `profiles/default/`), which removes originals only after the copy verifies. It does nothing on installs already on the profile layout.
+- Nothing else deletes user data automatically. Profile deletion is user-initiated only.
+- Missing ride or plan? Files are plain `.fit` / `.json` under `~/.shepherd/profiles/<id>/rides/` and `~/.shepherd/profiles/<id>/plans/`.
 
 ---
 
@@ -58,4 +59,4 @@ Take a backup before upgrading real data (`python -m backup create`, see `docs/D
 
 ## Rolling back
 
-Run the older AppImage, or the older Docker image tag. Data still works because schema changes are additive: new columns are ignored by older code, unknown JSON fields are skipped.
+Run the older AppImage, or the older Docker image tag, only if the release you left did not raise `DATA_FORMAT` (see `docs/DATA.md`, "Versions"): an older build refuses data stamped with a newer format, and then the way back is to restore the backup you took before upgrading. Within one data format, schema changes are additive: new columns are ignored by older code and unknown JSON fields are skipped. Docker steps are in `docs/SERVER.md`.
