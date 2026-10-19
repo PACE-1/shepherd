@@ -201,7 +201,16 @@ def clean_rides():
 
 def _run(c, folder):
     assert c.put("/api/folder-import", json={"folder": str(folder), "recursive": False}).status_code == 200
-    assert c.post("/api/folder-import/scan").json()["running"] is True
+    # The app's own background sync may be mid-scan; POSTing then starts nothing and the poll below
+    # would hand back that older scan's result. Start ours only when none is running.
+    for _ in range(300):
+        if not c.get("/api/folder-import").json()["running"]:
+            started = c.post("/api/folder-import/scan").json()
+            if started["started"]:
+                break
+        time.sleep(0.05)
+    else:
+        pytest.fail("scan could not be started")
     for _ in range(300):
         s = c.get("/api/folder-import").json()
         if not s["running"] and s["last_scan"]:
