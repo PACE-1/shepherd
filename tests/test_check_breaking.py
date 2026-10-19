@@ -21,3 +21,8 @@ def test_routes_and_fields_lists_methods_and_properties():
 
 def test_nothing_removed_against_head():
     assert not any(cb.removed("HEAD").values())
+
+
+def test_decorated_routes_include_untyped_routes():
+    routes = cb.decorated_routes()
+    assert "GET /api/version" in routes
