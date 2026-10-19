@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import json
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 import api_models
 import db
@@ -47,7 +47,16 @@ def _recent_runs() -> list[dict]:
 
 
 @router.get("/api/run/predict", responses={200: {"model": api_models.RacePredictor}})
-def run_predict():
-    """5K, 10K, half marathon and marathon from the best recent run (Riegel) and the saved critical speed."""
+def run_predict(target_race: str | None = None, target_time_s: float | None = None):
+    """5K, 10K, half marathon and marathon from the best recent run (Riegel) and the saved critical speed.
+
+    With ``target_race`` and ``target_time_s``, also says how much faster or higher each model needs you to be.
+    """
     cs = _saved_cs()
-    return {"window_days": WINDOW_DAYS, "critical_speed": cs, **rp.predict(_recent_runs(), cs)}
+    out = {"window_days": WINDOW_DAYS, "critical_speed": cs, **rp.predict(_recent_runs(), cs), "target": None}
+    if target_race is not None or target_time_s is not None:
+        try:
+            out["target"] = rp.target_gap(target_race or "", target_time_s or 0, out["best_run"], cs)
+        except ValueError as e:
+            raise HTTPException(422, str(e))
+    return out

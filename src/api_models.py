@@ -1475,8 +1475,28 @@ class RacePrediction(_Model):
     notes: list[str] = []
 
 
+class RiegelGap(_Model):
+    needed_time_s: float
+    current_time_s: float
+    faster_pct: float                        # negative when the target is already slower than the best run implies
+
+
+class CsGap(_Model):
+    needed_cs_m_per_s: float
+    current_cs_m_per_s: float
+    higher_pct: float
+
+
+class RaceTargetGap(_Model):
+    race: str
+    target_time_s: float
+    riegel: Optional[RiegelGap] = None
+    critical_speed: Optional[CsGap] = None
+
+
 class RacePredictor(_Model):
     window_days: int
+    target: Optional[RaceTargetGap] = None
     best_run: Optional[RaceInputRun] = None
     longest_run_m: Optional[float] = None
     critical_speed: Optional[RaceInputCs] = None

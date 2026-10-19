@@ -1876,6 +1876,30 @@
         "title": "CriticalSpeed",
         "type": "object"
       },
+      "CsGap": {
+        "additionalProperties": true,
+        "properties": {
+          "current_cs_m_per_s": {
+            "title": "Current Cs M Per S",
+            "type": "number"
+          },
+          "higher_pct": {
+            "title": "Higher Pct",
+            "type": "number"
+          },
+          "needed_cs_m_per_s": {
+            "title": "Needed Cs M Per S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "needed_cs_m_per_s",
+          "current_cs_m_per_s",
+          "higher_pct"
+        ],
+        "title": "CsGap",
+        "type": "object"
+      },
       "DailyAdapt": {
         "additionalProperties": true,
         "properties": {
@@ -7348,6 +7372,16 @@
             "title": "Riegel Method",
             "type": "string"
           },
+          "target": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RaceTargetGap"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "window_days": {
             "title": "Window Days",
             "type": "integer"
@@ -7454,6 +7488,45 @@
           "end"
         ],
         "title": "RaceTaperWeek",
+        "type": "object"
+      },
+      "RaceTargetGap": {
+        "additionalProperties": true,
+        "properties": {
+          "critical_speed": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CsGap"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "race": {
+            "title": "Race",
+            "type": "string"
+          },
+          "riegel": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RiegelGap"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "target_time_s": {
+            "title": "Target Time S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "race",
+          "target_time_s"
+        ],
+        "title": "RaceTargetGap",
         "type": "object"
       },
       "RaceTimelineRow": {
@@ -8654,6 +8727,30 @@
           }
         },
         "title": "RidesSynced",
+        "type": "object"
+      },
+      "RiegelGap": {
+        "additionalProperties": true,
+        "properties": {
+          "current_time_s": {
+            "title": "Current Time S",
+            "type": "number"
+          },
+          "faster_pct": {
+            "title": "Faster Pct",
+            "type": "number"
+          },
+          "needed_time_s": {
+            "title": "Needed Time S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "needed_time_s",
+          "current_time_s",
+          "faster_pct"
+        ],
+        "title": "RiegelGap",
         "type": "object"
       },
       "RunActivities": {
