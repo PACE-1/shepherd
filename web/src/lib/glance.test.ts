@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest"
 
 import type { PlanSession, PlanWeek } from "@/api/types"
-import { dayStatus, nextStep, sessionWords, todayPlan, weekProgress } from "@/lib/glance"
+import type { PlanJson } from "@/api/types"
+import { dayStatus, nextStep, phaseWords, planProgress, sessionWords, todayPlan, weekProgress } from "@/lib/glance"
 
 const s = (day: string, over: Partial<PlanSession> = {}) =>
   ({ day, session_type: "z2", duration_min: 60, tss_estimate: 40, status: "pending", ...over }) as PlanSession
@@ -62,5 +63,27 @@ describe("nextStep and words", () => {
   it("explains session types in plain words, with a fallback", () => {
     expect(sessionWords("z2")).toBe("easy endurance ride")
     expect(sessionWords("some_new_type")).toBe("some new type")
+  })
+})
+
+describe("planProgress", () => {
+  const w = (n: number, phase = "build1") => ({ week_num: n, phase, start: "2026-10-12", end: "2026-10-18", sessions: [] }) as unknown as PlanWeek
+  const plan = (eventDate: string | null) => ({ goal: { event_date: eventDate, event_name: "Gran Fondo" }, weeks: [w(1), w(2), w(3)] }) as unknown as PlanJson
+  it("names the week, the phase in plain words and the days to the event", () => {
+    expect(planProgress(plan("2026-11-01"), w(2), "2026-10-15")).toMatchObject({ week: 2, weeks: 3, daysToEvent: 17, eventName: "Gran Fondo", words: expect.stringContaining("harder efforts") })
+  })
+  it("has no countdown without an event date or after it", () => {
+    expect(planProgress(plan(null), w(2), "2026-10-15")?.daysToEvent).toBeNull()
+    expect(planProgress(plan("2026-10-01"), w(2), "2026-10-15")?.daysToEvent).toBeNull()
+    expect(planProgress(plan("2026-10-15"), w(2), "2026-10-15")?.daysToEvent).toBe(0)
+  })
+  it("is null without a plan or a current week", () => {
+    expect(planProgress(plan(null), undefined, "2026-10-15")).toBeNull()
+    expect(planProgress(null, w(1), "2026-10-15")).toBeNull()
+  })
+  it("understands numbered and capitalised phase names, and admits unknown ones", () => {
+    expect(phaseWords("Build2")).toContain("harder")
+    expect(phaseWords("taper")).toContain("fresh")
+    expect(phaseWords("mystery")).toBeNull()
   })
 })

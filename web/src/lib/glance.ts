@@ -1,4 +1,4 @@
-import type { PlanSession, PlanWeek } from "@/api/types"
+import type { PlanJson, PlanSession, PlanWeek } from "@/api/types"
 import { sessionsOn, weekSessions } from "@/lib/home"
 
 // Pure rules for the "At a glance" panel on Home. Plain words, no network.
@@ -77,6 +77,43 @@ export function weekProgress(week: PlanWeek | undefined, done: number | null | u
   if (!week) return null
   const planned = weekSessions(week).filter((s) => !s.dismissed_at && s.status !== "dismissed").length
   return { planned, done: Math.min(done ?? 0, planned) }
+}
+
+const PHASE_WORDS: Record<string, string> = {
+  base: "building your aerobic foundation, mostly with easy riding",
+  build: "adding harder efforts on top of that foundation",
+  peak: "sharpening up, with fewer but sharper hard sessions",
+  taper: "cutting back the volume so you arrive fresh",
+  recovery: "an easier stretch so your body can absorb the work",
+}
+/** Plain words for a phase name such as "build1" or "Base"; null for a name we do not know. */
+export const phaseWords = (name: string) => PHASE_WORDS[name.toLowerCase().replace(/[\d\s_-]+$/, "")] ?? null
+
+export interface PlanProgress {
+  week: number
+  weeks: number
+  phase: string
+  words: string | null
+  eventName: string | null
+  /** Whole days from today to the goal event; null with no event date or once it has passed. */
+  daysToEvent: number | null
+}
+const DAY_MS = 86_400_000
+const dayNumber = (iso: string) => Date.parse(`${iso}T00:00:00Z`) / DAY_MS
+/** Where the rider is in their plan: week N of M, the phase in plain words, and the days to the goal event. */
+export function planProgress(plan: PlanJson | null | undefined, week: PlanWeek | undefined, today: string): PlanProgress | null {
+  const weeks = plan?.weeks?.length
+  if (!plan || !weeks || !week) return null
+  const date = plan.goal?.event_date
+  const days = date ? dayNumber(date) - dayNumber(today) : NaN
+  return {
+    week: week.week_num,
+    weeks,
+    phase: week.phase,
+    words: phaseWords(week.phase),
+    eventName: date && days >= 0 ? plan.goal.event_name || null : null,
+    daysToEvent: Number.isFinite(days) && days >= 0 ? days : null,
+  }
 }
 
 export interface NextStep {

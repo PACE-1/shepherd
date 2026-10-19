@@ -43,6 +43,17 @@ describe("Glance", () => {
     expect(screen.queryByText(/Next step/)).toBeNull()
   })
 
+  it("shows where the rider is in the plan", async () => {
+    mockApi()
+    const p = plan([session(today)])
+    const pj = p.data.plan_json as unknown as { goal: Record<string, unknown>; weeks: { phase: string }[] }
+    pj.goal = { event_date: addDays(10), event_name: "Gran Fondo" }
+    pj.weeks[0].phase = "build1"
+    render(<Glance plan={p} stats={stats(0)} />)
+    expect(await screen.findByText(/10 days to Gran Fondo/)).toBeTruthy()
+    expect(screen.getByText(/This is a build phase: adding harder efforts/)).toBeTruthy()
+  })
+
   it("says rest when readiness says rest", async () => {
     mockApi({ "/api/readiness": { severity: "rest", score_0_100: 20, severity_reasons: [] } })
     render(<Glance plan={plan([session(today)])} stats={stats(0)} />)
