@@ -279,7 +279,7 @@ function JumpBar() {
   return (
     <nav aria-label="Jump to" className="sticky top-0 z-30 -mx-4 flex gap-2 overflow-x-auto bg-background px-4 py-2 md:hidden lg:col-span-2">
       {JUMPS.map(([id, label]) => (
-        <Button key={id} size="sm" variant="outline" className="min-h-11 shrink-0" onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" })}>
+        <Button key={id} size="sm" variant="outline" className="min-h-11 shrink-0" onClick={() => document.getElementById(id)?.scrollIntoView({ block: "start" })}>
           {label}
         </Button>
       ))}

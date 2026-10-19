@@ -109,6 +109,8 @@ test("on a phone Settings has a jump bar that scrolls to a group, and a desktop 
   await page.goto("#/settings")
   const jump = page.getByRole("navigation", { name: "Jump to" })
   await expect(jump).toBeVisible()
+  await page.waitForLoadState("networkidle")
+  await expect(page.getByText(/Loading…/)).toHaveCount(0) // cards that load late change the page height under the scroll
   await jump.getByRole("button", { name: "Health check" }).click()
   await expect(page.getByRole("heading", { name: "Diagnostics" })).toBeInViewport()
   await expect(jump).toBeInViewport() // it stays pinned while scrolling
