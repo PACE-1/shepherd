@@ -36,6 +36,27 @@ A prerelease tag (one with a `-`, such as `v4.1.0-rc1`) publishes only its exact
 tag, never `X.Y` or `latest`. "Newest" is by version number, not push time:
 tagging an old patch later does not move `latest` backwards.
 
+**Runs as UID 10001, not root (#153).** The container process is the unprivileged
+user `shepherd` (UID/GID 10001), so a bug in import, restore or path handling does
+not run with root rights, and files in a bind-mounted `/data` are owned by 10001
+on the host. A new named volume gets that ownership automatically. For a bind
+mount, `chown 10001:10001` the host folder first.
+
+**Upgrading to 4.0 from a root-owned volume.** Earlier images ran as root, so an
+existing volume (or bind mount) holds root-owned files that 10001 cannot write,
+and the server will not work on it. Fix it once, with the container stopped:
+
+```sh
+docker rm -f shepherd
+docker run --rm --user 0 -v shepherd-data:/data ghcr.io/pace-1/shepherd:latest \
+  chown -R 10001:10001 /data
+```
+
+Then start the new image as usual. For a bind mount, run
+`sudo chown -R 10001:10001 /path/to/data` on the host instead. Rolling back to a
+pre-4.0 image needs no change (root can read 10001-owned files).
+`tools/verify_docker_upgrade.sh` tests this path.
+
 **Upgrade:** `docker pull` the tag, then `docker rm -f shepherd` and run again
 with the same `-v shepherd-data:/data`.
 
@@ -71,6 +92,13 @@ first execution. Third-party actions are pinned to major tags (`@v4`, `@v3`) lik
 the other workflows, not to commit SHAs. The first push creates the package as
 private; make it public in the package settings on GitHub so `docker pull` works
 without a login.
+
+## One process per data folder
+
+The app takes an exclusive lock on `.lock` inside the data folder (`/data` in the
+image) and exits with a message if another process holds it. Run one container per
+volume, with `--workers 1` (the image default). The lock is a POSIX `flock`; it does not
+protect a volume shared across hosts over a network filesystem.
 
 ## Access policy
 

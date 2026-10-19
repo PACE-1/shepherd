@@ -570,6 +570,9 @@ _LAST_MIGRATION_RESULT: dict = {"show_toast": False}
 async def lifespan(app):
     import access as _access
     _access.check_startup()   # server mode without a token must not start (#13)
+    import datalock as _datalock
+    from user_home import shepherd_home as _lock_home
+    _datalock.acquire(_lock_home())   # one process per data folder (#154)
     import jobs as _jobs_boot
     _jobs_boot.begin()        # a previous run's shutdown must not leave jobs "stopping" (#17)
     # #19: never run against data written by a newer layout; stamp it on first use.
@@ -770,6 +773,7 @@ async def lifespan(app):
                 log.warning("shutdown budget exhausted; still running: %s", _rep["still_running"])
         except Exception as e:
             log.debug(f"jobs.shutdown failed: {e}")
+        _datalock.release(_lock_home())
 
 app = FastAPI(title="Shepherd", version=_VERSION, lifespan=lifespan)
 

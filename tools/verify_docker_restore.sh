@@ -14,6 +14,7 @@ api() { # container port method path [json]
   curl -s -m 20 -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -X "$3" ${5:+-d "$5"} "http://127.0.0.1:$2$4"; }
 wait_up() { for _ in $(seq 1 60); do curl -sf -m 2 "http://127.0.0.1:$1/healthz" >/dev/null && return 0; sleep 1; done; echo "server on $1 did not start" >&2; return 1; }
 
+chmod a+rwx "$OUT"  # the image runs as UID 10001, not the host user
 docker volume create "$A" >/dev/null; docker volume create "$B" >/dev/null
 docker run -d --name "$A-srv" -p 127.0.0.1:22491:22400 -v "$A":/data -e SHEPHERD_ACCESS_TOKEN=$TOKEN "$IMG" >/dev/null
 wait_up 22491

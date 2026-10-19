@@ -72,6 +72,39 @@ Inventory, candidate decisions and current measurement limits are recorded in
 [code-bloat/README.md](code-bloat/README.md). Product defect fixes, algorithm
 changes and structural cleanup must have separate evidence and commits.
 
+## Versioning
+
+Shepherd uses semantic versioning; the next release is 4.0.0 (the upstream
+project's tags v1.0.2 to v3.13.1 stay as history, and `vX.Y` numbers in code
+comments are upstream-lineage numbers, not fork releases).
+
+**The public API** is what a version number promises:
+
+- the data folder: layout, `DATA_FORMAT`, SQLite schema, JSON files;
+- the `SHEPHERD_*` configuration and the Docker contract: port 22400, the
+  `/data` volume, the container user, required variables;
+- the HTTP API documented in `docs/API.md` and `tests/api_contract.json`;
+- the supported platforms: Docker on linux/amd64 and the Linux AppImage.
+
+| Bump | When |
+|---|---|
+| MAJOR | Something above breaks an existing install or needs a manual upgrade step (dropped platform, migration that cannot run on its own, renamed variable with no alias, removed route or field, container user change needing a volume ownership fix). |
+| MINOR | New features, backward compatible; data migrates forward automatically. |
+| PATCH | Bug and security fixes only; no new settings, routes or data layout. |
+
+Release plumbing:
+
+- `VERSION` is the source; the tag `vX.Y.Z` must match it.
+- A tag containing `-` (`v4.0.0-beta.1`) is published as a GitHub pre-release
+  by `release.yml`, so `releases/latest` and the in-app update check never
+  offer it to stable users.
+- Docker: `:X.Y.Z` always; `:X.Y` and `:latest` for the newest stable tag;
+  `:beta` for the newest pre-release.
+- `breaking-change.yml` fails a pull request that removes a route or field from
+  `tests/api_contract.json`, or a `SHEPHERD_*` variable from `src/` or the
+  Dockerfile (a rename counts), unless it has the `breaking` label. Run
+  `python3 tools/check_breaking.py origin/main` to see what it would report.
+
 ## Browser smoke tests
 
 `web/e2e/` drives the new UI in a real Chromium against a real backend on a
