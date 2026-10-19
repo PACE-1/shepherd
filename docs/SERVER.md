@@ -93,6 +93,13 @@ the other workflows, not to commit SHAs. The first push creates the package as
 private; make it public in the package settings on GitHub so `docker pull` works
 without a login.
 
+## One process per data folder
+
+The app takes an exclusive lock on `.lock` inside the data folder (`/data` in the
+image) and exits with a message if another process holds it. Run one container per
+volume, with `--workers 1` (the image default). The lock is a POSIX `flock`; it does not
+protect a volume shared across hosts over a network filesystem.
+
 ## Access policy
 
 - **Desktop / loopback use:** no token, no gate. Behaviour is unchanged.
