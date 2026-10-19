@@ -104,6 +104,20 @@ test("on a phone the section bar sits at the bottom, reaches every screen, and M
   await expect(page.getByRole("link", { name: "Workout Shuffle" })).toBeVisible()
 })
 
+test("on a phone Home is the glance and the check-in, and the rest is one tap away", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto("#/home")
+  await expect(page.getByRole("heading", { name: "At a glance" })).toBeVisible()
+  await expect(page.getByRole("heading", { name: "Daily check-in" })).toBeVisible()
+  await expect(page.getByRole("heading", { name: "Fitness" })).toBeHidden()
+  await page.getByRole("button", { name: "Show all details" }).click()
+  await expect(page.getByRole("heading", { name: "Fitness" })).toBeVisible()
+  await page.reload()
+  await expect(page.getByRole("button", { name: "Show less" })).toBeVisible() // remembered on this device
+  await page.getByRole("button", { name: "Show less" }).click()
+  await expect(page.getByRole("heading", { name: "Fitness" })).toBeHidden()
+})
+
 test("on a phone Settings has a jump bar that scrolls to a group, and a desktop has none", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto("#/settings")
