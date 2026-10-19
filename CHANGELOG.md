@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v4.0.0-beta.2 — Docker image build fixed (2026-10-19)
+
+Pre-release. `v4.0.0-beta.1` has an AppImage but no Docker image: its build failed because `node:26` no longer ships corepack. Use beta.2.
+
+- **Fixed: the Docker image builds again.** The web stage installs pnpm with `npm install -g` instead of corepack.
+
 ## v4.0.0-beta.1 — First beta of the fork (2026-10-19)
 
 Pre-release. Back up your data folder before installing; downgrades are not promised. Docker image runs as UID 10001: see the volume ownership note below.
