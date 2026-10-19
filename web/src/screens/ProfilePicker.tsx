@@ -103,7 +103,7 @@ export function ProfilePicker({ onSwitched = goHome }: { onSwitched?: () => void
         ))}
         <Card className="border-dashed">
           <CardContent className="flex h-full items-center justify-center p-6">
-            <Button variant="ghost" render={<a href="#/profile-setup" />}>
+            <Button variant="ghost" className="max-md:min-h-11" render={<a href="#/profile-setup" />}>
               + Add Profile
             </Button>
           </CardContent>

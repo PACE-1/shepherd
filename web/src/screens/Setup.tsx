@@ -318,7 +318,7 @@ export function Setup() {
                         }, () => {})
                       }
                     />
-                    <Button variant="outline" render={<a href="https://intervals.icu/signup" target="_blank" rel="noopener noreferrer" />}>
+                    <Button variant="outline" className="max-md:min-h-11" render={<a href="https://intervals.icu/signup" target="_blank" rel="noopener noreferrer" />}>
                       Create a free account
                     </Button>
                   </>

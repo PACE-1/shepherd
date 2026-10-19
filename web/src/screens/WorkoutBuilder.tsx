@@ -219,7 +219,7 @@ export function WorkoutBuilder({ file: editing }: { file?: string }) {
         <CardContent className="space-y-3 p-4">
           <div className="flex items-center justify-between gap-2">
             <h2 className="text-sm font-semibold">{editing ? "Edit workout" : "New workout"}</h2>
-            <Button size="sm" variant="ghost" render={<a href="#/library" />}>Back to the library</Button>
+            <Button size="sm" variant="ghost" className="max-md:min-h-11" render={<a href="#/library" />}>Back to the library</Button>
           </div>
           {loadError && <p role="alert" className="text-sm">Couldn’t open that workout: {loadError}</p>}
           <div className="flex flex-wrap gap-2 text-sm">
