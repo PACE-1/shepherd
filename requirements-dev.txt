@@ -1,10 +1,10 @@
 # Linux headless development and full-suite dependencies. No Qt engine.
 -r requirements-server.txt
-pytest>=9,<10
-pytest-xdist>=3,<4
-pytest-timeout>=2,<3
+pytest>=9.1.1,<10
+pytest-xdist>=3.8.0,<4
+pytest-timeout>=2.4.0,<3
 fitparse==1.2.0
 # Native-dialog bridge tests mock the GUI backend but import these modules.
-pywebview>=5.0
-pystray>=0.19.0
-cryptography>=43
+pywebview>=6.2.1
+pystray>=0.19.5
+cryptography>=50.0.2

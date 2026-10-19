@@ -1794,6 +1794,50 @@
             "title": "Status",
             "type": "string"
           },
+          "w_20min": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "W 20Min"
+          },
+          "w_5min": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "W 5Min"
+          },
+          "w_per_kg_20min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "W Per Kg 20Min"
+          },
+          "w_per_kg_5min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "W Per Kg 5Min"
+          },
           "wprime_j": {
             "anyOf": [
               {
@@ -1874,6 +1918,30 @@
           "confidence"
         ],
         "title": "CriticalSpeed",
+        "type": "object"
+      },
+      "CsGap": {
+        "additionalProperties": true,
+        "properties": {
+          "current_cs_m_per_s": {
+            "title": "Current Cs M Per S",
+            "type": "number"
+          },
+          "higher_pct": {
+            "title": "Higher Pct",
+            "type": "number"
+          },
+          "needed_cs_m_per_s": {
+            "title": "Needed Cs M Per S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "needed_cs_m_per_s",
+          "current_cs_m_per_s",
+          "higher_pct"
+        ],
+        "title": "CsGap",
         "type": "object"
       },
       "DailyAdapt": {
@@ -7348,6 +7416,16 @@
             "title": "Riegel Method",
             "type": "string"
           },
+          "target": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RaceTargetGap"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "window_days": {
             "title": "Window Days",
             "type": "integer"
@@ -7454,6 +7532,45 @@
           "end"
         ],
         "title": "RaceTaperWeek",
+        "type": "object"
+      },
+      "RaceTargetGap": {
+        "additionalProperties": true,
+        "properties": {
+          "critical_speed": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CsGap"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "race": {
+            "title": "Race",
+            "type": "string"
+          },
+          "riegel": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RiegelGap"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "target_time_s": {
+            "title": "Target Time S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "race",
+          "target_time_s"
+        ],
+        "title": "RaceTargetGap",
         "type": "object"
       },
       "RaceTimelineRow": {
@@ -8654,6 +8771,30 @@
           }
         },
         "title": "RidesSynced",
+        "type": "object"
+      },
+      "RiegelGap": {
+        "additionalProperties": true,
+        "properties": {
+          "current_time_s": {
+            "title": "Current Time S",
+            "type": "number"
+          },
+          "faster_pct": {
+            "title": "Faster Pct",
+            "type": "number"
+          },
+          "needed_time_s": {
+            "title": "Needed Time S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "needed_time_s",
+          "current_time_s",
+          "faster_pct"
+        ],
+        "title": "RiegelGap",
         "type": "object"
       },
       "RunActivities": {
@@ -13602,6 +13743,32 @@
     "/api/plan/dismiss-session": {
       "post": {
         "operationId": "api_plan_dismiss_session_api_plan_dismiss_session_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "properties": {
+                  "date": {
+                    "title": "Date",
+                    "type": "string"
+                  },
+                  "undo": {
+                    "default": false,
+                    "title": "Undo",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "date"
+                ],
+                "title": "DismissSessionBody",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "content": {
@@ -13636,6 +13803,32 @@
     "/api/plan/ftp-test-type": {
       "post": {
         "operationId": "api_plan_ftp_test_type_api_plan_ftp_test_type_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "properties": {
+                  "date": {
+                    "title": "Date",
+                    "type": "string"
+                  },
+                  "test_type": {
+                    "title": "Test Type",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "date",
+                  "test_type"
+                ],
+                "title": "FtpTestTypeBody",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "content": {
@@ -13687,6 +13880,32 @@
     "/api/plan/move-session": {
       "post": {
         "operationId": "api_plan_move_session_api_plan_move_session_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "properties": {
+                  "date": {
+                    "title": "Date",
+                    "type": "string"
+                  },
+                  "new_date": {
+                    "title": "New Date",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "date",
+                  "new_date"
+                ],
+                "title": "MoveSessionBody",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "content": {
@@ -13806,6 +14025,37 @@
     "/api/plan/swap-type": {
       "post": {
         "operationId": "api_plan_swap_type_api_plan_swap_type_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "properties": {
+                  "date": {
+                    "title": "Date",
+                    "type": "string"
+                  },
+                  "duration_min": {
+                    "title": "Duration Min",
+                    "type": "integer"
+                  },
+                  "session_type": {
+                    "title": "Session Type",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "date",
+                  "session_type",
+                  "duration_min"
+                ],
+                "title": "SwapTypeBody",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "content": {

@@ -2,7 +2,8 @@
 """List breaking public-API changes between a base revision and the working tree.
 
 Breaking here means (docs/DEVELOPMENT.md, "Versioning"): a route or response
-field gone from tests/api_contract.json, or a SHEPHERD_* variable no longer
+field gone from tests/api_contract.json, a route decorator gone from src/
+(covers routes without a response model), or a SHEPHERD_* variable no longer
 mentioned in src/ or the Dockerfile (a rename shows up as a removal).
 Usage: check_breaking.py <base-rev>   Exit 1 when anything is removed.
 """
@@ -13,6 +14,7 @@ import sys
 
 CONTRACT = "tests/api_contract.json"
 VAR = re.compile(r"SHEPHERD_[A-Z0-9_]+")
+ROUTE = r"@(app|router)\.(get|post|put|delete|patch)\([\"'][^\"']+[\"']"
 
 
 def git(*args):
@@ -37,6 +39,12 @@ def env_vars(rev=None):
     return set(VAR.findall(out))
 
 
+def decorated_routes(rev=None):
+    args = ["grep", "-hoE", ROUTE] + ([rev] if rev else []) + ["--", "src"]
+    found = (re.match(r"@\w+\.(\w+)\([\"']([^\"']+)", m) for m in git(*args).splitlines())
+    return {f"{m.group(1).upper()} {m.group(2)}" for m in found if m}
+
+
 def removed(base_rev):
     base_routes, base_fields = routes_and_fields(json.loads(git("show", f"{base_rev}:{CONTRACT}")))
     with open(CONTRACT) as f:
@@ -44,6 +52,7 @@ def removed(base_rev):
     return {
         "route": sorted(base_routes - routes),
         "field": sorted(base_fields - fields),
+        "decorated route": sorted(decorated_routes(base_rev) - decorated_routes()),
         "variable": sorted(env_vars(base_rev) - env_vars()),
     }
 
