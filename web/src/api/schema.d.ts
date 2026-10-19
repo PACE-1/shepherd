@@ -452,6 +452,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/import/backup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_backup_pending_api_import_backup_get"];
+        put?: never;
+        post: operations["api_backup_stage_api_import_backup_post"];
+        delete: operations["api_backup_cancel_api_import_backup_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/injury": {
         parameters: {
             query?: never;
@@ -2730,6 +2746,38 @@ export interface components {
             state?: string | null;
             /** Task Id */
             task_id?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /**
+         * BackupStaged
+         * @description A restore waiting for the next start (#129); only ``pending`` is set when there is none.
+         */
+        BackupStaged: {
+            /**
+             * App Version
+             * @default
+             */
+            app_version: string;
+            /**
+             * Created At
+             * @default
+             */
+            created_at: string;
+            /** Data Format */
+            data_format?: number | null;
+            /**
+             * Files
+             * @default 0
+             */
+            files: number;
+            /** Pending */
+            pending: boolean;
+            /**
+             * Secrets Excluded
+             * @default false
+             */
+            secrets_excluded: boolean;
         } & {
             [key: string]: unknown;
         };
@@ -8585,6 +8633,66 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["IcuRaces"];
+                };
+            };
+        };
+    };
+    api_backup_pending_api_import_backup_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BackupStaged"];
+                };
+            };
+        };
+    };
+    api_backup_stage_api_import_backup_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BackupStaged"];
+                };
+            };
+        };
+    };
+    api_backup_cancel_api_import_backup_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BackupStaged"];
                 };
             };
         };

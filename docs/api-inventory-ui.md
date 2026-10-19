@@ -73,6 +73,7 @@ another. Converging on one shape changes behaviour and belongs in its own slice.
 | `/api/download/zwo/{filename}` | GET | read | no, file download | library.ts, plan.ts |
 | `/api/event/projection` | GET | read | yes `EventProjection` | wellness.ts |
 | `/api/export/backup` | GET | read | no, file download (tar.gz) | YourData.tsx |
+| `/api/import/backup` | GET, POST, DELETE | read / write | yes | YourData.tsx |
 | `/api/export/fit-workout` | GET | read | no, file download (FIT) | plan.ts |
 | `/api/export/{table}.csv` | GET | read | no, file download (CSV) | YourData.tsx |
 | `/api/fueling` | GET | read | yes `Fueling` | nutrition.ts |
