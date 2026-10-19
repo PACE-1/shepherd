@@ -13,6 +13,12 @@ sys.path.insert(0, str(ROOT / "src"))
 os.environ.setdefault("SHEPHERD_HOME", tempfile.mkdtemp(prefix="shepherd-openapi-"))
 
 
+def _typed_body(op: dict) -> bool:
+    """A request body declared with a model (api_models.request_body), not FastAPI's bare dict."""
+    schema = op.get("requestBody", {}).get("content", {}).get("application/json", {}).get("schema", {})
+    return bool(schema.get("properties"))
+
+
 def contract() -> dict:
     import app as app_module
 
@@ -26,6 +32,7 @@ def contract() -> dict:
             if "$ref" in ok or "$ref" in ok.get("items", {}):   # only routes with a declared model (or a list of one)
                 kept[method] = {
                     "operationId": op.get("operationId"),
+                    **({"requestBody": op["requestBody"]} if _typed_body(op) else {}),
                     "responses": {"200": {"description": "OK", "content": {
                         "application/json": {"schema": ok}}}},
                 }
