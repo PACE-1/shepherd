@@ -102,6 +102,8 @@ def test_sync_activities_records_the_stub_days(c, monkeypatch):
             "name": None, "type": None, "elapsed_time": None, "moving_time": None}
     monkeypatch.setattr(db, "fetch_activities", lambda days=90: [stub])
     monkeypatch.setattr(db, "_refresh_hr_from_activities", lambda snap: None)
+    # sync_activities rewrites this module list in place; give it a throwaway so later tests in the worker do not see the stub day.
+    monkeypatch.setattr(db, "last_stub_days", [])
     db.sync_activities(days=7)
     assert db.last_stub_days == ["2026-10-17"]
 
