@@ -108,8 +108,12 @@ def test_sync_activities_records_the_stub_days(c, monkeypatch):
     assert db.last_stub_days == ["2026-10-17"]
 
 
-def test_on_sync_pass_never_raises_on_an_empty_profile(c):
+def test_on_sync_pass_never_raises_on_an_empty_profile(c, freeze_clock):
     from profile_manager import ProfileManager
+    # on_sync_pass reads the real stores over the last 14 days of the clock. Other suites leave dated rides and
+    # activities in the shared worker profile, and as the real date moves toward those fixed dates they enter the
+    # window and raise the notice (seen on the gate of #210 and on main). A pinned far-off date keeps the profile empty.
+    freeze_clock(date(2027, 6, 1))
     pd = ProfileManager.get().active_dir
     n.on_sync_pass()
     assert not any(i["event"] == "sync_health" for i in n.listing(pd)["items"])
